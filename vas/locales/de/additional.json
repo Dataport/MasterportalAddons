@@ -1,0 +1,9 @@
+{
+    "modules": {
+        "searchbar": {
+            "vas": {
+                "errorMsg": "Der Vienna Address Service ist aktuell leider nicht erreichbar."
+            }
+        }
+    }
+}

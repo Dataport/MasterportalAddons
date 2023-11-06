@@ -1,0 +1,9 @@
+{
+    "modules": {
+        "searchbar": {
+            "vas": {
+                "errorMsg": "Searching with the Vienna Address Service is currently not available."
+            }
+        }
+    }
+}

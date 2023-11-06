@@ -1,0 +1,4 @@
+/**
+ * @namespace VAS
+ * @memberof Addons
+ */
