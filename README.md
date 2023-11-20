@@ -5,7 +5,7 @@
 | Addon | Beschreibung | Kompatibilität |
 |-------|--------------|----------------|
 | gfiPie | Tortendiagramm zur Darstellung von Feature Attributen | 2.X |
-| vas | ... | 2.X |
+| vas | Wiener Suchdienst zum Einbinden ins Masterportal | 2.X |
 
 ## Dokumentation für die Einbindung der zusätzlichen Addons
 
