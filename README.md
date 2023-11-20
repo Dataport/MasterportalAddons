@@ -2,10 +2,10 @@
 
 ## Beschreibung der Addons
 
-|Addon|Beschreibung|Kompatibilität|
-|-----|------------|--------------|
-|gfiPie|Tortendiagramm zur Darstellung von Feature Attributen|2.X|
-|vas|...|2.X|
+| Addon | Beschreibung | Kompatibilität |
+|-------|--------------|----------------|
+| gfiPie | Tortendiagramm zur Darstellung von Feature Attributen | 2.X |
+| vas | ... | 2.X |
 
 ## Dokumentation für die Einbindung der zusätzlichen Addons
 
