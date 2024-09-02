@@ -6,6 +6,7 @@
 |-------|--------------|----------------|
 | gfiPie | Tortendiagramm zur Darstellung von Feature Attributen | 2.X |
 | vas | Wiener Suchdienst zum Einbinden ins Masterportal | 2.X |
+| wfs-SumQuery | Attibutsanzeige und Summierung von grafisch selektierten Features | 3.X |
 
 ## Dokumentation für die Einbindung der zusätzlichen Addons
 
@@ -15,7 +16,7 @@
 Für jedes manuell hinzugefügte Addon wird in der addonsConf.json ein Eintrag erstellt.
 Nicht benötigte Addons können hier gelöscht werden.
 
-#### Beispiel für addonsConf.json:
+#### Beispiel für addonsConf.json in v2:
 ```
 "vas": "model.js",
 "gfiPie": {
@@ -23,6 +24,13 @@ Nicht benötigte Addons können hier gelöscht werden.
     "type": "gfiTheme"
 }
 ```
+#### Beispiel für addonsConf.json in v3:
+```
+"wfsSumQuery": {
+  "type": "tool"
+}
+```
+
 ### 3. config.js des Portals anpassen
 
 In der config.js des Portals muss als nächstes der in der addonsConf.json verwendete Key (z.B. "gfiPie") eingetragen werden.
