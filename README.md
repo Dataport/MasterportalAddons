@@ -8,6 +8,7 @@
 | vas | Wiener Suchdienst zum Einbinden ins Masterportal | 2.X |
 | wiengaz | Addressuchdienst der Stadt Wien | 3.X |
 | bulkDownload| Layerabhängige Datendownloadanfrage an Backend | 3.X |
+| wfs-SumQuery | Attibutsanzeige und Summierung von grafisch selektierten Features | 3.X |
 
 ## Dokumentation für die Einbindung der zusätzlichen Addons
 
@@ -32,6 +33,9 @@ Nicht benötigte Addons können hier gelöscht werden.
   "path": "searchInterfaces/wiengaz"
 },
 "bulkDownload": {
+  "type": "tool"
+}
+"wfsSumQuery": {
   "type": "tool"
 }
 ```

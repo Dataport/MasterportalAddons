@@ -1,0 +1,29 @@
+{
+  "modules": {
+    "wfsSumQuery": {
+      "allFeatures": "Alle Features",
+      "circleRadius": "Radius in Meter",
+      "definedCircle": "Vordefinierten Kreis zeichnen",
+      "description": "Wählen Sie Feature eines WFS-Dienstes zur Auswertung per Geometrie aus.",
+      "destinationLayer": "Wählen Sie einen WFS-Layer zur Auswertung aus: ",
+      "downloadCsv": "CSV Download",
+      "feature": "Feature",
+      "layerSwitchOffWarning": "Ein Ausschalten des Layers: {{layerName}} über den Themenbaum ist derzeit nicht möglich, da dieser im Tool {{toolName}} ausgewählt ist.",
+      "layerSwitchOnInfo": "Sie haben den Layer: {{layerName}} im Themenbaum angeschaltet. Im Tool {{toolName}} wird dieser nicht ausgewertet, da dort der Layer: {{selectedLayerName}} ausgewählt ist.",
+      "name": "WFS-SumQuery",
+      "noAttributesFound": "Es wurden keine Attribute für den Layer {{layerName}} gefunden. Bitte prüfen Sie ihre Layerkonfiguration.",
+      "noFeatureFound": "Es wurden keine Feature innerhalb der gezeichneten Geometrie für den Layer {{layerName}} gefunden.",
+      "reset": "Zurücksetzen",
+      "select": {
+        "action": "Wählen Sie eine Geometrie zum Selektieren aus."
+      },
+      "selectFeaturesFirst": "Wählen Sie zuerst Feature aus",
+      "selectQueryLayer": "Wählen Sie einen Ziellayer",
+      "selectSumTab": "Wechseln Sie zum Summierungstab",
+      "sum": "Summe",
+      "sumInfo": "Wählen Sie ein oder mehrere der verfügbaren Attribute aus. Numerische Werte werden in der Tabelle summiert.",
+      "sumPlaceholder": "Summierungsattribute",
+      "sumTab": "Summierung"
+    }
+  }
+}
