@@ -1,0 +1,31 @@
+{
+  "modules": {
+    "bulkDownload": {
+      "name": "Vienna Bulk Download",
+      "dataset": "Dataset",
+      "notDownloadLayer": "The following layers are not configured for bulk download:",
+      "noUrls": "No URLs were found for the backend and / or the download page. Please check the config.json.",
+      "select": {
+        "info": "Draw a geomtry over the map to define the area of your download",
+        "selection": "Set 1st download selection",
+        "action": "Selection of the area by"
+      },
+      "check": {
+        "size": "2. Check download size",
+        "sizeInfo": "Calculate the size of the download to determine if a download is possible.",
+        "requestDownload": "Request download",
+        "requestFailed": "The download failed. Please try again later.",
+        "downloadSize": "Your download package has been successfully registered @",
+        "downloadWait": "Your download package is being requested. This may take some time...",
+        "noSelectedLayer": "No Layer for download selected",
+        "tooltip": "Please select coordinates"
+      },
+      "download": {
+        "title": "3. Perform download",
+        "info": "Go directly to download with email verification or your City of Vienna account.",
+        "button": "Go to download",
+        "tooltip": "Please request a download first"
+      }
+    }
+  }
+}
