@@ -1,0 +1,11 @@
+{
+  "modules": {
+    "tools": {
+      "gfi": {
+        "themes": {
+          "wiengfi": {}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "paginationKey": "",
+  "tableAttributes": [],
+  "matchAttributes": [],
+  "valueConverters": {},
+  "download": {
+    "buttonTextAttribute": "",
+    "literal": "",
+    "search": "",
+    "replace": ""
+  },
+  "attributions": {
+    "translationKey": "",
+    "replacements": []
+  },
+  "captions": [],
+  "dropDownAttributeKey": ""
+}
