@@ -222,7 +222,7 @@ export default {
          * @returns {Boolean} true if the string is numeric
          */
         isNumeric: (value) => {
-            return (/^\d+[.,\d]\d*$/).test(value);
+            return typeof parseFloat(value, 10) === "number";
         }
     }
 };
