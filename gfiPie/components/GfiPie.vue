@@ -1,7 +1,7 @@
 <script>
 import {mapGetters} from "vuex";
 import getters from "../../../../src/modules/tools/gfi/store/gettersGfi";
-import Chart from "chart.js";
+import Chart from "chart.js/auto";
 
 export default {
     name: "GfiPie",
