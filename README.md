@@ -4,7 +4,7 @@
 
 | Addon | Beschreibung | Kompatibilität |
 |-------|--------------|----------------|
-| gfiPie | Tortendiagramm zur Darstellung von Feature Attributen | 2.49.X         |
+| gfiPie | Tortendiagramm zur Darstellung von Feature Attributen | 2.49.X, 3.X         |
 | vas | Wiener Suchdienst zum Einbinden ins Masterportal | 2.X            |
 | wiengaz | Addressuchdienst der Stadt Wien | 3.X            |
 | bulkDownload| Layerabhängige Datendownloadanfrage an Backend | 3.X            |
@@ -37,7 +37,11 @@ Nicht benötigte Addons können hier gelöscht werden.
 }
 "wfsSumQuery": {
   "type": "tool"
-}
+},
+"gfiPie": {
+    "path":"gfiThemes/gfiPie",
+    "type": "gfiTheme"
+},
 ```
 
 ### 3. config.js des Portals anpassen
