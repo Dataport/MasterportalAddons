@@ -148,3 +148,21 @@ Hier werden Werte verarbeitet, welche als JavaScript typische Floats vorliegen. 
 ```
 ```2.3 -> "2,3 Kg/l"``` Hier wurde wieder eine Einheit für die Lesbarkeit angehängt.
 
+## Nutzung des Tools
+
+Das **GFI Torte**-Tool dient dazu, Tortendiagramme im GFI-Fenster (Get-Feature-Info) darzustellen, basierend auf den konfigurierten Werten eines Layers. Nach erfolgreicher Integration und Konfiguration des Tools, wie in den vorherigen Abschnitten beschrieben, erfolgt die Nutzung folgendermaßen:
+
+1. **Layer aktivieren**:  
+   Stellen Sie sicher, dass ein WFS-Layer (Web Feature Service), der mit dem `gfiTheme` konfiguriert wurde, in der Karte aktiviert und sichtbar ist.
+
+2. **Auf Features klicken**:  
+   Klicken Sie auf ein Feature des aktivierten Layers in der Karte. Dadurch wird das GFI-Fenster geöffnet.
+
+3. **Tortendiagramm anzeigen**:  
+   Im GFI-Fenster wird ein Tortendiagramm angezeigt. Dieses visualisiert die in der `config.json` konfigurierten Werte des angeklickten Features. 
+   - Die Labels und Farben der Diagrammsegmente entsprechen den in den `params` definierten Attributen und Farbcodes.
+   - Falls Einheiten oder spezielle Werteformate verwendet werden, werden diese gemäß den definierten `parsingOptions` und `labelingOptions` verarbeitet und dargestellt.
+
+4. **Tooltip und Details**:  
+   - Beim Hovern über die einzelnen Segmente des Tortendiagramms wird ein Tooltip angezeigt, der die detaillierten Werte und ggf. angehängte Einheiten darstellt.
+   - Diese Werte werden basierend auf den Konfigurationen aus den Attributen des Layers berechnet und formatiert.

@@ -33,50 +33,53 @@ export default {
             isMobile: "mobile"
         }),
         ...mapGetters("Tools/Gfi", Object.keys(getters)),
+        /**
+         * Constructs the display title based on the theme configuration
+         * @returns {string} The constructed title
+         */
         displayTitle () {
-            let title = "";
+            const {prefix = "", attributeValue, suffix = ""} = this.title || {},
+                attribute = attributeValue ? this.feature.getMappedProperties()[attributeValue] : "";
 
-            title += this.title?.prefix || "";
-            title += this.title?.prefix && (this.title?.attributeValue || this.title?.suffix) ? " " : "";
-            title += this.title?.attributeValue ? this.feature.getMappedProperties()[this.title?.attributeValue] : "";
-            title += this.title?.attributeValue && this.title?.suffix ? " " : "";
-            title += this.title?.suffix || "";
-
-            return title;
+            return `${prefix}${prefix && (attribute || suffix) ? " " : ""}${attribute}${attribute && suffix ? " " : ""}${suffix}`;
         },
+        /**
+         * Determines whether to display labels based on the theme configuration
+         * @returns {boolean} True if labels should be displayed, otherwise false
+         */
         displayLabels () {
-            const d = this.theme?.showLabels;
-
-            return typeof d === "undefined" ? true : d;
+            return this.theme?.showLabels ?? true;
         },
+        /**
+         * Parses chart data based on the theme's parsing options
+         * @returns {function} The parsing function
+         */
         parseChartData () {
-            let parser = [];
-
-            if (this.theme?.parsingOptions) {
-                parser = this.theme?.parsingOptions;
-            }
+            const parser = this.theme?.parsingOptions ?? [];
 
             return this.parseData([this.toFloatParsing, ...parser]);
         },
+        /**
+         * Determines whether to use German number formatting based on the theme configuration
+         * @returns {boolean} True if German number formatting should be used, otherwise false
+         */
         germanNumbers () {
-            const d = this.theme?.germanNumbers;
-
-            return typeof d === "undefined" ? true : d;
+            return this.theme?.germanNumbers ?? true;
         },
+        /**
+         * Parses label data based on the theme's labeling options and number formatting
+         * @returns {function} The parsing function
+         */
         parseLabelData () {
-            let parser = [];
+            const parser = this.theme?.labelingOptions ?? [];
 
-            if (this.theme?.labelingOptions) {
-                parser = this.theme?.labelingOptions;
-            }
-
-            if (this.germanNumbers) {
-
-                return this.parseData([this.toGermanParsing, ...parser]);
-            }
-            return this.parseData(parser);
+            return this.germanNumbers ? this.parseData([this.toGermanParsing, ...parser]) : this.parseData(parser);
         },
-        refinedData: function () {
+        /**
+         * Refines data for the chart by extracting labels, values, and colors from the feature properties
+         * @returns {Object} The refined data object containing labels, values, and colors
+         */
+        refinedData () {
             const result = {
                     labels: [],
                     values: [],
@@ -117,18 +120,10 @@ export default {
             return value => {
                 let valueAsString = String(value);
 
-                parse.forEach(({
-                    replaceString = "",
-                    withString = "",
-                    replaceAll = false,
-                    appendString = ""
-                }) => {
-                    if (replaceAll) {
-                        valueAsString = valueAsString.replaceAll(replaceString, withString);
-                    }
-                    else {
-                        valueAsString = valueAsString.replace(replaceString, withString);
-                    }
+                parse.forEach(({replaceString = "", withString = "", replaceAll = false, appendString = ""}) => {
+                    valueAsString = replaceAll
+                        ? valueAsString.replaceAll(replaceString, withString)
+                        : valueAsString.replace(replaceString, withString);
                     valueAsString += appendString;
                 });
 
@@ -166,9 +161,7 @@ export default {
          * Creates an options object to be used for the chart
          * @returns {Object} Data object
          */
-        createChartOptions: function () {
-            const parseLabelData = this.parseLabelData;
-
+        createChartOptions () {
             return {
                 responsive: this.mobile,
                 plugins: {
@@ -181,14 +174,10 @@ export default {
                     },
                     tooltip: {
                         callbacks: {
-                            label: function (tooltipItem) {
-                                let label = tooltipItem.label || "";
+                            label: tooltipItem => {
+                                let label = tooltipItem.label ? `${tooltipItem.label}: ` : "";
 
-                                if (label) {
-                                    label += ": ";
-                                }
-
-                                label += parseLabelData(tooltipItem.raw);
+                                label += this.parseLabelData(tooltipItem.raw);
                                 return label;
                             }
                         }
