@@ -1,0 +1,9 @@
+{
+    "modules": {
+        "tools": {
+            "strassenBefahrung": {
+                "title": "3D road mapping"
+            }
+        }
+    }
+}

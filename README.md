@@ -2,13 +2,14 @@
 
 ## Beschreibung der Addons
 
-| Addon | Beschreibung | Kompatibilität |
-|-------|--------------|----------------|
-| gfiPie | Tortendiagramm zur Darstellung von Feature Attributen | 2.49.X, 3.X         |
-| vas | Wiener Suchdienst zum Einbinden ins Masterportal | 2.X            |
-| wiengaz | Addressuchdienst der Stadt Wien | 3.X            |
-| bulkDownload| Layerabhängige Datendownloadanfrage an Backend | 3.X            |
-| wfs-SumQuery | Attibutsanzeige und Summierung von grafisch selektierten Features | 3.X            |
+| Addon             | Beschreibung                                       | Kompatibilität |
+|-------------------|----------------------------------------------------|----------------|
+| gfiPie            | Tortendiagramm zur Darstellung von Feature Attributen | 2.49.X, 3.X         |
+| vas               | Wiener Suchdienst zum Einbinden ins Masterportal   | 2.X            |
+| wiengaz           | Addressuchdienst der Stadt Wien                    | 3.X            |
+| bulkDownload      | Layerabhängige Datendownloadanfrage an Backend     | 3.X            |
+| wfs-SumQuery      | Attibutsanzeige und Summierung von grafisch selektierten Features | 3.X            |
+| strassenBefahrung | Anbindung der infra3d-API der Firma iNovitas.      | 3.X            |
 
 ## Dokumentation für die Einbindung der zusätzlichen Addons
 
@@ -41,6 +42,9 @@ Nicht benötigte Addons können hier gelöscht werden.
 "gfiPie": {
     "path":"gfiThemes/gfiPie",
     "type": "gfiTheme"
+},
+"strassenBefahrung": {
+    "type": "tool"
 },
 ```
 

@@ -1,0 +1,14 @@
+{
+  "name": "strassenbefahrung",
+  "version": "1.0.0",
+  "description": "visitor frequency dashboard",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/geowerkstatt-hamburg/addons.git"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@vueuse/core": "^13.5.0"
+  }
+}
