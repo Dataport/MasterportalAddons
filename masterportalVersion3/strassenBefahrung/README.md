@@ -8,7 +8,8 @@ Aufgrund fehlender Zugangsdaten zur Infra3d-API wurde das Addon nicht abschließ
 ## Installation
 
 1. Das Tool innerhalb des Addons-Ordners des Masterportals kopieren.
-2. Anschließend wird das Tool in der addonsConf.json konfiguriert.
+2. Innerhalb des Addon-Ordners `npm i` ausführen, um die Abhängigkeiten zu installieren.
+3. Anschließend wird das Tool in der addonsConf.json konfiguriert.
 
 ### Beispiel für addonsConf.json:
 
@@ -18,7 +19,7 @@ Aufgrund fehlender Zugangsdaten zur Infra3d-API wurde das Addon nicht abschließ
 },
 ```
 
-3. In der config.js des Portals muss als nächstes der in der addonsConf.json verwendete Key ("gfiPie") eingetragen
+4. In der config.js des Portals muss als nächstes der in der addonsConf.json verwendete Key ("gfiPie") eingetragen
    werden.
 
 ### Beispiel in config.js:
@@ -27,7 +28,7 @@ Aufgrund fehlender Zugangsdaten zur Infra3d-API wurde das Addon nicht abschließ
 addons: ["strassenBefahrung"],
 ```
 
-4. Konfiguration des Addons in der config.json vornehmen.
+5. Konfiguration des Addons in der config.json vornehmen.
 
 ### Beispiel für Bremen in der config.json
 

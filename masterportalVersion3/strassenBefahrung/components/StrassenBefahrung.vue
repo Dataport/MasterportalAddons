@@ -10,9 +10,14 @@ import store from "../../../src/app-store";
 import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
 import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
 import {useScriptTag} from '@vueuse/core'
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/css/index.css';
 
 export default {
     name: "StrassenBefahrung",
+    components: {
+        Loading
+    },
     data() {
         return {
             loading: false,
@@ -26,14 +31,13 @@ export default {
     beforeCreate() {
         useScriptTag("https://infra3d.ch/latest/api/js/infra3dapi.js", () => {
             this.startInitInfra3d = true;
-            console.log("Infra3D API script loaded successfully.");
         });
     },
     watch: {
         async startInitInfra3d(newValue) {
             if (newValue) {
                 this.applyTranslationKey(this.name);
-                this.createEnnLayer();
+                await this.createEnnLayer();
                 await this.createMarkerLayer();
                 this.hideMarker();
                 this.styleFeature();
@@ -43,7 +47,12 @@ export default {
             }
         },
     },
+    async mounted() {
+        this.setCurrentMenuWidth({side: this.$parent.$parent.side, width: "40%"});
+    },
     unmounted() {
+        this.setCurrentMenuWidth({side: this.$parent.$parent.side, width: "25%"});
+        this.ennLayer.setVisible(false)
         this.hideMarker();
     },
     methods: {
@@ -53,15 +62,14 @@ export default {
             addNewLayerIfNotExists: "addNewLayerIfNotExists"
         }),
         ...mapMutations("Modules/StrassenBefahrung", Object.keys(mutations)),
+        ...mapMutations("Menu", ["setCurrentMenuWidth"]),
         /**
          * Creates a Layer for the edge-node-network.
          * @returns {void}
-         */
-        createEnnLayer() {
+         */ async createEnnLayer() {
             if (this.loadEdgeNodeNetwork) {
-                store.dispatch("Maps/addNewLayerIfNotExists", "strassenBefahrung_enn").then(layer => {
-                    this.setEnnLayer(layer);
-                })
+                const ennLayer = await this.addNewLayerIfNotExists({layerName:"strassenBefahrung_enn"});
+                this.setEnnLayer(ennLayer)
             }
         },
         /**
@@ -76,16 +84,16 @@ export default {
                 geometry: new Point(this.coords)
             });
 
-            const layer = await this.addNewLayerIfNotExists("strassenBefahrung")
+            const markerLayer = await this.addNewLayerIfNotExists({layerName:"strassenBefahrung_marker"})
 
-            layer.getSource().addFeature(feature);
-            this.setMarkerLayer(layer);
+            markerLayer.getSource().addFeature(feature);
+            this.setMarkerLayer(markerLayer);
             this.styleFeature();
         },
         styleFeature() {
             if (this.markerLayer) {
-                const layer = this.markerLayer;
-                const feature = layer.getSource ? layer.getSource().getFeatures()[0] : undefined;
+                const markerLayer = this.markerLayer;
+                const feature = markerLayer.getSource ? markerLayer.getSource().getFeatures()[0] : undefined;
                 const oldStyle = feature ? feature.getStyle() : undefined;
                 const oldImage = oldStyle ? oldStyle.getImage() : null;
                 const rotation = oldImage ? oldImage.getRotation() : null;
@@ -156,10 +164,6 @@ export default {
          * @returns {void}
          */
         getEnn() {
-            // const mapView = this.map.getView(),
-            //     mapSize = this.map.getSize(),
-            //     currentExtent = mapView.calculateExtent(mapSize);
-            // console.log(currentExtent);
             this.loading = true;
             window.infra3d.getEnn(this.epsgNumber, function (enn) {
                 this.createEdgeNodeNetworkLayer(enn);
@@ -167,8 +171,8 @@ export default {
         },
         setOnPositionChanged() {
             window.infra3d.setOnPositionChanged(function (easting, northing, height, epsg, orientation) {
-                console.log('setOnPositionChanged (easting, northing, height, epsg, orientation): ' + easting + ', ' + northing + ', ' + height + ', ' + epsg + ', ' + orientation);
-                this.showMarker([easting, northing, height], orientation);
+                // console.log('setOnPositionChanged (easting, northing, height, epsg, orientation): ' + easting + ', ' + northing + ', ' + height + ', ' + epsg + ', ' + orientation);
+                this.showMarker([easting, northing], orientation);
             }, this);
         },
 
@@ -178,20 +182,19 @@ export default {
          * @returns {void}
          */
         createEdgeNodeNetworkLayer(json) {
-            const layer = this.ennLayer,
-                source = layer.getSource(),
+            const ennLayer = this.ennLayer,
+                ennSource = ennLayer.getSource(),
                 formatJSON = new GeoJSON(),
                 features = formatJSON.readFeatures(json),
-                // styleModel = Radio.request("StyleList", "returnModelById", this.ennStyleId);
                 styleObject = styleList.returnStyleObject(this.ennStyleId);
 
             if (styleObject && features[0]) {
-                // layer.setStyle(styleModel.createStyle(features[0], false));
                 const theStyle = createStyle.createStyle(styleObject, features[0], false, Config.wfsImgPath);
-                layer.setStyle(theStyle);
+                ennLayer.setStyle(theStyle);
             }
             this.clearEnnLayer();
-            source.addFeatures(features);
+            ennSource.addFeatures(features);
+            ennLayer.setVisible(true);
             this.loading = false;
         },
         /**
@@ -203,8 +206,7 @@ export default {
         },
         setMarker(coord) {
             this.showMarker(coord);
-            store.dispatch("Maps/setCenter", coord);
-            // this.removeInteraction();
+            store.dispatch("Maps/setCenter", coord, {root: true});
         },
         showMarker(coord, orientation) {
 
@@ -223,10 +225,10 @@ export default {
                     image.setRotation(rotationInRad);
                 }
                 this.setCoords(coord);
+                store.dispatch("Maps/setCenter", coord, {root: true});
             }
         },
         hideMarker() {
-            console.log(this.markerLayer)
             if (this.markerLayer && this.markerLayer.setVisible) {
                 this.markerLayer.setVisible(false);
             }
@@ -242,10 +244,9 @@ export default {
                     handleDownEvent: function () {
                         const position = this.clickCoordinate;
 
-                        console.log(position)
                         this.setCoords(position);
 
-                        if (position && Array.isArray(position) && position.length === 2 && !Number.isNaN(position[0]) && !Number.isNaN(position[1]) && this.active) {
+                        if (position && Array.isArray(position) && position.length === 2 && !Number.isNaN(position[0]) && !Number.isNaN(position[1])) {
                             window.infra3d.lookAt2DPosition(position[0], position[1]);
                         }
                     }.bind(this)
@@ -259,50 +260,20 @@ export default {
 };
 </script>
 <template lang="html">
-    <div>
-        <div
-            id="strassenbefahrung"
+    <div
+            class="strassen_befahrung"
+            style="height: 100%"
         >
-            <!-- {{ $t("additional:modules.tools.StrassenBefahrung.content") }} -->
-            <!-- <div id="infra3d-btn-list">
-                <button
-                    class="btn btn-default btn-marker"
-                    title="Platzieren Sie den Marker in der Karte um dort mit der Strassenbefahrung zu starten."
-                >
-                    <span class="glyphicon glyphicon-map-marker" />Platziere Marker in Karte
-                </button>
-                <button
-                    class="btn btn-default btn-nav"
-                    title="Wechseln Sie zwischen den verfügbaren Kameras"
-                >
-                    <span class="glyphicon glyphicon-list" />Kamera wechseln
-                </button>
-            </div> -->
+        <loading v-model:active="loading"
+                 :is-full-page="true"/>
             <div
                 id="infra3d-div"
             />
         </div>
-    </div>
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
-
-#strassenbefahrung {
-    width: 100%;
+#infra3d-div {
     height: 100%;
-
-    #infra3d-btn-list {
-        padding: 5px;
-
-        .glyphicon {
-            padding-left: 5px;
-            padding-right: 5px;
-        }
-    }
-
-    #infra3d-div {
-        height: 100%;
-    }
 }
 </style>

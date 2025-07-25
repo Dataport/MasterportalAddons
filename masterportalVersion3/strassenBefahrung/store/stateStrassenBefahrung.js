@@ -11,7 +11,6 @@
  * @property {boolean} deactivateGFI flag if tool should deactivate gfi (config-param)
  */
 const state = {
-    active: false,
     id: "strassenBefahrung",
     // defaults for config.json parameters
     name: "StraßenBefahrung",
@@ -31,10 +30,7 @@ const state = {
     loadEdgeNodeNetwork: false,
     // internal attributes
     ennLayer: {},
-    // markerLayer: {},
     markerLayer: null,
-    initialWidth: 500,
-    initialWidthMobile: 300
 };
 
 export default state;

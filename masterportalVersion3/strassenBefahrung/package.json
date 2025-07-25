@@ -1,14 +1,15 @@
 {
   "name": "strassenbefahrung",
   "version": "1.0.0",
-  "description": "visitor frequency dashboard",
+  "description": "infra3d-API addon",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/geowerkstatt-hamburg/addons.git"
+    "url": "https://github.com/Dataport/MasterportalAddons/tree/main/masterportalVersion3/strassenBefahrung"
   },
   "scripts": {},
   "dependencies": {
-    "@vueuse/core": "^13.5.0"
+    "@vueuse/core": "^13.5.0",
+    "vue-loading-overlay": "^6.0.6"
   }
 }
