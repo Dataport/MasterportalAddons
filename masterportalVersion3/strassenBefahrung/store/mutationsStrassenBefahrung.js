@@ -22,11 +22,9 @@ const mutations = {
         }
     },
     setEnnLayer: (state, ennLayer) => {
-        console.log("setEnnLayer", ennLayer)
         state.ennLayer = ennLayer;
     },
     setMarkerLayer: (state, markerLayer) => {
-        console.log("setMarkerLayer", markerLayer)
         state.markerLayer = markerLayer;
     },
     setCoords: (state, coords) => {
