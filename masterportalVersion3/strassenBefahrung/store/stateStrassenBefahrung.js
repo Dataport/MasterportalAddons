@@ -31,6 +31,7 @@ const state = {
     // internal attributes
     ennLayer: {},
     markerLayer: null,
+    initialWidth : "25%"
 };
 
 export default state;

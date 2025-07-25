@@ -48,7 +48,7 @@ export default {
         },
     },
     async mounted() {
-        this.setCurrentMenuWidth({side: this.$parent.$parent.side, width: "40%"});
+        this.setCurrentMenuWidth({side: this.$parent.$parent.side, width: this.initialWidth});
     },
     unmounted() {
         this.setCurrentMenuWidth({side: this.$parent.$parent.side, width: "25%"});

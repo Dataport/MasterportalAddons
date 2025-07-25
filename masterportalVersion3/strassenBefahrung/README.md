@@ -3,11 +3,12 @@
 Weiterentwicklung des Addons "StrassenBefahrung" aus
 dem [Freiburger Masterportal](https://bitbucket.org/dominikfroehlich/masterportal/src/dev/).
 Die hier vorliegende Version würde für den Betrieb mit einem Masterportal Version 3.x.x angepasst.
+Aufgrund fehlender Zugangsdaten zur Infra3d-API wurde das Addon nicht abschließend getestet.
 
 ## Installation
 
 1. Das Tool innerhalb des Addons-Ordners des Masterportals kopieren.
-2. Innerhalb des Tool-Ordners `npm i` ausführen, um die Abhängigkeiten zu installieren.
+2. Innerhalb des Addon-Ordners `npm i` ausführen, um die Abhängigkeiten zu installieren.
 3. Anschließend wird das Tool in der addonsConf.json konfiguriert.
 
 ### Beispiel für addonsConf.json:
