@@ -1,0 +1,8 @@
+{
+  "ImporterAddon": {
+    "type": "tool"
+  },
+  "ExporterAddon": {
+    "type": "tool"
+  }
+}

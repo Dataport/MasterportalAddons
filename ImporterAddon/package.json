@@ -1,0 +1,18 @@
+{
+  "name": "importeraddon",
+  "version": "1.0.0",
+  "description": "Importer addon to import OGC services (WMS, WFS) and static geodata to a Masterportal client.",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "terrestris GmbH & Co. KG <info@terrestris.de> (https://www.terrestris.de)",
+  "license": "MIT",
+  "dependencies": {
+    "shpjs": "^4.0.4"
+  }
+}

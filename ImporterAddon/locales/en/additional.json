@@ -1,0 +1,41 @@
+{
+    "modules": {
+        "tools": {
+            "importerAddon": {
+                "title": "Import",
+                "prev": "Back",
+                "next": "Next",
+                "finish": "Finish",
+                "workflows": {
+                    "wms": "WMS",
+                    "wfs": "WFS",
+                    "geojson": "GeoJSON",
+                    "shapezip": "Shapefile (zipped)",
+                    "geopackage": "GeoPackage"
+                },
+                "selectWorkflowText": "What kind of data would you like to import?",
+                "provideWFSText": "Please provide a WFS-GetCapabilities URL.",
+                "provideWMSText": "Please provide a WMS-GetCapabilities URL.",
+                "capabilitiesUrlPlaceholder": "Capabilities URL",
+                "capabilitiesUrlRequiredText": "Please provide a GetCapabilities URL.",
+                "loadingText": "Loading…",
+                "layerLoadingErrorText": "Could not load layers. Please make sure that you provided a valid URL.",
+                "layerSelectionText": "Which layers should be imported?",
+                "layerSelectionSelectAllText": "All layers",
+                "layerSelectionRequiredText": "Please select at least one layer.",
+                "layerTreeFolderTitle": "Imported Layers",
+                "setStyleMessage": "Configure the style for the layer",
+                "styleSelectFillColor": "Fill color",
+                "styleSelectStrokeColor": "Stroke color",
+                "styleSelectStrokeWidth": "Stroke width",
+                "fileUploadRequiredText": "Please upload a file.",
+                "provideGeoJsonText": "Click on icon or use Drag&Drop to upload GeoJSON.",
+                "removeFileText": "Remove file",
+                "provideShapeZipText": "Click on icon or use Drag&Drop to upload zipped Shapefile.",
+                "provideGeoPackageText": "Click on icon or use Drag&Drop to upload GeoPackage.",
+                "completeMessage": "The layer has been added to the topic tree under <strong>Imported Layers</strong>!",
+                "completeMessage_other": "The layers has been added to the topic tree under <strong>Imported Layers</strong>!"
+            }
+        }
+    }
+}
