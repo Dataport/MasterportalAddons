@@ -42,27 +42,7 @@ export default {
             "capabilitiesBaseUrl",
             "capabilitiesVersion",
             "layerTreeFolderId"
-        ]),
-        selectedLayerNames: {
-            get () {
-                return this.selectedLayerNamesFromLayers;
-            },
-            set (value) {
-                const layerOpts = this.layerSelectionList
-                        .filter(item => value.indexOf(item.name) > -1)
-                        .map(function (item) {
-                            this.incrementIdCounter();
-                            return {
-                                title: item.title,
-                                name: item.name,
-                                id: generateId(this.idCounter)
-                            };
-                        }.bind(this)),
-                    layerConfigs = createLayerConfigs(this.serviceType, this.capabilitiesBaseUrl, this.capabilitiesVersion, this.layerTreeFolderId, layerOpts);
-
-                this.setSelectedLayers(layerConfigs);
-            }
-        }
+        ])
     },
     watch: {
         capabilitiesUrl: async function () {
@@ -111,7 +91,10 @@ export default {
         async loadLayerNames (capabilitiesDocument) {
             const layers = await getLayersFromCapabilities(this.serviceType, capabilitiesDocument);
 
-            this.layerSelectionList = layers;
+            this.layerSelectionList = layers.map(layer => ({
+                ...layer,
+                selected: false
+            }));
 
             this.focusOnCheckbox();
         },
@@ -129,13 +112,34 @@ export default {
         },
 
         /**
-         * Handler for the checkbox change events.
+         * Handler for the checkbox change events. Sets the selected layers in the state.
          *
          * @returns {void}
          */
         onCheckboxChange () {
+            const selectedLayers = this.layerSelectionList.filter(layer => layer.selected),
+
+                layerOpts = selectedLayers.map(function (item) {
+                    this.incrementIdCounter();
+                    return {
+                        title: item.title,
+                        name: item.name,
+                        id: generateId(this.idCounter)
+                    };
+                }.bind(this)),
+
+                layerConfigs = createLayerConfigs(this.serviceType, this.capabilitiesBaseUrl, this.capabilitiesVersion, this.layerTreeFolderId, layerOpts);
+
+            this.setSelectedLayers(layerConfigs);
             this.inputValid = this.isFormValid();
             this.setCurrentFormValid(this.isFormValid());
+        },
+        /**
+         * returns true if at least one layer is selected.
+         * @returns {Boolean} True, if at least one layer is selected. False otherwise
+         */
+        isFormValid () {
+            return this.layerSelectionList && this.layerSelectionList.some(layer => layer.selected);
         },
 
         /**
@@ -155,15 +159,6 @@ export default {
                 .forEach(checkbox => {
                     checkbox.click();
                 });
-        },
-
-        /**
-         * Check if the form is valid.
-         *
-         * @returns {Boolean} True, if form is valid. False otherwise.
-         */
-        isFormValid () {
-            return this.selectedLayerNames.length > 0;
         },
 
         /**
@@ -210,20 +205,20 @@ export default {
                 </label>
             </div>
             <div
-                v-for="layer in layerSelectionList"
-                :key="layer.name"
+                v-for="(layer, index) in layerSelectionList"
+                :key="`${layer.name}-${index}`"
                 class="checkbox"
             >
                 <input
-                    :id="'importer-addon-layer-selection-checkbox-' + layer.name"
-                    v-model="selectedLayerNames"
+                    :id="'importer-addon-layer-selection-checkbox-' + `${layer.name}-${index}`"
+                    v-model="layer.selected"
                     type="checkbox"
                     class="layer-checkbox"
                     name="layer-checkbox"
-                    :value="layer.name"
+                    :value="`${layer.name}-${index}`"
                     @change="onCheckboxChange"
                 >
-                <label :for="'importer-addon-layer-selection-checkbox-' + layer.name">
+                <label :for="'importer-addon-layer-selection-checkbox-' + `${layer.name}-${index}`">
                     {{ layer.title }}
                 </label>
             </div>

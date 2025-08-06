@@ -70,6 +70,7 @@ export default {
             <div
                 v-for="workflow in workflows"
                 :key="workflow"
+                class="form-check"
             >
                 <input
                     :id="'importer-addon-workflow-radio-' + workflow"
@@ -78,8 +79,12 @@ export default {
                     type="radio"
                     name="workflow_selection"
                     :value="workflow"
+                    class="form-check-input"
                 >
-                <label :for="'importer-addon-workflow-radio-' + workflow">
+                <label
+                    :for="'importer-addon-workflow-radio-' + workflow"
+                    class="form-check-label"
+                >
                     {{ $t("additional:modules.tools.importerAddon.workflows." + workflow) }}
                 </label>
             </div>

@@ -10,13 +10,10 @@ import StyleLayers from "./StyleLayers.vue";
 import getters from "../store/gettersImporterAddon";
 import mutations from "../store/mutationsImporterAddon";
 
-import {setLayerTreeFolderTitle, layerTreeFolderExists, addLayerTreeFolder} from "../utils/layerTreeFolder";
-
+import {setLayerTreeFolderTitle, layerTreeFolderExists} from "../utils/layerTreeFolder";
 import STEPS from "../constants/steps";
 import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants";
 import sortBy from "@shared/js/utils/sortBy";
-import {addLayersToMap, applyStyles} from "../utils/layer";
-
 import isMobile from "@shared/js/utils/isMobile";
 
 /**
@@ -56,7 +53,7 @@ export default {
         if (!this.layerTreeFolderId) {
             this.generateLayerTreeFolderId();
         }
-        //this.$on("close", this.close); // TODO auskommentiert, weil fehlerhaft
+        // this.$on("close", this.close); // TODO auskommentiert, weil fehlerhaft
     },
     mounted () {
         this.applyTranslationKey(this.name);
@@ -133,39 +130,19 @@ export default {
          * @returns {void}
          */
         onFinishClick () {
+            let folder;
+
             if (!layerTreeFolderExists(this.layerTreeFolderId)) {
-                // TODO statt ID besser Name prüfen
-
-                // alte Lösung ließ auch doppelten Import zu --> doppelt mit unterschiedlichen Styles --> ist das nachlässig oder doch gewollt
-
-                addLayerTreeFolder(this.layerTreeFolderTitle, this.layerTreeFolderId);
-                const folder = {
+                folder = {
+                    id: this.layerTreeFolderId,
                     type: "folder",
-                    //isExternal: true,
+                    isExternal: true,
                     name: this.layerTreeFolderTitle,
                     elements: this.selectedLayers
                 };
-
-                this.addLayerToLayerConfig({layerConfig: folder, parentKey: treeSubjectsKey}).then((addedLayer) => {
-                    if (addedLayer) {
-                        this.addSingleAlert({
-                            content: this.$t("common:modules.addWMS.completeMessage"),
-                            category: "success",
-                            title: this.$t("common:modules.addWMS.alertTitleSuccess")});
-                    }
-                    else {
-                        this.addSingleAlert({
-                            content: this.$t("common:modules.addWMS.alreadyAdded"),
-                            category: "warning",
-                            title: this.$t("common:modules.addWMS.errorTitle")});
-                    }
-                });
             }
 
-            // addLayersToMap(this.selectedLayers); stattdessen:
-            this.showLayerSelection();
-            // geht so nicht und für trigger click fehlt ref
-            // this.$emit("showNode", this.layerTreeFolderTitle, this.selectedLayers);
+            this.addLayerToLayerConfig({layerConfig: folder, parentKey: treeSubjectsKey});
 
             if (isMobile) {
                 this.addSingleAlert(i18next.t("additional:modules.tools.importerAddon.completeMessage", {count: this.selectedLayers.length}));

@@ -171,9 +171,10 @@ export default {
          *
          * @returns {void}
          */
-        onKeyUp () {
-            // no-op function,
-            // since keyup events cannot be triggered on divs.
+        onKeyUp (evt) {
+            if (evt.key === "Enter" || evt.key === " ") {
+                this.onUploadIconClick();
+            }
         },
 
         /**
@@ -237,8 +238,10 @@ export default {
             </span>
         </div>
         <div :class="['form-group', {['has-error']: !inputValid, ['has-success']: inputValid && inputFile}]">
-            <div
+            <button
+                type="button"
                 class="drop-zone"
+                aria-label="File upload drop zone"
                 @click="onUploadIconClick"
                 @keyup="onKeyUp"
                 @drop="onFileDrop"
@@ -255,7 +258,7 @@ export default {
                     :accept="acceptedMimeTypes"
                     @input="onFileInput"
                 >
-            </div>
+            </button>
             <span
                 v-if="inputValid && inputFile"
                 id="file-upload-help-block"

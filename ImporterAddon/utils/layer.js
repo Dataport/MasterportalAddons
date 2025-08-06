@@ -1,6 +1,5 @@
 import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
 import {readGeoJsonFile, readShapeZipFile, readGeoPackageFile} from "./file";
-import isMobile from "@shared/js/utils/isMobile";
 
 /**
  * Generates a layer id.
@@ -27,18 +26,20 @@ export function generateId (counter) {
  * @returns {Object} A valid WMS config object.
  */
 function createWMSLayerConfig (url, version, parentId, {name, title, id}) {
-    const level = 1,
-        typ = "WMS";
-
     return {
-        name: title,
-        layers: name,
         id,
         parentId,
-        level,
+        name: title,
+        typ: "WMS",
+        layers: name,
         url,
         version,
-        typ
+        visibility: true,
+        type: "layer",
+        isExternal: true,
+        showInLayerTree: true,
+        legendURL: "",
+        datasets: []
     };
 }
 
@@ -69,7 +70,7 @@ function createWFSLayerConfig (url, version, parentId, {name, title, id}) {
         id,
         parentId,
         level,
-        //url: addProxyIfNotContained(url),
+        // url: addProxyIfNotContained(url),
         url: url,
         version,
         typ
@@ -225,43 +226,6 @@ export async function createFileLayerConfigs (filetype, file, layerId, folderId)
 }
 
 /**
- * Adds the layers to the map.
- *
- * @param {Object[]} layerConfigs List of config objects that can be read by the parser.
- * @returns {void}
- */
-export function addLayersToMap (layerConfigs) {
-    layerConfigs.forEach(layerConfig => {
-        switch (layerConfig.typ.toLowerCase()) {
-            case "wms":
-                Radio.trigger("Parser", "addLayer",
-                    layerConfig.name,
-                    layerConfig.id,
-                    layerConfig.parentId,
-                    layerConfig.level,
-                    layerConfig.layers,
-                    layerConfig.url,
-                    layerConfig.version,
-                    {}
-                );
-                break;
-            case "wfs":
-                Radio.trigger("Parser", "addItem", layerConfig);
-                Radio.trigger("ModelList", "addModelsByAttributes", layerConfig);
-                break;
-            case "geojson":
-                Radio.trigger("Parser", "addItem", layerConfig);
-                Radio.trigger("ModelList", "addModelsByAttributes", layerConfig);
-                break;
-            default:
-                break;
-        }
-
-        selectLayerInTree(layerConfig.parentId, layerConfig.id);
-    });
-}
-
-/**
  * Applies styles for the layers if configured.
  *
  * @param {Object[]} layerConfigs List of layer config objects.
@@ -277,67 +241,7 @@ export function applyStyles (layerConfigs) {
     });
 }
 
-/**
- * Select a layer in the layer tree.
- *
- * This is a dirty hack to make the imported layers visible, as the layertree does
- * not handle the isSelected property on instantiation correctly.
- *
- * @param {String} folderId The id of the folder that contains the layer.
- * @param {String} layerId The id of the layer.
- * @returns {void}
- */
-function selectLayerInTree (folderId, layerId) {
-    let folderEl;
-
-    if (isMobile()) {
-        // hack for mobile tree
-        // get first div in dropdown item in #root = tree folder
-        const treeEl = document.querySelector("#root").firstElementChild.firstElementChild;
-
-        if (!treeEl) {
-            return;
-        }
-        // expand tree
-        treeEl.click();
-        // imported layers folder is always last element in list
-        folderEl = document.querySelector("#root").lastElementChild.firstElementChild;
-    }
-    else {
-        // no-mobile tree mode
-        folderEl = document.querySelector("." + folderId);
-    }
-
-    if (!folderEl) {
-        return;
-    }
-
-    folderEl.click();
-
-    // eslint-disable-next-line one-var
-    const folderModel = Radio.request("ModelList", "getModelByAttributes", {id: folderId});
-
-    if (!folderModel) {
-        return;
-    }
-
-    // we have to collapse and expand the folder
-    // in order to retrieve the newly added layer.
-    folderModel.setIsExpanded(false);
-    folderModel.setIsExpanded(true);
-
-    // eslint-disable-next-line one-var
-    const layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layerId});
-
-    if (!layerModel) {
-        return;
-    }
-
-    layerModel.setIsSelected(true);
-}
-
 export default {
-    addLayersToMap,
     createLayerConfigs,
     generateId
 };
