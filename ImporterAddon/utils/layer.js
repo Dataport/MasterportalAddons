@@ -59,21 +59,21 @@ function createWMSLayerConfig (url, version, parentId, {name, title, id}) {
  * @returns {Object} A valid WFS config object.
  */
 function createWFSLayerConfig (url, version, parentId, {name, title, id}) {
-    const level = 1,
-        typ = "WFS";
 
     return {
         type: "layer",
+        typ: "WFS",
         name: title,
         featureNS: name.split(":")[0],
         featureType: name.split(":")[1] ? name.split(":")[1] : name,
         id,
         parentId,
-        level,
+        isExternal: true,
         // url: addProxyIfNotContained(url),
         url: url,
         version,
-        typ
+        showInLayerTree: true,
+        visibility: true
     };
 }
 
