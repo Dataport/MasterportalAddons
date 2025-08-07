@@ -1,5 +1,6 @@
 import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
 import {readGeoJsonFile, readShapeZipFile, readGeoPackageFile} from "./file";
+import layerCollection from "@core/layers/js/layerCollection";
 
 /**
  * Generates a layer id.
@@ -67,6 +68,8 @@ function createWFSLayerConfig (url, version, parentId, {name, title, id}) {
         featureNS: name.split(":")[0],
         featureType: name.split(":")[1] ? name.split(":")[1] : name,
         id,
+        gfiAttributes: "showAll",
+        gfiTheme: "default",
         parentId,
         isExternal: true,
         // url: addProxyIfNotContained(url),
@@ -143,6 +146,8 @@ function createGeoJsonLayerConfig (geojson, name, id, parentId) {
         type = "layer",
         gfiAttributes = "showAll",
         gfiTheme = "default",
+        visibility = true,
+        showInLayerTree = true,
         blob = new Blob([JSON.stringify(geojson)], {type: "application/geojson"}),
         url = URL.createObjectURL(blob);
 
@@ -154,7 +159,9 @@ function createGeoJsonLayerConfig (geojson, name, id, parentId) {
         type,
         url,
         gfiAttributes,
-        gfiTheme
+        gfiTheme,
+        visibility,
+        showInLayerTree
     };
 }
 
@@ -233,9 +240,9 @@ export async function createFileLayerConfigs (filetype, file, layerId, folderId)
  */
 export function applyStyles (layerConfigs) {
     layerConfigs.forEach(layerConfig => {
-        if (layerConfig.importedStyle) {
-            const layerModel = Radio.request("ModelList", "getModelByAttributes", {id: layerConfig.id});
+        const layerModel = layerCollection.getLayerById(layerConfig.id);
 
+        if (layerConfig.importedStyle && layerModel) {
             layerModel.layer.setStyle((feat) => createStyle.createStyle(layerConfig.importedStyle, feat, false, Config.wfsImgPath));
         }
     });

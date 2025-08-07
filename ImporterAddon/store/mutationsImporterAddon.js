@@ -74,6 +74,7 @@ const mutations = {
      */
     incrementIdCounter: (state) => {
         state.idCounter += 1;
+        console.log("incrementIdCounter", state.idCounter);
     },
 
     /**

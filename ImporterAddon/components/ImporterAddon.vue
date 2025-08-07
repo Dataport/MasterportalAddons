@@ -15,6 +15,7 @@ import STEPS from "../constants/steps";
 import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants";
 import sortBy from "@shared/js/utils/sortBy";
 import isMobile from "@shared/js/utils/isMobile";
+import {applyStyles} from "../utils/layer";
 
 /**
  * ImporterAddon
@@ -66,6 +67,7 @@ export default {
         ...mapActions("Modules/LayerSelection", ["navigateForward"]),
         ...mapActions("Menu", ["changeCurrentComponent", "resetMenu"]),
         ...mapMutations("Modules/LayerSelection", {setLayerSelectionVisible: "setVisible"}),
+        applyStyles,
 
         /**
          * Handler for closing the tool.
@@ -129,7 +131,7 @@ export default {
          *
          * @returns {void}
          */
-        onFinishClick () {
+        async onFinishClick () {
             let folder;
 
             if (!layerTreeFolderExists(this.layerTreeFolderId)) {
@@ -142,13 +144,12 @@ export default {
                 };
             }
 
-            this.addLayerToLayerConfig({layerConfig: folder, parentKey: treeSubjectsKey});
+            await this.addLayerToLayerConfig({layerConfig: folder, parentKey: treeSubjectsKey});
 
             if (isMobile) {
                 this.addSingleAlert(i18next.t("additional:modules.tools.importerAddon.completeMessage", {count: this.selectedLayers.length}));
             }
-            // TODO styleID!!! wird nicht gefunden
-            // applyStyles(this.selectedLayers);
+            this.applyStyles(this.selectedLayers);
             this.close();
             if (this.onImportFinished) {
                 this.onImportFinished();
@@ -224,7 +225,7 @@ export default {
                     type="submit"
                     :class="{btn: true, 'btn-default': !currentFormValid, 'btn-primary': currentFormValid}"
                     :disabled="!currentFormValid"
-                    @click="onFinishClick"
+                    @click="onFinishClick();"
                 >
                     {{ $t("additional:modules.tools.importerAddon.finish") }}
                 </button>
