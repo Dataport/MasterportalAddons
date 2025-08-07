@@ -116,24 +116,6 @@ const getters = {
         const url = new URL(state.capabilitiesUrl);
 
         return url.origin + url.pathname;
-    },
-
-    /**
-     * Get the names of the selected layers.
-     *
-     * @param {Object} state Current state object of the store.
-     * @returns {String[]} Names of selected layers.
-     */
-    selectedLayerNamesFromLayers (state) {
-        switch (state.currentWorkflow.toLowerCase()) {
-            case "wms":
-                return state.selectedLayers.map(layer => layer.layers);
-            case "wfs":
-                return state.selectedLayers.map(
-                    layer => layer.featureNS + ":" + layer.featureType);
-            default:
-                return state.selectedLayers.map(layer => layer.name);
-        }
     }
 };
 

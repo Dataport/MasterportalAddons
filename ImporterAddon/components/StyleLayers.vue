@@ -1,5 +1,5 @@
 <script>
-import {mapGetters, mapActions, mapMutations} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import getters from "../store/gettersImporterAddon";
 import mutations from "../store/mutationsImporterAddon";
 import ColorUtil from "../utils/color";
@@ -41,8 +41,6 @@ export default {
         this.focusOnHiddenInput();
     },
     methods: {
-        ...mapActions("Modules/ImporterAddon", [
-        ]),
         ...mapMutations("Modules/ImporterAddon", Object.keys(mutations)),
         rgbToHex (color) {
             return ColorUtil.rgbToHex(color[0], color[1], color[2]);
@@ -50,7 +48,7 @@ export default {
         updateStyle (evt, layer, type) {
             let value = evt.target.value;
 
-            if (value.indexOf("#") > -1) {
+            if (value.includes("#")) {
                 const rgbArray = ColorUtil.hexToRgb(value);
 
                 // add alpha channel
@@ -113,7 +111,7 @@ export default {
                         {{ $t("additional:modules.tools.importerAddon.styleSelectFillColor") }}
                     </label>
                     <input
-                        id="importer-addon-color"
+                        :id="`importer-addon-color-${index}`"
                         type="color"
                         :value="rgbToHex(styleFillColor)"
                         @change="(evt) => updateStyle(evt, layer, 'fillColor')"
@@ -126,7 +124,7 @@ export default {
                         {{ $t("additional:modules.tools.importerAddon.styleSelectStrokeColor") }}
                     </label>
                     <input
-                        id="importer-addon-stroke-color"
+                        :id="`importer-addon-stroke-color-${index}`"
                         type="color"
                         :value="rgbToHex(styleStrokeColor)"
                         @change="(evt) => updateStyle(evt, layer, 'strokeColor')"
@@ -139,7 +137,7 @@ export default {
                         {{ $t("additional:modules.tools.importerAddon.styleSelectStrokeWidth") }}
                     </label>
                     <input
-                        id="importer-addon-stroke-width"
+                        :id="`importer-addon-stroke-width-${index}`"
                         type="number"
                         name="color_selection"
                         :value="styleStrokeWidth"

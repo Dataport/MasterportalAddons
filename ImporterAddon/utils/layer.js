@@ -86,6 +86,8 @@ function createWFSLayerConfig (url, version, parentId, {name, title, id}) {
  * @param {String} url The URL to check and add proxy to
  * @returns {String} The given URL containing our proxy
  */
+// TODO: This function is not used anywhere in the codebase. Consider removing it.
+// eslint-disable-next-line no-unused-vars
 function addProxyIfNotContained (url) {
     if (url && url.toLowerCase().indexOf("proxyhttp") < 0) {
         let proxyUrl;

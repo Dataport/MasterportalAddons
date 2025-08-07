@@ -20,8 +20,8 @@ const mutations = {
      * @returns {void}
      */
     applyTranslationKey: (state, payload) => {
-        if (payload && payload.indexOf("translate#") > -1) {
-            state.name = payload.substr("translate#".length);
+        if (payload && payload.startsWith("translate#")) {
+            state.name = payload.slice("translate#".length);
         }
     },
 
@@ -74,7 +74,6 @@ const mutations = {
      */
     incrementIdCounter: (state) => {
         state.idCounter += 1;
-        console.log("incrementIdCounter", state.idCounter);
     },
 
     /**

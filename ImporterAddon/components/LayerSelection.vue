@@ -1,8 +1,6 @@
 <script>
-import {mapGetters, mapActions, mapMutations} from "vuex";
-
+import {mapGetters, mapMutations} from "vuex";
 import mutations from "../store/mutationsImporterAddon";
-
 import {createCapabilitiesUrl, fetchCapabilities, getLayersFromCapabilities, getVersionFromCapabilities, isValidCapabilitiesUrl} from "../utils/capabilities";
 import {createLayerConfigs, generateId} from "../utils/layer";
 
@@ -37,7 +35,6 @@ export default {
     },
     computed: {
         ...mapGetters("Modules/ImporterAddon", [
-            "selectedLayerNamesFromLayers",
             "idCounter",
             "capabilitiesBaseUrl",
             "capabilitiesVersion",
@@ -61,8 +58,6 @@ export default {
         this.setCurrentFormValid(isValid);
     },
     methods: {
-        ...mapActions("Modules/ImporterAddon", [
-        ]),
         ...mapMutations("Modules/ImporterAddon", Object.keys(mutations)),
 
         async handleCapabilitiesDocument () {
@@ -222,7 +217,7 @@ export default {
                     {{ layer.title }}
                 </label>
             </div>
-            <div :class="[{['has-error']: !inputValid}]">
+            <div :class="{'has-error': !inputValid}">
                 <span
                     v-if="!inputValid"
                     class="help-block"

@@ -1,18 +1,14 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
-
 import FileUpload from "./FileUpload.vue";
 import LayerSelection from "./LayerSelection.vue";
 import ProvideOgcService from "./ProvideOgcService.vue";
 import WorkflowSelection from "./WorkflowSelection.vue";
 import StyleLayers from "./StyleLayers.vue";
-
 import getters from "../store/gettersImporterAddon";
 import mutations from "../store/mutationsImporterAddon";
-
-import {setLayerTreeFolderTitle, layerTreeFolderExists} from "../utils/layerTreeFolder";
 import STEPS from "../constants/steps";
-import {treeBaselayersKey, treeSubjectsKey} from "@shared/js/utils/constants";
+import {treeSubjectsKey} from "@shared/js/utils/constants";
 import sortBy from "@shared/js/utils/sortBy";
 import isMobile from "@shared/js/utils/isMobile";
 import {applyStyles} from "../utils/layer";
@@ -32,9 +28,6 @@ export default {
     },
     computed: {
         ...mapGetters("Modules/ImporterAddon", Object.keys(getters)),
-        ...mapGetters(["allLayerConfigsStructured", "showLayerAddButton", "portalConfig"]),
-        ...mapGetters("Modules/LayerTree", ["menuSide"]),
-        ...mapGetters("Modules/LayerSelection", {layerSelectionType: "type", layerSelectionName: "name"}),
 
         steps () {
             return STEPS;
@@ -42,11 +35,6 @@ export default {
 
         layerTreeFolderTitle () {
             return this.$t("additional:modules.tools.importerAddon.layerTreeFolderTitle");
-        }
-    },
-    watch: {
-        layerTreeFolderTitle: function () {
-            setLayerTreeFolderTitle(this.layerTreeFolderTitle, this.layerTreeFolderId);
         }
     },
     created () {
@@ -60,13 +48,10 @@ export default {
         this.applyTranslationKey(this.name);
     },
     methods: {
-        ...mapActions("Modules/ImporterAddon", []),
         ...mapMutations("Modules/ImporterAddon", Object.keys(mutations)),
         ...mapActions("Alerting", {addSingleAlert: "addSingleAlert"}),
         ...mapActions(["addLayerToLayerConfig"]),
-        ...mapActions("Modules/LayerSelection", ["navigateForward"]),
-        ...mapActions("Menu", ["changeCurrentComponent", "resetMenu"]),
-        ...mapMutations("Modules/LayerSelection", {setLayerSelectionVisible: "setVisible"}),
+        ...mapActions("Menu", ["resetMenu"]),
         applyStyles,
 
         /**
@@ -86,19 +71,6 @@ export default {
          */
         sort (configs) {
             return sortBy(configs, (conf) => conf.type !== "folder");
-        },
-
-        /**
-         * Shows the component LayerSelection and sets it visible.
-         * @returns {void}
-         */
-        showLayerSelection () {
-            const subjectDataLayerConfs = this.sort(this.allLayerConfigsStructured(treeSubjectsKey)),
-                baselayerConfs = this.allLayerConfigsStructured(treeBaselayersKey);
-
-            this.changeCurrentComponent({type: this.layerSelectionType, side: this.menuSide, props: {name: this.layerSelectionName}});
-            this.navigateForward({lastFolderName: "root", subjectDataLayerConfs, baselayerConfs});
-            this.setLayerSelectionVisible(true);
         },
 
         /**
@@ -132,17 +104,14 @@ export default {
          * @returns {void}
          */
         async onFinishClick () {
-            let folder;
+            const folder = {
+                id: this.layerTreeFolderId,
+                type: "folder",
+                isExternal: true,
+                name: this.layerTreeFolderTitle,
+                elements: this.selectedLayers
+            };
 
-            if (!layerTreeFolderExists(this.layerTreeFolderId)) {
-                folder = {
-                    id: this.layerTreeFolderId,
-                    type: "folder",
-                    isExternal: true,
-                    name: this.layerTreeFolderTitle,
-                    elements: this.selectedLayers
-                };
-            }
 
             await this.addLayerToLayerConfig({layerConfig: folder, parentKey: treeSubjectsKey});
 
@@ -155,10 +124,6 @@ export default {
                 this.onImportFinished();
                 this.setOnImportFinished(undefined);
             }
-        },
-
-        onFormSubmit (evt) {
-            evt.preventDefault();
         }
     }
 };
@@ -168,7 +133,7 @@ export default {
     <div
         id="importerAddon"
     >
-        <form @submit="onFormSubmit">
+        <form @submit.prevent>
             <div class="importer-addon-wizard-content">
                 <div
                     v-if="isCurrentWorkflowUndefined"
@@ -225,7 +190,7 @@ export default {
                     type="submit"
                     :class="{btn: true, 'btn-default': !currentFormValid, 'btn-primary': currentFormValid}"
                     :disabled="!currentFormValid"
-                    @click="onFinishClick();"
+                    @click="onFinishClick"
                 >
                     {{ $t("additional:modules.tools.importerAddon.finish") }}
                 </button>
