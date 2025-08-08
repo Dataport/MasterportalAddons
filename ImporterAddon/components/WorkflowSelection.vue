@@ -1,8 +1,12 @@
 <script>
 import {mapGetters, mapMutations} from "vuex";
+import LightButton from "@shared/modules/buttons/components/LightButton.vue";
 
 export default {
     name: "WorkflowSelection",
+    components: {
+        LightButton
+    },
     props: {
         workflows: {
             type: Array,
@@ -10,55 +14,35 @@ export default {
         }
     },
     computed: {
-        ...mapGetters("Modules/ImporterAddon", ["selectedWorkflow"]),
-        workflowRadioValue: {
-            get () {
-                return this.selectedWorkflow;
-            },
-            set (value) {
-                this.setSelectedWorkflow(value);
-            }
-        }
-    },
-    created () {
-        const isValid = this.isFormValid();
-
-        this.setCurrentFormValid(isValid);
-    },
-    mounted () {
-        this.focusOnWorkflowRadio();
+        ...mapGetters("Modules/ImporterAddon", ["selectedWorkflow"])
     },
     methods: {
         ...mapMutations("Modules/ImporterAddon", [
             "setSelectedWorkflow",
             "setCurrentFormValid"
         ]),
-
         /**
-         * Check if the form is valid.
+         * Handle workflow selection and proceed.
          *
-         * @returns {Boolean} True, if form is valid. False otherwise.
+         * @param {String} workflow - The selected workflow
+         * @returns {void}
          */
-        isFormValid () {
-            const workflowSelected = this.selectedWorkflow !== undefined && this.selectedWorkflow.length > 0;
+        selectWorkflow (workflow) {
+            this.setSelectedWorkflow(workflow);
+            this.setCurrentFormValid(true);
 
-            return workflowSelected;
+            // Event emittieren für den nächsten Schritt
+            this.$emit("workflow-selected", workflow);
         },
 
         /**
-         * Focus on the workflow radio.
+         * Get the interaction function for a specific workflow.
          *
-         * @returns {void}
+         * @param {String} workflow - The workflow identifier
+         * @returns {Function} The interaction function
          */
-        focusOnWorkflowRadio () {
-            this.$nextTick(() => {
-                const workflowId = "importer-addon-workflow-radio-" + this.workflowRadioValue,
-                    workflowRadio = document.getElementById(workflowId);
-
-                if (workflowRadio) {
-                    workflowRadio.focus({focusVisible: true});
-                }
-            });
+        getWorkflowInteraction (workflow) {
+            return () => this.selectWorkflow(workflow);
         }
     }
 };
@@ -66,32 +50,25 @@ export default {
 
 <template lang="html">
     <div class="importer-addon-workflow-selection">
-        <div class="form-group">
-            <div
+        <div class="workflow-buttons">
+            <LightButton
                 v-for="workflow in workflows"
                 :key="workflow"
-                class="form-check"
-            >
-                <input
-                    :id="'importer-addon-workflow-radio-' + workflow"
-                    :ref="'importer-addon-workflow-' + workflow"
-                    v-model="workflowRadioValue"
-                    type="radio"
-                    name="workflow_selection"
-                    :value="workflow"
-                    class="form-check-input"
-                >
-                <label
-                    :for="'importer-addon-workflow-radio-' + workflow"
-                    class="form-check-label"
-                >
-                    {{ $t("additional:modules.tools.importerAddon.workflows." + workflow) }}
-                </label>
-            </div>
+                :text="'additional:modules.tools.importerAddon.workflows.' + workflow"
+                :interaction="getWorkflowInteraction(workflow)"
+            />
         </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
+.workflow-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
 
+.workflow-button {
+    width: 100%;
+}
 </style>
