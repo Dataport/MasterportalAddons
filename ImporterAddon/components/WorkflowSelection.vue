@@ -52,8 +52,8 @@ export default {
          */
         focusOnWorkflowRadio () {
             this.$nextTick(() => {
-                const workflowRef = "importer-addon-workflow-" + this.workflowRadioValue,
-                    workflowRadio = this.$refs[workflowRef][0];
+                const workflowId = "importer-addon-workflow-radio-" + this.workflowRadioValue,
+                    workflowRadio = document.getElementById(workflowId);
 
                 if (workflowRadio) {
                     workflowRadio.focus({focusVisible: true});
