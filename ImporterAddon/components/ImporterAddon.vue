@@ -9,7 +9,6 @@ import getters from "../store/gettersImporterAddon";
 import mutations from "../store/mutationsImporterAddon";
 import STEPS from "../constants/steps";
 import {treeSubjectsKey} from "@shared/js/utils/constants";
-import sortBy from "@shared/js/utils/sortBy";
 import isMobile from "@shared/js/utils/isMobile";
 import {applyStyles} from "../utils/layer";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
@@ -40,11 +39,9 @@ export default {
         }
     },
     created () {
-        // only generate layerTreeFolderId once
         if (!this.layerTreeFolderId) {
             this.generateLayerTreeFolderId();
         }
-        // this.$on("close", this.close); // TODO auskommentiert, weil fehlerhaft
     },
     mounted () {
         this.applyTranslationKey(this.name);
@@ -64,15 +61,6 @@ export default {
         close () {
             this.resetImporterAddon();
             this.resetMenu("secondaryMenu"); // TODO "secondaryMenu" dynamisch!!!
-        },
-
-        /**
-         * Sorts the configs by type: first folder, then layer.
-         * @param {Array} configs list of layer and folder configs
-         * @returns {Array} the sorted configs
-         */
-        sort (configs) {
-            return sortBy(configs, (conf) => conf.type !== "folder");
         },
 
         /**
