@@ -12,6 +12,7 @@ import {treeSubjectsKey} from "@shared/js/utils/constants";
 import sortBy from "@shared/js/utils/sortBy";
 import isMobile from "@shared/js/utils/isMobile";
 import {applyStyles} from "../utils/layer";
+import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 
 /**
  * ImporterAddon
@@ -24,7 +25,8 @@ export default {
         LayerSelection,
         ProvideOgcService,
         WorkflowSelection,
-        StyleLayers
+        StyleLayers,
+        FlatButton
     },
     computed: {
         ...mapGetters("Modules/ImporterAddon", Object.keys(getters)),
@@ -91,10 +93,11 @@ export default {
          *
          * @returns {void}
          */
+        onWorkflowSelected (workflow) {
+            this.setCurrentWorkflow(workflow);
+            this.setCurrentStep(this.nextWorkflowStep);
+        },
         onNextClick () {
-            if (this.isCurrentWorkflowUndefined) {
-                this.setCurrentWorkflow(this.selectedWorkflow);
-            }
             this.setCurrentStep(this.nextWorkflowStep);
         },
 
@@ -138,8 +141,13 @@ export default {
                 <div
                     v-if="isCurrentWorkflowUndefined"
                 >
-                    {{ $t("additional:modules.tools.importerAddon.selectWorkflowText") }}
-                    <WorkflowSelection :workflows="supportedImportWorkflows" />
+                    <div class="mb-3">
+                        {{ $t("additional:modules.tools.importerAddon.selectWorkflowText") }}
+                    </div>
+                    <WorkflowSelection
+                        :workflows="supportedImportWorkflows"
+                        @workflow-selected="onWorkflowSelected"
+                    />
                 </div>
                 <div
                     v-if="!isCurrentWorkflowUndefined"
@@ -166,34 +174,31 @@ export default {
                 </div>
             </div>
             <div class="importer-addon-wizard-navigation">
-                <button
+                <FlatButton
                     v-if="!isCurrentWorkflowUndefined"
                     type="button"
+                    :text="$t('additional:modules.tools.importerAddon.prev')"
                     class="btn btn-default"
                     @click="onPrevClick"
-                >
-                    {{ $t("additional:modules.tools.importerAddon.prev") }}
-                </button>
-                <button
-                    v-if="!isLastStep"
+                />
+                <FlatButton
+                    v-if="!isLastStep && !isCurrentWorkflowUndefined"
                     ref="importer-addon-next-btn"
                     type="submit"
+                    :text="$t('additional:modules.tools.importerAddon.next')"
                     :class="{btn: true, 'btn-default': !currentFormValid, 'btn-primary': currentFormValid}"
                     :disabled="!currentFormValid"
                     @click="onNextClick"
-                >
-                    {{ $t("additional:modules.tools.importerAddon.next") }}
-                </button>
-                <button
+                />
+                <FlatButton
                     v-if="isLastStep"
                     ref="importer-addon-finish-btn"
                     type="submit"
+                    :text="$t('additional:modules.tools.importerAddon.finish')"
                     :class="{btn: true, 'btn-default': !currentFormValid, 'btn-primary': currentFormValid}"
                     :disabled="!currentFormValid"
                     @click="onFinishClick"
-                >
-                    {{ $t("additional:modules.tools.importerAddon.finish") }}
-                </button>
+                />
             </div>
         </form>
     </div>
