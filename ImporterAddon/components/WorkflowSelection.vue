@@ -65,7 +65,6 @@ export default {
 .workflow-buttons {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
 }
 
 .workflow-button {
