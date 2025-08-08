@@ -1,6 +1,5 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
-import getters from "../store/gettersImporterAddon";
 import mutations from "../store/mutationsImporterAddon";
 
 import FILETYPES from "../constants/filetypes";
@@ -12,7 +11,6 @@ import {generateId} from "../utils/layer";
 export default {
     name: "FileUpload",
     props: {
-        // TODO add other supported file upload formats
         serviceType: {
             type: String,
             required: true,
@@ -23,16 +21,6 @@ export default {
                     "geopackage"
                 ].includes(value);
             }
-        },
-        fileuploadIcon: {
-            type: String,
-            required: false,
-            default: "bi-cloud-arrow-up-fill"
-        },
-        removefileIcon: {
-            type: String,
-            required: false,
-            default: "bi-x-circle-fill"
         }
     },
     data () {
@@ -41,7 +29,14 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/ImporterAddon", Object.keys(getters)),
+        ...mapGetters("Modules/ImporterAddon", [
+            "inputFile",
+            "idCounter",
+            "layerTreeFolderId",
+            "currentFormValid",
+            "fileUploadIcon",
+            "removeFileIcon"
+        ]),
         acceptedMimeTypes: {
             get () {
                 let mimeTypes;
@@ -93,22 +88,8 @@ export default {
             if (!file) {
                 return;
             }
-
-            // eslint-disable-next-line one-var
-            const fileTypeAccepted = isMimeTypeAccepted(file.type, this.serviceType),
-                fileExtensionAccepted = isFileExtensionAccepted(file.name, this.serviceType),
-                isValid = fileTypeAccepted || fileExtensionAccepted;
-
-            if (isValid) {
-                this.setInputFile(file);
-            }
-            else {
-                this.setInputFile(undefined);
-            }
+            this.setInputFile(file);
             this.handleFileUpload(file);
-            this.inputValid = isValid;
-            this.setCurrentFormValid(this.isFormValid());
-            this.focusOnHiddenInput();
         },
 
         /**
@@ -134,9 +115,6 @@ export default {
 
             this.setInputFile(file);
             this.handleFileUpload(file);
-            this.inputValid = true;
-            this.setCurrentFormValid(this.isFormValid());
-            this.focusOnHiddenInput();
         },
 
         /**
@@ -178,21 +156,40 @@ export default {
         },
 
         /**
-         * Handles the file upload.
+         * Handles the file upload, checks if the file is valid and if so sets the selected layer.
          *
          * @param {File} file The file to handle
          * @returns {void}
          */
         handleFileUpload (file) {
-            this.incrementIdCounter();
-            const layerId = generateId(this.idCounter);
+            const fileTypeAccepted = isMimeTypeAccepted(file.type, this.serviceType),
+                fileExtensionAccepted = isFileExtensionAccepted(file.name, this.serviceType),
+                isValid = fileTypeAccepted || fileExtensionAccepted;
 
-            this.setSelectedLayerFromFile({
-                file,
-                layerId,
-                fileType: this.serviceType,
-                folderId: this.layerTreeFolderId
-            });
+            let layerId;
+
+            this.setCurrentFormValid(this.isFormValid());
+            this.focusOnHiddenInput();
+
+            if (!isValid) {
+                this.inputValid = false;
+                this.setCurrentFormValid(false);
+            }
+            else {
+                this.inputValid = true;
+                this.incrementIdCounter();
+
+                layerId = generateId(this.idCounter);
+
+                this.setSelectedLayerFromFile({
+                    file,
+                    layerId,
+                    fileType: this.serviceType,
+                    folderId: this.layerTreeFolderId
+                });
+            }
+
+
         },
 
         /**
@@ -202,7 +199,7 @@ export default {
          */
         onRemoveFileClick () {
             this.setInputFile(undefined);
-            this.inputValid = false;
+            this.inputValid = true;
             this.setCurrentFormValid(this.isFormValid());
         },
 
@@ -248,7 +245,7 @@ export default {
                 @dragover="onDragOver"
             >
                 <i
-                    :class="`${fileuploadIcon} icon`"
+                    :class="`${fileUploadIcon} icon`"
                 />
                 <input
                     type="file"
@@ -260,7 +257,7 @@ export default {
                 >
             </button>
             <span
-                v-if="inputValid && inputFile"
+                v-if="!inputValid && inputFile"
                 id="file-upload-help-block"
                 class="help-block"
             >
@@ -275,10 +272,10 @@ export default {
                         aria-hidden="true"
                     />
                 </button>
-                {{ inputFile.name }}
+                {{ $t('additional:modules.tools.importerAddon.removeFileText')+ ': ' + inputFile.name }}
             </span>
             <span
-                v-if="!inputValid"
+                v-if="!inputFile"
                 id="file-upload-help-block"
                 class="help-block"
             >
@@ -314,7 +311,17 @@ export default {
     }
 
     .remove-file {
-        color: #3c763d;
+        color: #a94442;
+
+        .icon {
+            font-size: large; // oder x-large, xx-large, xxx-large
+        }
+    }
+
+    .help-block {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .drop-zone {
