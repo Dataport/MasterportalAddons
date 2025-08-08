@@ -298,7 +298,7 @@ export default {
 <style lang="scss" scoped>
 
 .form-group {
-    padding: 10px;
+    padding: 0.625em;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -322,13 +322,15 @@ export default {
         align-items: center;
         justify-content: center;
 
-        width: 85px;
-        height: 85px;
+        width: 15em;
+        height: 15em;
 
-        border-style: solid;
-        border-color: black;
-        border-width: medium;
-        border-radius: 25%;
+        border-style: dashed;
+        border-color: #ccc;
+        border-width: 0,125em;
+        border-radius: 15%;
+
+        background-color: rgba(248, 249, 250, 0.3);
 
         &:hover {
             cursor: pointer;
