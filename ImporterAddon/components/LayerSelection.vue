@@ -3,9 +3,13 @@ import {mapGetters, mapMutations} from "vuex";
 import mutations from "../store/mutationsImporterAddon";
 import {createCapabilitiesUrl, fetchCapabilities, getLayersFromCapabilities, getVersionFromCapabilities, isValidCapabilitiesUrl} from "../utils/capabilities";
 import {createLayerConfigs, generateId} from "../utils/layer";
+import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
 
 export default {
     name: "LayerSelection",
+    components: {
+        SpinnerItem
+    },
     props: {
         serviceType: {
             type: String,
@@ -29,7 +33,7 @@ export default {
         return {
             isLoading: false,
             showErrorMessage: false,
-            inputValid: true,
+            inputValid: false,
             layerSelectionList: undefined
         };
     },
@@ -178,21 +182,22 @@ export default {
 <template lang="html">
     <div class="importer-addon-layer-selection">
         <div v-if="isLoading">
-            <!-- TODO add masterportal loading animation here? -->
+            <SpinnerItem />
             {{ $t("additional:modules.tools.importerAddon.loadingText") }}
         </div>
         <div v-if="showErrorMessage">
             {{ $t("additional:modules.tools.importerAddon.layerLoadingErrorText") }}
         </div>
         <div v-if="layerSelectionList">
-            <span>
+            <span class="mb-2">
                 {{ $t("additional:modules.tools.importerAddon.layerSelectionText") }}
             </span>
-            <div class="checkbox">
-                <label class="layer-select-all">
+            <div class="form-group m-1">
+                <label class="form-check-label layer-select-all">
                     <input
                         ref="importer-addon-layer-select"
                         type="checkbox"
+                        class="form-check-input"
                         value="all"
                         @change="onSelectAllCheckboxChange"
                     >
@@ -202,29 +207,30 @@ export default {
             <div
                 v-for="(layer, index) in layerSelectionList"
                 :key="`${layer.name}-${index}`"
-                class="checkbox"
+                class="form-check m-1"
             >
                 <input
                     :id="'importer-addon-layer-selection-checkbox-' + `${layer.name}-${index}`"
                     v-model="layer.selected"
                     type="checkbox"
-                    class="layer-checkbox"
+                    class="form-check-input layer-checkbox"
                     name="layer-checkbox"
                     :value="`${layer.name}-${index}`"
                     @change="onCheckboxChange"
                 >
-                <label :for="'importer-addon-layer-selection-checkbox-' + `${layer.name}-${index}`">
+                <label
+                    class="form-check-label"
+                    :for="'importer-addon-layer-selection-checkbox-' + `${layer.name}-${index}`"
+                >
                     {{ layer.title }}
                 </label>
             </div>
-            <div :class="{'has-error': !inputValid}">
-                <span
-                    v-if="!inputValid"
-                    class="help-block"
-                >
-                    {{ $t("additional:modules.tools.importerAddon.layerSelectionRequiredText") }}
-                </span>
-            </div>
+            <span
+                v-if="!inputValid"
+                class="mt-2"
+            >
+                {{ $t("additional:modules.tools.importerAddon.layerSelectionRequiredText") }}
+            </span>
         </div>
     </div>
 </template>

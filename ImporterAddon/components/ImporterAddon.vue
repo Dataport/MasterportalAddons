@@ -171,7 +171,7 @@ export default {
                     />
                 </div>
             </div>
-            <div class="importer-addon-wizard-navigation">
+            <div class="importer-addon-wizard-navigation mt-3">
                 <FlatButton
                     v-if="!isCurrentWorkflowUndefined"
                     type="button"
@@ -207,4 +207,12 @@ export default {
       // dont let the sidebar go beyond the footer
       height: calc(100% - 30px) !important;
   }
+
+.importer-addon-wizard-navigation {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
 </style>

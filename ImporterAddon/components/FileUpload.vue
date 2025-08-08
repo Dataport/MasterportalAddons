@@ -277,7 +277,7 @@ export default {
             <span
                 v-if="!inputFile"
                 id="file-upload-help-block"
-                class="help-block"
+                class="mt-3"
             >
                 {{ $t("additional:modules.tools.importerAddon.fileUploadRequiredText") }}
             </span>
@@ -352,7 +352,17 @@ export default {
         .hidden-input {
             display: none;
         }
-    }
+
+      @media (max-width: 768px) {
+        width: 10em;
+        height: 10em;
+      }
+
+      @media (max-width: 480px) {
+        width: 8em;
+        height: 8em;
+      }
+  }
 
     .hidden-text-input {
         width: 0;

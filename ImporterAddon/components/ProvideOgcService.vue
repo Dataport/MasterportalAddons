@@ -91,12 +91,18 @@ export default {
 
 <template lang="html">
     <div class="importer-addon-provide-ogc-service">
-        <div v-if="serviceType === 'wms'">
+        <div
+            v-if="serviceType === 'wms'"
+            class="mb-2"
+        >
             <span>
                 {{ $t("additional:modules.tools.importerAddon.provideWMSText") }}
             </span>
         </div>
-        <div v-if="serviceType === 'wfs'">
+        <div
+            v-if="serviceType === 'wfs'"
+            class="mb-2"
+        >
             <span>
                 {{ $t("additional:modules.tools.importerAddon.provideWFSText") }}
             </span>
