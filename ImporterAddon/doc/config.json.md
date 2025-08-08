@@ -6,10 +6,6 @@ The basic tool configurations apply. Following additional properties can be set 
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
-|wfsExampleBase|no|String|"https://ows-demo.terrestris.de/geoserver/osm/wfs"|The base Url for the example Url for a WFS GetCapabilities request.|false|
-|wfsExampleQuery|no|String|"?SERVICE=WFS&VERSION=1.1.0&REQUEST=GetCapabilities"|The query part for the example Url for a WFS GetCapabilities request.|false|
-|wmsExampleBase|no|String|"https://ows.terrestris.de/osm/service"|The base Url for the example Url for a WMS GetCapabilities request.|false|
-|wmsExampleQuery|no|String|"?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetCapabilities"|The query part for the example Url for a WMS GetCapabilities request.|false|
 |styleFillColor|no|Array|[104, 170, 204, 1]|The RGBA color to use as default fill color|false|
 |styleStrokeColor|no|Array|[153, 153, 153, 1]|The RGBA color to use as default stroke color|false|
 |styleStrokeWidth|no|Array|5|The width in pixels to use as default stroke width|false|
