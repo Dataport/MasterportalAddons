@@ -97,8 +97,8 @@ export default {
     <div class="importer-addon-style-layers">
         <div class="form-group">
             <div
-                v-for="layer in layers"
-                :key="layer.name"
+                v-for="(layer, index) in layers"
+                :key="index"
                 class="style-form"
             >
                 <p>
