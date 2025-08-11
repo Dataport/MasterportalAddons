@@ -11,13 +11,15 @@ import mutations from "../store/mutationsExporterAddon";
 import {downloadLayer} from "../utils/download";
 
 import STEPS from "../constants/steps";
+import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 
 export default {
     name: "ExporterAddon",
     components: {
         ExternalWfsLayerSelection,
         LayerDownloadOptions,
-        LayerSelection
+        LayerSelection,
+        FlatButton
     },
     data () {
         return {
@@ -30,9 +32,6 @@ export default {
         steps () {
             return STEPS;
         }
-    },
-    created () {
-        //this.$on("close", this.close); // TODO
     },
     mounted () {
         this.applyTranslationKey(this.name);
@@ -50,12 +49,6 @@ export default {
         close () {
             this.resetExporterAddon();
             this.setActive(false);
-
-            const model = Radio.request("ModelList", "getModelByAttributes", {id: this.$store.state.Tools.ExporterAddon.id});
-
-            if (model) {
-                model.set("isActive", false);
-            }
         },
 
         /**
@@ -117,7 +110,6 @@ export default {
         id="exporterAddon"
         class="row"
     >
-        <h2>Exporter</h2>
         <div v-if="isLoading">
             {{ $t("additional:modules.tools.exporterAddon.loadingText") }}
         </div>
@@ -134,32 +126,26 @@ export default {
                 />
             </div>
             <div class="exporter-addon-wizard-navigation">
-                <button
+                <FlatButton
                     v-if="!isFirstStep"
-                    type="button"
+                    :text="$t(`additional:modules.tools.exporterAddon.prev`)"
                     class="btn btn-default"
                     @click="onPrevClick"
-                >
-                    {{ $t("additional:modules.tools.exporterAddon.prev") }}
-                </button>
-                <button
+                />
+                <FlatButton
                     v-if="!isLastStep"
-                    type="button"
+                    :text="$t(`additional:modules.tools.exporterAddon.next`)"
                     class="btn btn-default"
                     :disabled="!currentFormValid"
                     @click="onNextClick"
-                >
-                    {{ $t("additional:modules.tools.exporterAddon.next") }}
-                </button>
-                <button
+                />
+                <FlatButton
                     v-if="isLastStep"
-                    type="button"
+                    :text="$t(`additional:modules.tools.exporterAddon.finish`)"
                     class="btn btn-default"
                     :disabled="!currentFormValid"
                     @click="onFinishClick"
-                >
-                    {{ $t("additional:modules.tools.exporterAddon.finish") }}
-                </button>
+                />
             </div>
         </div>
 

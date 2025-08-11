@@ -1,5 +1,6 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
+import RadioButton from "./RadioButton.vue";
 
 import mutations from "../store/mutationsExporterAddon";
 
@@ -7,6 +8,9 @@ import LAYERTYPES from "../constants/layertypes";
 
 export default {
     name: "LayerDownloadOptions",
+    components: {
+        RadioButton
+    },
     data () {
         return {
             inputValid: true
@@ -21,14 +25,6 @@ export default {
         ]),
         layertypes () {
             return LAYERTYPES;
-        },
-        formatRadioValue: {
-            get () {
-                return this.selectedExportFormat;
-            },
-            set (value) {
-                this.setSelectedExportFormat(value);
-            }
         }
     },
     created () {
@@ -44,9 +40,11 @@ export default {
         /**
          * Handler for the radio change events.
          *
+         * @param {String} value - The selected format value.
          * @returns {void}
          */
-        onRadioChange () {
+        onRadioChange (value) {
+            this.setSelectedExportFormat(value);
             this.inputValid = this.isFormValid();
             this.setCurrentFormValid(this.isFormValid());
         },
@@ -81,24 +79,16 @@ export default {
                 <div
                     v-for="format in supportedExportFormatsForSelectedLayer"
                     :key="format"
-                    class="form-check"
+                    class="format-selection-buttons"
                 >
-                    <!-- TODO select first format by default -->
-                    <input
+                    <RadioButton
                         :id="`exporter-format-radio-${format}`"
-                        v-model="formatRadioValue"
-                        type="radio"
-                        class="form-check-input"
-                        name="exporter-format-radio"
                         :value="format"
+                        :selected-value="selectedExportFormat"
+                        :text="format"
+                        name="format-selection"
                         @change="onRadioChange"
-                    >
-                    <label
-                        class="form-check-label"
-                        :for="`exporter-format-radio-${format}`"
-                    >
-                        {{ format }}
-                    </label>
+                    />
                 </div>
             </div>
         </form>
@@ -110,5 +100,9 @@ export default {
         padding-bottom: 10px;
         padding-left: 10px;
         display: block;
+    }
+
+    .format-selection-buttons {
+        margin: 4px 0;
     }
 </style>

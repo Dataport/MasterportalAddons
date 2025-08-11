@@ -14,7 +14,8 @@
                 "layerSelectionRequiredText": "Bitte selektieren Sie einen Layer.",
                 "formatSelectionText": "Bitte wählen Sie ein Export-Format aus:",
                 "downloadFailedForFormat": "Export fehlgeschlagen. Bitte probieren Sie ein anderes Format.",
-                "shapeUnsupportedMultiPolygon": "Es können leider keine MultiPolygone im Shape Format exportiert werden. Bitte wählen Sie ein anderes Format."
+                "shapeUnsupportedMultiPolygon": "Es können leider keine MultiPolygone im Shape Format exportiert werden. Bitte wählen Sie ein anderes Format.",
+                "vectorBaseLayerText": "Auswahl-Layer"
             }
         }
     }

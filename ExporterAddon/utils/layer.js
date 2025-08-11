@@ -52,8 +52,24 @@ export function wfsToDownloadLayer (wfs) {
     };
 }
 
+/**
+ * Get a downloadLayer from geojson.
+ *
+ * @param {any} vectorBase The vectorBase layer.
+ * @returns {any} The downloadLayer.
+ */
+export function vectorBaseDownloadLayer (vectorBase) {
+    return {
+        type: LAYERTYPES.vectorBase,
+        name: vectorBase.get("name"),
+        url: vectorBase.get("url"),
+        exportFormats: [EXPORTFORMATS.geoJson, EXPORTFORMATS.gml, EXPORTFORMATS.shp, EXPORTFORMATS.gpkg]
+    };
+}
+
 export default {
     drawLayerToDownloadLayer,
     geoJsonToDownloadLayer,
-    wfsToDownloadLayer
+    wfsToDownloadLayer,
+    vectorBaseDownloadLayer
 };

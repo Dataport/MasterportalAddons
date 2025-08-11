@@ -1,20 +1,28 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
 import layerCollection from "@core/layers/js/layerCollection";
+import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vue";
+import RadioButton from "./RadioButton.vue";
 
 import mutations from "../store/mutationsExporterAddon";
 import LAYERTYPES from "../constants/layertypes";
-import {wfsToDownloadLayer, geoJsonToDownloadLayer, drawLayerToDownloadLayer} from "../utils/layer";
+import {wfsToDownloadLayer, geoJsonToDownloadLayer, drawLayerToDownloadLayer, vectorBaseDownloadLayer} from "../utils/layer";
+
 
 export default {
     name: "LayerSelection",
+    components: {
+        AccordionItem,
+        RadioButton
+    },
     data () {
         return {
             inputValid: true,
             expandedTypes: {
                 [LAYERTYPES.wfs]: true,
                 [LAYERTYPES.geoJson]: true,
-                [LAYERTYPES.draw]: true
+                [LAYERTYPES.draw]: true,
+                [LAYERTYPES.vectorBase]: true
             }
         };
     },
@@ -69,6 +77,7 @@ export default {
             const wfsLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.wfs).map(wfsToDownloadLayer),
                 geojsonLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.geoJson).map(geoJsonToDownloadLayer),
                 drawLayer = mapCollection.getMap("2D").getLayers().getArray().find(layer => layer.get("id") === "importDrawLayer"),
+                vectorBaseLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.vectorBase).map(vectorBaseDownloadLayer),
                 map = mapCollection.getMap("2D"),
                 mapView = map.getView(),
                 epsg = mapView.getProjection().getCode(),
@@ -76,7 +85,7 @@ export default {
                 drawLayers = drawLayer ? [drawLayerToDownloadLayer(drawLayer, drawLayerName, epsg)] : [];
 
             layerSelectionList = layerSelectionList
-                .concat(wfsLayers, geojsonLayers, drawLayers)
+                .concat(wfsLayers, geojsonLayers, drawLayers, vectorBaseLayers)
                 .map((layer, idx) => {
                     layer.idx = idx;
                     return layer;
@@ -88,9 +97,11 @@ export default {
         /**
          * Handler for the radio change events.
          *
+         * @param {Object} value - The selected layer value.
          * @returns {void}
          */
-        onRadioChange () {
+        onRadioChange (value) {
+            this.setSelectedLayer(value);
             this.inputValid = this.isFormValid();
             this.setCurrentFormValid(this.isFormValid());
         },
@@ -132,19 +143,15 @@ export default {
             <span>
                 {{ $t("additional:modules.tools.exporterAddon.layerSelectionText") }}
             </span>
-            <form>
-                <div
-                    v-for="layerType in [layerTypes.wfs, layerTypes.geoJson, layerTypes.draw]"
-                    :key="layerType"
+            <div
+                v-for="layerType in [layerTypes.wfs, layerTypes.geoJson, layerTypes.draw, layerTypes.vectorBase]"
+                :key="layerType"
+            >
+                <AccordionItem
+                    :id="`exporter-layer-type-${layerType}`"
+                    :title="layerType === layerTypes.draw ? $t(`additional:modules.tools.exporterAddon.drawLayerText`) : layerType === layerTypes.vectorBase ? $t(`additional:modules.tools.exporterAddon.vectorBaseLayerText`) : layerType"
+                    :is-open="layerTypeSelectionList(layerType).length > 0"
                 >
-                    <button
-                        class="btn exporter-addon-collapse-button"
-                        type="button"
-                        @click="() => toggleLayerType(layerType)"
-                    >
-                        <i :class="['fas', 'fa-solid', expandedTypes[layerType] ? 'fa-chevron-down' : 'fa-chevron-right']" />
-                        {{ layerType === layerTypes.draw ? $t("additional:modules.tools.exporterAddon.drawLayerText") : layerType }}
-                    </button>
                     <div
                         id="wfs-collapse"
                         :class="['collapse', expandedTypes[layerType] ? 'show': '']"
@@ -152,38 +159,31 @@ export default {
                         <div
                             v-for="layer in layerTypeSelectionList(layerType)"
                             :key="layer.idx"
-                            class="form-check exporter-addon-layer-radio-container"
+                            class="layer-selection-buttons"
                         >
-                            <input
+                            <RadioButton
                                 :id="`exporter-layer-radio-${layer.idx}`"
-                                v-model="layerRadioValue"
-                                type="radio"
-                                class="form-check-input"
-                                name="exporter-layer-radio"
                                 :value="layer"
+                                :selected-value="selectedLayer"
+                                :text="layer.name"
+                                name="layer-selection"
                                 @change="onRadioChange"
-                            >
-                            <label
-                                class="form-check-label"
-                                :for="`exporter-layer-radio-${layer.idx}`"
-                            >
-                                {{ layer.name }}
-                            </label>
+                            />
                         </div>
                         <div v-if="layerTypeSelectionList(layerType).length === 0">
                             <span class="exporter-layer-empty">{{ $t("additional:modules.tools.exporterAddon.emptyLayerSelectionTypeText") }}</span>
                         </div>
                     </div>
-                </div>
-                <div :class="[{['has-error']: !inputValid}]">
-                    <span
-                        v-if="!inputValid"
-                        class="help-block"
-                    >
-                        {{ $t("additional:modules.tools.exporterAddon.layerSelectionRequiredText") }}
-                    </span>
-                </div>
-            </form>
+                </AccordionItem>
+            </div>
+            <div :class="[{['has-error']: !inputValid}]">
+                <span
+                    v-if="!inputValid"
+                    class="help-block"
+                >
+                    {{ $t("additional:modules.tools.exporterAddon.layerSelectionRequiredText") }}
+                </span>
+            </div>
         </div>
     </div>
 </template>
@@ -193,8 +193,9 @@ export default {
     color: grey;
 }
 
-.exporter-addon-layer-radio-container {
-    padding-left: 48px;
+.layer-selection-buttons {
+    display: flex;
+    flex-direction: column;
 }
 
 .exporter-addon-collapse-button {
