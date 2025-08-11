@@ -1,9 +1,10 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
+import layerCollection from "@core/layers/js/layerCollection";
 
 import mutations from "../store/mutationsExporterAddon";
 import LAYERTYPES from "../constants/layertypes";
-import {drawLayerToDownloadLayer, geoJsonToDownloadLayer, wfsToDownloadLayer} from "../utils/layer";
+import {wfsToDownloadLayer, geoJsonToDownloadLayer, drawLayerToDownloadLayer} from "../utils/layer";
 
 export default {
     name: "LayerSelection",
@@ -65,14 +66,13 @@ export default {
 
             this.showErrorMessage = false;
 
-            const wfsLayers = Radio.request("ModelList", "getModelsByAttributes", {typ: LAYERTYPES.wfs})
-                    .map(wfsToDownloadLayer),
-                geojsonLayers = Radio.request("ModelList", "getModelsByAttributes", {typ: LAYERTYPES.geoJson})
-                    .map(geoJsonToDownloadLayer),
-                drawLayer = this.$store.getters["Tools/Draw/layer"],
-                mapView = this.$store.getters["Maps/getView"],
+            const wfsLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.wfs).map(wfsToDownloadLayer),
+                geojsonLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.geoJson).map(geoJsonToDownloadLayer),
+                drawLayer = mapCollection.getMap("2D").getLayers().getArray().find(layer => layer.get("id") === "importDrawLayer"),
+                map = mapCollection.getMap("2D"),
+                mapView = map.getView(),
                 epsg = mapView.getProjection().getCode(),
-                drawLayerName = this.$t("additional:modules.tools.exporterAddon.drawLayerText"),
+                drawLayerName = "importDrawLayer",
                 drawLayers = drawLayer ? [drawLayerToDownloadLayer(drawLayer, drawLayerName, epsg)] : [];
 
             layerSelectionList = layerSelectionList
