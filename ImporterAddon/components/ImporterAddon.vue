@@ -81,11 +81,10 @@ export default {
          *
          * @returns {void}
          */
-        onWorkflowSelected (workflow) {
-            this.setCurrentWorkflow(workflow);
-            this.setCurrentStep(this.nextWorkflowStep);
-        },
         onNextClick () {
+            if (this.isCurrentWorkflowUndefined && this.selectedWorkflow) {
+                this.setCurrentWorkflow(this.selectedWorkflow);
+            }
             this.setCurrentStep(this.nextWorkflowStep);
         },
 
@@ -124,17 +123,14 @@ export default {
     <div
         id="importerAddon"
     >
+        <hr>
         <form @submit.prevent>
             <div class="importer-addon-wizard-content">
                 <div
                     v-if="isCurrentWorkflowUndefined"
                 >
-                    <div class="mb-3">
-                        {{ $t("additional:modules.tools.importerAddon.selectWorkflowText") }}
-                    </div>
                     <WorkflowSelection
                         :workflows="supportedImportWorkflows"
-                        @workflow-selected="onWorkflowSelected"
                     />
                 </div>
                 <div
@@ -168,7 +164,7 @@ export default {
                     @click="onPrevClick"
                 />
                 <FlatButton
-                    v-if="!isLastStep && !isCurrentWorkflowUndefined"
+                    v-if="!isLastStep"
                     ref="importer-addon-next-btn"
                     type="submit"
                     :text="$t('additional:modules.tools.importerAddon.next')"
@@ -191,16 +187,5 @@ export default {
 </template>
 
 <style lang="scss">
-  #sidebar {
-      // dont let the sidebar go beyond the footer
-      height: calc(100% - 30px) !important;
-  }
 
-.importer-addon-wizard-navigation {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    align-items: center;
-    margin-top: 1rem;
-}
 </style>

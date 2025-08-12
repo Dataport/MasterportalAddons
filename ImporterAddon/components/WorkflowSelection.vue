@@ -1,11 +1,11 @@
 <script>
 import {mapGetters, mapMutations} from "vuex";
-import LightButton from "@shared/modules/buttons/components/LightButton.vue";
+import RadioButton from "./RadioButton.vue";
 
 export default {
     name: "WorkflowSelection",
     components: {
-        LightButton
+        RadioButton
     },
     props: {
         workflows: {
@@ -13,8 +13,18 @@ export default {
             required: true
         }
     },
+    data () {
+        return {
+            inputValid: false
+        };
+    },
     computed: {
         ...mapGetters("Modules/ImporterAddon", ["selectedWorkflow"])
+    },
+    created () {
+        const isValid = this.isFormValid();
+
+        this.setCurrentFormValid(isValid);
     },
     methods: {
         ...mapMutations("Modules/ImporterAddon", [
@@ -22,27 +32,24 @@ export default {
             "setCurrentFormValid"
         ]),
         /**
-         * Handle workflow selection and proceed.
+         * Handle workflow radio selection.
          *
          * @param {String} workflow - The selected workflow
          * @returns {void}
          */
-        selectWorkflow (workflow) {
+        onRadioChange (workflow) {
             this.setSelectedWorkflow(workflow);
-            this.setCurrentFormValid(true);
-
-            // Event emittieren für den nächsten Schritt
-            this.$emit("workflow-selected", workflow);
+            this.inputValid = this.isFormValid();
+            this.setCurrentFormValid(this.isFormValid());
         },
 
         /**
-         * Get the interaction function for a specific workflow.
+         * Check if the form is valid.
          *
-         * @param {String} workflow - The workflow identifier
-         * @returns {Function} The interaction function
+         * @returns {Boolean} True, if form is valid. False otherwise.
          */
-        getWorkflowInteraction (workflow) {
-            return () => this.selectWorkflow(workflow);
+        isFormValid () {
+            return Boolean(this.selectedWorkflow);
         }
     }
 };
@@ -50,24 +57,38 @@ export default {
 
 <template lang="html">
     <div class="importer-addon-workflow-selection">
-        <div class="workflow-buttons">
-            <LightButton
-                v-for="workflow in workflows"
-                :key="workflow"
-                :text="'additional:modules.tools.importerAddon.workflows.' + workflow"
-                :interaction="getWorkflowInteraction(workflow)"
-            />
-        </div>
+        <form>
+            <div class="input-group">
+                <span>
+                    {{ $t("additional:modules.tools.importerAddon.selectWorkflowText") }}
+                </span>
+                <div
+                    v-for="workflow in workflows"
+                    :key="workflow"
+                    class="workflow-selection-buttons"
+                >
+                    <RadioButton
+                        :id="`importer-workflow-radio-${workflow}`"
+                        :value="workflow"
+                        :selected-value="selectedWorkflow"
+                        :text="$t('additional:modules.tools.importerAddon.workflows.' + workflow)"
+                        name="workflow-selection"
+                        @change="onRadioChange"
+                    />
+                </div>
+            </div>
+        </form>
     </div>
 </template>
 
 <style lang="scss" scoped>
-.workflow-buttons {
-    display: flex;
-    flex-direction: column;
+.input-group {
+    padding-bottom: 10px;
+    padding-left: 10px;
+    display: block;
 }
 
-.workflow-button {
-    width: 100%;
+.workflow-selection-buttons {
+    margin: 4px 0;
 }
 </style>
