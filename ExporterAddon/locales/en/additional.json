@@ -6,7 +6,7 @@
                 "prev": "Back",
                 "next": "Next",
                 "finish": "Finish",
-                "drawLayerText": "Drawlayer",
+                "drawLayerText": "Imported Layers",
                 "loadingText": "Loading…",
                 "layerSelectionText": "Which layer should be exported?",
                 "emptyLayerSelectionText": "No exportable layers found.",
@@ -15,7 +15,7 @@
                 "formatSelectionText": "Please select an export-format:",
                 "downloadFailedForFormat": "Could not generate the export. Please try another format.",
                 "shapeUnsupportedMultiPolygon": "MultiPolygons cannot be exported in Shape format. Please select another format.",
-                "vectorBaseLayerText": "Selection Layer"
+                "vectorBaseLayerText": "Selection Layers"
               }
         }
     }

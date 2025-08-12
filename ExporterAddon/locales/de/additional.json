@@ -6,7 +6,7 @@
                 "prev": "Zurück",
                 "next": "Weiter",
                 "finish": "Abschließen",
-                "drawLayerText": "Zeichenlayer",
+                "drawLayerText": "Importierte Layer",
                 "loadingText": "Lädt…",
                 "layerSelectionText": "Welcher Layer soll exportiert werden?",
                 "emptyLayerSelectionText": "Keine exportierbaren Layer gefunden.",
