@@ -66,12 +66,6 @@ export default {
 <template lang="html">
     <div class="exporter-addon-layer-download-options">
         <form>
-            <!--
-                Note: Selection of boundary (complete dataset vs current map extent)
-                was implemented, but removed.
-                Last commit that contains the selection of boundary is
-                0e3191c2b1a685b13c5acb1eb6f6032a3e8db3ae
-            -->
             <div class="input-group">
                 <span>
                     {{ $t("additional:modules.tools.exporterAddon.formatSelectionText") }}

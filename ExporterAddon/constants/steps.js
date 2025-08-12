@@ -1,7 +1,6 @@
 const steps = {
     selectLayer: "selectLayer",
-    downloadLayer: "downloadLayer",
-    selectExternalWfsLayer: "selectExternalWfsLayer"
+    downloadLayer: "downloadLayer"
 };
 
 export default steps;
