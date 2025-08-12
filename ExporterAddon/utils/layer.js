@@ -9,13 +9,13 @@ import LAYERTYPES from "../constants/layertypes";
  * @param {String} epsg The epsg code of the layer.
  * @returns {any} The downloadLayer;
  */
-export function drawLayerToDownloadLayer (drawLayer, drawLayerName, epsg) {
+export function drawLayerToDownloadLayer (drawLayer) {
     return {
         type: LAYERTYPES.draw,
-        name: drawLayerName,
+        name: drawLayer.get("name"),
         layer: drawLayer,
         exportFormats: [EXPORTFORMATS.geoJson, EXPORTFORMATS.gml, EXPORTFORMATS.shp, EXPORTFORMATS.gpkg],
-        srsName: epsg
+        srsName: drawLayer.get("crs")
     };
 }
 
@@ -63,6 +63,8 @@ export function vectorBaseDownloadLayer (vectorBase) {
         type: LAYERTYPES.vectorBase,
         name: vectorBase.get("name"),
         url: vectorBase.get("url"),
+        layer: vectorBase,
+        epsg: vectorBase.get("crs"),
         exportFormats: [EXPORTFORMATS.geoJson, EXPORTFORMATS.gml, EXPORTFORMATS.shp, EXPORTFORMATS.gpkg]
     };
 }

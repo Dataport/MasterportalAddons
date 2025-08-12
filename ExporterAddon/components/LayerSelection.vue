@@ -59,6 +59,10 @@ export default {
 
         this.setCurrentFormValid(isValid);
     },
+    unmounted () {
+        this.setCurrentFormValid(false);
+        this.setLayerSelectionList([]);
+    },
     methods: {
         ...mapActions("Modules/ExporterAddon", [
         ]),
@@ -76,13 +80,8 @@ export default {
 
             const wfsLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.wfs).map(wfsToDownloadLayer),
                 geojsonLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.geoJson).map(geoJsonToDownloadLayer),
-                drawLayer = mapCollection.getMap("2D").getLayers().getArray().find(layer => layer.get("id") === "importDrawLayer"),
-                vectorBaseLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.vectorBase).map(vectorBaseDownloadLayer),
-                map = mapCollection.getMap("2D"),
-                mapView = map.getView(),
-                epsg = mapView.getProjection().getCode(),
-                drawLayerName = "importDrawLayer",
-                drawLayers = drawLayer ? [drawLayerToDownloadLayer(drawLayer, drawLayerName, epsg)] : [];
+                drawLayers = layerCollection.getLayers().filter(layer => layer.get("id") === "importDrawLayer").map(drawLayerToDownloadLayer),
+                vectorBaseLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.vectorBase && layer.get("id") !== "importDrawLayer").map(vectorBaseDownloadLayer);
 
             layerSelectionList = layerSelectionList
                 .concat(wfsLayers, geojsonLayers, drawLayers, vectorBaseLayers)
@@ -153,26 +152,21 @@ export default {
                     :is-open="layerTypeSelectionList(layerType).length > 0"
                 >
                     <div
-                        id="wfs-collapse"
-                        :class="['collapse', expandedTypes[layerType] ? 'show': '']"
+                        v-for="layer in layerTypeSelectionList(layerType)"
+                        :key="layer.idx"
+                        class="layer-selection-buttons"
                     >
-                        <div
-                            v-for="layer in layerTypeSelectionList(layerType)"
-                            :key="layer.idx"
-                            class="layer-selection-buttons"
-                        >
-                            <RadioButton
-                                :id="`exporter-layer-radio-${layer.idx}`"
-                                :value="layer"
-                                :selected-value="selectedLayer"
-                                :text="layer.name"
-                                name="layer-selection"
-                                @change="onRadioChange"
-                            />
-                        </div>
-                        <div v-if="layerTypeSelectionList(layerType).length === 0">
-                            <span class="exporter-layer-empty">{{ $t("additional:modules.tools.exporterAddon.emptyLayerSelectionTypeText") }}</span>
-                        </div>
+                        <RadioButton
+                            :id="`exporter-layer-radio-${layer.idx}`"
+                            :value="layer"
+                            :selected-value="selectedLayer"
+                            :text="layer.name"
+                            name="layer-selection"
+                            @change="onRadioChange"
+                        />
+                    </div>
+                    <div v-if="layerTypeSelectionList(layerType).length === 0">
+                        <span class="exporter-layer-empty">{{ $t("additional:modules.tools.exporterAddon.emptyLayerSelectionTypeText") }}</span>
                     </div>
                 </AccordionItem>
             </div>
