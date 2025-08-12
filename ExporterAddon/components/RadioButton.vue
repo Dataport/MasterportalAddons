@@ -57,7 +57,7 @@ export default {
         handleClick (event) {
             event.preventDefault();
             event.stopPropagation();
-            
+
             if (!this.disabled) {
                 this.$emit("change", this.value);
             }
