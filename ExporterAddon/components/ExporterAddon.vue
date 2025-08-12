@@ -76,7 +76,7 @@ export default {
         async onFinishClick () {
             this.isLoading = true;
             try {
-                await downloadLayer(this.selectedLayer, this.selectedBoundary, this.selectedExportFormat);
+                await downloadLayer(this.selectedLayer, this.selectedExportFormat);
             }
             catch (e) {
                 let msg = i18next.t("additional:modules.tools.exporterAddon.downloadFailedForFormat");
