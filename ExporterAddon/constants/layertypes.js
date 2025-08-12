@@ -1,7 +1,7 @@
 const layertypes = {
     wfs: "WFS",
     draw: "DRAW",
-    geoJson: "GeoJSON",
+    geoJson: "GEOJSON",
     vectorBase: "VECTORBASE"
 };
 
