@@ -108,6 +108,7 @@ export default {
         id="exporterAddon"
         class="row"
     >
+        <hr>
         <div v-if="isLoading">
             {{ $t("additional:modules.tools.exporterAddon.loadingText") }}
         </div>
@@ -147,8 +148,4 @@ export default {
 </template>
 
 <style lang="scss">
-  #sidebar {
-      // dont let the sidebar go beyond the footer
-      height: calc(100% - 30px) !important;
-  }
 </style>

@@ -133,13 +133,14 @@ export default {
 
 <template lang="html">
     <div class="exporter-addon-layer-selection">
-        <div v-if="layerSelectionList.length === 0">
-            <h3 class="exporter-addon-empty-layer-selection">
-                {{ $t("additional:modules.tools.exporterAddon.emptyLayerSelectionText") }}
-            </h3>
+        <div
+            v-if="layerSelectionList.length === 0"
+            class="exporter-addon-empty-layer-selection mb-3"
+        >
+            {{ $t("additional:modules.tools.exporterAddon.emptyLayerSelectionText") }}
         </div>
         <div v-if="layerSelectionList.length > 0">
-            <span>
+            <span class="exporter-addon-layer-selection-text mb-3">
                 {{ $t("additional:modules.tools.exporterAddon.layerSelectionText") }}
             </span>
             <div
@@ -154,7 +155,7 @@ export default {
                     <div
                         v-for="layer in layerTypeSelectionList(layerType)"
                         :key="layer.idx"
-                        class="layer-selection-buttons"
+                        class="export-layer-selection-buttons"
                     >
                         <RadioButton
                             :id="`exporter-layer-radio-${layer.idx}`"
@@ -185,15 +186,16 @@ export default {
 <style lang="scss" scoped>
 .exporter-addon-empty-layer-selection {
     color: grey;
+    font-size: large;
 }
 
-.layer-selection-buttons {
+.exporter-addon-layer-selection-text {
+    font-size: large;
+}
+
+.export-layer-selection-buttons {
     display: flex;
     flex-direction: column;
-}
-
-.exporter-addon-collapse-button {
-    background-color: rgba(0, 0, 0, 0);
 }
 
 .exporter-layer-empty {
