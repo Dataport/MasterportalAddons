@@ -117,13 +117,6 @@ export default {
                 @input="onInputChange"
                 @blur="onInputChange"
             >
-            <span
-                v-if="!inputValid"
-                id="capabilities-url-help-block"
-                class="help-block"
-            >
-                {{ $t("additional:modules.tools.importerAddon.capabilitiesUrlRequiredText") }}
-            </span>
         </div>
     </div>
 </template>
