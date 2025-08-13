@@ -1,6 +1,5 @@
 <script>
 /**
- * RadioButton component that mimics LayerCheckBox styling.
  * @module addons/ExporterAddon/components/RadioButton
  * @vue-prop {String} id - The unique identifier for the button.
  * @vue-prop {String} text - The text to display in the button.
