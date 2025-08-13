@@ -12,7 +12,8 @@ import {treeSubjectsKey} from "@shared/js/utils/constants";
 import isMobile from "@shared/js/utils/isMobile";
 import {applyStyles} from "../utils/layer";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
-
+import buildTreeStructure from "@appstore/js/buildTreeStructure";
+import {processLayersForAdding} from "../utils/processLayersForAdding";
 /**
  * ImporterAddon
  * @vue-prop {String} side - The side in which the menu component is being rendered.
@@ -52,6 +53,7 @@ export default {
         ...mapActions(["addLayerToLayerConfig"]),
         ...mapActions("Menu", ["resetMenu"]),
         applyStyles,
+        processLayersForAdding,
 
         /**
          * Handler for closing the tool.
@@ -94,21 +96,22 @@ export default {
          * @returns {void}
          */
         async onFinishClick () {
-            const folder = {
-                id: this.layerTreeFolderId,
-                type: "folder",
-                isExternal: true,
-                name: this.layerTreeFolderTitle,
-                elements: this.selectedLayers
-            };
+            const processedLayers = this.processLayersForAdding(this.selectedLayers),
+                folder = {
+                    id: this.layerTreeFolderId,
+                    type: "folder",
+                    isExternal: true,
+                    name: this.layerTreeFolderTitle,
+                    elements: processedLayers
+                };
 
-
+            buildTreeStructure.setIdsAtFolders([folder]);
             await this.addLayerToLayerConfig({layerConfig: folder, parentKey: treeSubjectsKey});
 
             if (isMobile) {
-                this.addSingleAlert(i18next.t("additional:modules.tools.importerAddon.completeMessage", {count: this.selectedLayers.length}));
+                this.addSingleAlert(i18next.t("additional:modules.tools.importerAddon.completeMessage"));
             }
-            this.applyStyles(this.selectedLayers);
+            this.applyStyles(processedLayers);
             this.close();
             if (this.onImportFinished) {
                 this.onImportFinished();
