@@ -23,7 +23,7 @@
                 "layerSelectionText": "Welche Layer sollen importiert werden?",
                 "layerSelectionSelectAllText": "Alle Layer",
                 "layerSelectionRequiredText": "Bitte selektieren Sie mindestens einen Layer.",
-                "layerTreeFolderTitle": "Importierte Fachdaten",
+                "layerTreeFolderTitle": "Importierte Fachdaten {{count}}",
                 "setStyleMessage": "Legen Sie den Stil fest für den Layer",
                 "styleSelectFillColor": "Füllfarbe",
                 "styleSelectStrokeColor": "Linienfarbe",

@@ -23,7 +23,7 @@
                 "layerSelectionText": "Which layers should be imported?",
                 "layerSelectionSelectAllText": "All layers",
                 "layerSelectionRequiredText": "Please select at least one layer.",
-                "layerTreeFolderTitle": "Imported Layers",
+                "layerTreeFolderTitle": "Imported Layers {{count}}",
                 "setStyleMessage": "Configure the style for the layer",
                 "styleSelectFillColor": "Fill color",
                 "styleSelectStrokeColor": "Stroke color",

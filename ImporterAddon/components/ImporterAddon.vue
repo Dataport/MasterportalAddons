@@ -36,12 +36,28 @@ export default {
         },
 
         layerTreeFolderTitle () {
-            return this.$t("additional:modules.tools.importerAddon.layerTreeFolderTitle");
-        }
-    },
-    created () {
-        if (!this.layerTreeFolderId) {
-            this.generateLayerTreeFolderId();
+            switch (this.currentWorkflow) {
+                case "wms":
+                case "wfs":
+                    if (this.selectedLayers[0]?.layers) {
+                        return this.selectedLayers[0]?.layers;
+                    }
+                    this.setImportedFolderCounter();
+                    return this.$t("additional:modules.tools.importerAddon.layerTreeFolderTitle", {count: this.importedFolderCounter});
+
+                case "geojson":
+                    this.setGeoJsonFolderCounter();
+                    return `GeoJSON Import ${this.geoJsonFolderCounter}`;
+                case "shapezip":
+                    this.setShapeFileFolderCounter();
+                    return `Shapefile Import ${this.shapeFileFolderCounter}`;
+                case "geopackage":
+                    this.setGeoPackageFolderCounter();
+                    return `GeoPackage Import ${this.geoPackageFolderCounter}`;
+                default:
+                    this.setImportedFolderCounter();
+                    return this.$t("additional:modules.tools.importerAddon.layerTreeFolderTitle", {count: this.importedFolderCounter});
+            }
         }
     },
     mounted () {

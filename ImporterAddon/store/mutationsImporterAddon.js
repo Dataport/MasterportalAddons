@@ -1,7 +1,6 @@
 import {generateSimpleMutations} from "@shared/js/utils/generators";
 import stateImporterAddon from "./stateImporterAddon";
 import {getBasicResetValues, getStepResetValues} from "../utils/resetStep";
-import {generateId} from "../utils/layer";
 import STEPS from "../constants/steps";
 
 const mutations = {
@@ -76,17 +75,20 @@ const mutations = {
         state.idCounter += 1;
     },
 
-    /**
-     * Generates the id for the layer tree folder and sets it to global state.
-     *
-     * @param {Object} state of this component
-     * @returns {void}
-     */
-    generateLayerTreeFolderId: (state) => {
-        state.idCounter += 1;
-        const generatedId = generateId(state.idCounter);
+    setImportedFolderCounter: (state) => {
+        state.importedFolderCounter += 1;
+    },
 
-        state.layerTreeFolderId = generatedId;
+    setGeoJsonFolderCounter: (state) => {
+        state.geoJsonFolderCounter += 1;
+    },
+
+    setShapeFileFolderCounter: (state) => {
+        state.shapeFileFolderCounter += 1;
+    },
+
+    setGeoPackageFolderCounter: (state) => {
+        state.geoPackageFolderCounter += 1;
     }
 };
 
