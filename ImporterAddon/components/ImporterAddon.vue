@@ -122,6 +122,7 @@ export default {
 <template lang="html">
     <div
         id="importerAddon"
+        class="row"
     >
         <hr>
         <form @submit.prevent>
