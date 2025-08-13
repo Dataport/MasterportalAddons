@@ -203,4 +203,8 @@ export default {
     font-style: italic;
     font-weight: lighter;
 }
+
+:deep(.accordion-item .accordion-header .accordion-button) {
+    font-size: 1rem;
+}
 </style>
