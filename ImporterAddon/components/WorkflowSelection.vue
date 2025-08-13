@@ -65,7 +65,7 @@ export default {
                 <div
                     v-for="workflow in workflows"
                     :key="workflow"
-                    class="workflow-selection-buttons"
+                    class="mt-2"
                 >
                     <RadioButton
                         :id="`importer-workflow-radio-${workflow}`"
@@ -86,9 +86,7 @@ export default {
     padding-bottom: 10px;
     padding-left: 10px;
     display: block;
+    font-size: large;
 }
 
-.workflow-selection-buttons {
-    margin: 4px 0;
-}
 </style>
