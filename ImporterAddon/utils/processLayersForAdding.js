@@ -5,7 +5,7 @@ import layerCollection from "@core/layers/js/layerCollection";
  * Check if a layer with the given ID already exists in the layer collection of the portal.
  * @param {String} layerId The ID of the layer to check.
  */
-function checkIfLayerAlreadyExists (layer) {
+function isLayerNameTaken (layer) {
     return Boolean(layerCollection.getLayers().find(existingLayer => existingLayer.get("name") === layer.name));
 }
 
@@ -23,7 +23,7 @@ function generateUniqueLayerName (baseName) {
     const tempLayer = {name: uniqueName};
 
     // Check if the base name already exists
-    while (checkIfLayerAlreadyExists(tempLayer)) {
+    while (isLayerNameTaken(tempLayer)) {
         uniqueName = `${baseName}_${counter}`;
         tempLayer.name = uniqueName;
         counter++;

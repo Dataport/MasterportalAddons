@@ -79,14 +79,32 @@ const mutations = {
         state.importedFolderCounter += 1;
     },
 
+    /**
+     * Increments the counter used for geojson folder ids by 1.
+     *
+     * @param {Object} state of this component
+     * @returns {void}
+     */
     setGeoJsonFolderCounter: (state) => {
         state.geoJsonFolderCounter += 1;
     },
 
+    /**
+     * Increments the counter used for shape file folder ids by 1.
+     *
+     * @param {Object} state of this component
+     * @returns {void}
+     */
     setShapeFileFolderCounter: (state) => {
         state.shapeFileFolderCounter += 1;
     },
 
+    /**
+     * Increments the counter used for geo package folder ids by 1.
+     *
+     * @param {Object} state of this component
+     * @returns {void}
+     */
     setGeoPackageFolderCounter: (state) => {
         state.geoPackageFolderCounter += 1;
     }

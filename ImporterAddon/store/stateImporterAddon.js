@@ -8,7 +8,7 @@ export const DEFAULT_VALUES = {
         capabilitiesVersion: undefined,
         currentFormValid: false,
         selectedLayers: [],
-        layerTreeFolderId: "temp_id",
+        layerTreeFolderId: "import_folder ",
         idCounter: 100,
         importedFolderCounter: 0,
         shapeFileFolderCounter: 0,
@@ -40,6 +40,10 @@ export const DEFAULT_VALUES = {
      * @property {Object[]} selectedLayers List of layers to be imported. Each object follows the structure of the masterportal layer parser.
      * @property {String} layerTreeFolderId The id of the folder in the layer tree, where layers should be added to.
      * @property {Number} idCounter The numeric part of the generated layer id. This is used to avoid id collisions.
+     * @property {Number} importedFolderCounter The counter used for imported folder ids.
+     * @property {Number} geoJsonFolderCounter The counter used for geojson folder ids.
+     * @property {Number} shapeFileFolderCounter The counter used for shape file folder ids.
+     * @property {Number} geoPackageFolderCounter The counter used for geo package folder ids.
      * @property {File} inputFile The input file for local uploads.
      * @property {Function} onImportFinished A function that is triggered, when the import has finished.
      * @property {String[]} supportedImportWorkflows The import workflows that will be supported.
