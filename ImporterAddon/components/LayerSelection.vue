@@ -1,7 +1,7 @@
 <script>
 import {mapGetters, mapMutations} from "vuex";
 import mutations from "../store/mutationsImporterAddon";
-import {createCapabilitiesUrl, fetchCapabilities, getLayersFromCapabilities, getVersionFromCapabilities, isValidCapabilitiesUrl} from "../utils/capabilities";
+import {createCapabilitiesUrl, fetchCapabilities, getLayersFromCapabilities, getVersionFromCapabilities, isValidCapabilitiesUrl, detectServiceType} from "../utils/capabilities";
 import {createLayerConfigs, generateId} from "../utils/layer";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
 
@@ -70,6 +70,11 @@ export default {
             try {
                 const url = createCapabilitiesUrl(this.capabilitiesUrl, this.serviceType),
                     capDocument = await fetchCapabilities(url);
+
+                if (this.serviceType !== detectServiceType(capDocument)) {
+                    this.showErrorMessage = true;
+                    return;
+                }
 
                 this.loadLayerNames(capDocument);
                 this.loadServiceVersion(capDocument);

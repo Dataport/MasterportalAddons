@@ -161,6 +161,38 @@ export function createCapabilitiesUrl (baseUrl, serviceType) {
     return url.toString();
 }
 
+/**
+ * Detect the service type from a capabilities document.
+ *
+ * @param {String} capabilities The capabilities document.
+ * @returns {String|null} The detected service type or null.
+ */
+export function detectServiceType (capabilities) {
+    try {
+        const parser = new DOMParser(),
+            doc = parser.parseFromString(capabilities, "text/xml"),
+            rootElement = doc.documentElement,
+            rootTag = rootElement?.tagName?.toLowerCase() || null;
+
+        if (!rootTag || rootTag === "parsererror") {
+            return null;
+        }
+
+        if (rootTag.includes("wms_capabilities") || rootTag.includes("wmt_ms_capabilities")) {
+            return "wms";
+        }
+        if (rootTag.includes("wfs_capabilities")) {
+            return "wfs";
+        }
+
+        return null;
+    }
+    catch (error) {
+        console.error("Error detecting service type:", error);
+        return null;
+    }
+}
+
 export default {
     fetchCapabilities,
     getLayersFromCapabilities,
