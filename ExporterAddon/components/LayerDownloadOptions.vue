@@ -67,7 +67,7 @@ export default {
     <div class="exporter-addon-layer-download-options">
         <form>
             <div class="input-group">
-                <span>
+                <span class="format-selection-text">
                     {{ $t("additional:modules.tools.exporterAddon.formatSelectionText") }}
                 </span>
                 <div
@@ -91,12 +91,17 @@ export default {
 
 <style lang="scss" scoped>
     .input-group {
-        padding-bottom: 10px;
-        padding-left: 10px;
+        padding-bottom: 0.625rem;
+        padding-left: 0.625rem;
         display: block;
+
+        .format-selection-text {
+            font-size: large;
+            margin-bottom: 0.5rem;
+        }
     }
 
     .format-selection-buttons {
-        margin: 4px 0;
+        margin: 0.25rem 0;
     }
 </style>
