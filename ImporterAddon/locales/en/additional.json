@@ -14,10 +14,9 @@
                     "geopackage": "GeoPackage"
                 },
                 "selectWorkflowText": "What kind of data would you like to import?",
-                "provideWFSText": "Please provide a WFS-GetCapabilities URL.",
-                "provideWMSText": "Please provide a WMS-GetCapabilities URL.",
+                "provideWFSText": "Please provide a WFS URL.",
+                "provideWMSText": "Please provide a WMS URL.",
                 "capabilitiesUrlPlaceholder": "Capabilities URL",
-                "capabilitiesUrlRequiredText": "Please provide a GetCapabilities URL.",
                 "loadingText": "Loading…",
                 "layerLoadingErrorText": "Could not load layers. Please make sure that you provided a valid URL.",
                 "layerSelectionText": "Which layers should be imported?",
