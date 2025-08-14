@@ -6,7 +6,7 @@
 1. Copy the folder to your `addons` folder within your masterportal project.
 2. Run `npm i` within the specific addon folder: `addons/ExporterAddon`
 3. Adapt the `addons/addons.conf` by adding:
-```
+```json
 {
   "ExporterAddon": {
     "type": "tool"
@@ -14,12 +14,12 @@
 }
 ```
 4. Refer the new addon in your portal's `config.js`:
-```
-    addons: [
-        "ExporterAddon"
+```json
+addons: [
+  "ExporterAddon"
 ]
 ```
-5. Configure the addon in your portal's `config.json`. See an example in `/docs/config.json.md`.
+5. Configure the addon in your portal's `config.json`. See an example in `/doc/config.json.md`.
 
 For more information, please check the official [Masterportal documentation](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/addOnsVue.md).
 
@@ -33,7 +33,4 @@ For more information, please check the official [Masterportal documentation](htt
 
 ## Notes
 
-This addon has been developed as part of the project `Erneuerung und Entwicklung des MDI-DE Portals`.
-“Marine Data Infrastructure Germany (MDI-DE)” is jointly operated by three federal authorities and five state authorities of the coastal states of Mecklenburg-Vorpommern, Niedersachsen and Schleswig-Holstein.
-
-[Further information about the MDI-DE](https://projekt.mdi-de.org/)
+This plugin was developed for Masterportal v3.13.0.

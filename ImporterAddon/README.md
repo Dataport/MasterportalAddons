@@ -6,7 +6,7 @@
 1. Copy the folder to your `addons` folder within your masterportal project.
 2. Run `npm i` within the specific addon folder: `addons/ImporterAddon`
 3. Adapt the `addons/addons.conf` by adding:
-```
+```json
 {
   "ImporterAddon": {
     "type": "tool"
@@ -14,7 +14,7 @@
 }
 ```
 4. Refer the new addon in your portal's `config.js`:
-```
+```json
 addons: [
   "ImporterAddon"
 ]
