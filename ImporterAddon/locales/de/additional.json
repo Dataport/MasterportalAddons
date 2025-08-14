@@ -33,8 +33,8 @@
                 "removeFileText": "Datei entfernen",
                 "provideShapeZipText": "Auf Icon klicken, oder per Drag&Drop das gezippte Shapefile hochladen.",
                 "provideGeoPackageText": "Auf Icon klicken, oder per Drag&Drop GeoPackage Datei hochladen.",
-                "completeMessage": "Der importierte Layer wurde dem Themenbaum unter <strong>Importierte Fachdaten</strong> hinzugefügt!",
-                "completeMessage_other": "Die importierten Layer wurden dem Themenbaum unter <strong>Importierte Fachdaten</strong> hinzugefügt!"
+                "completeMessage": "Der importierte Layer wurde dem Themenbaum unter <strong>Externe Fachdaten</strong> hinzugefügt!",
+                "completeMessage_other": "Die importierten Layer wurden dem Themenbaum unter <strong>Externe Fachdaten</strong> hinzugefügt!"
             }
         }
     }
