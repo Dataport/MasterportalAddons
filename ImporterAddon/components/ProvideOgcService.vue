@@ -93,7 +93,7 @@ export default {
     <div class="importer-addon-provide-ogc-service">
         <div
             v-if="serviceType === 'wms'"
-            class="mb-2"
+            class="provide-ogc-service mb-3"
         >
             <span>
                 {{ $t("additional:modules.tools.importerAddon.provideWMSText") }}
@@ -101,17 +101,17 @@ export default {
         </div>
         <div
             v-if="serviceType === 'wfs'"
-            class="mb-2"
+            class="provide-ogc-service mb-3"
         >
             <span>
                 {{ $t("additional:modules.tools.importerAddon.provideWFSText") }}
             </span>
         </div>
-        <div :class="['form-group', {['has-error']: !inputValid}]">
+        <div class="'form-group'">
             <input
                 ref="importer-addon-capabilities-input"
                 v-model="capabilitiesUrlValue"
-                :class="['form-control', {['has-error']: !inputValid}]"
+                class="form-control"
                 :placeholder="$t('additional:modules.tools.importerAddon.capabilitiesUrlPlaceholder')"
                 aria-describedby="capabilities-url-help-block"
                 @input="onInputChange"
@@ -122,4 +122,8 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.provide-ogc-service {
+  font-size: large;
+}
+
 </style>

@@ -220,21 +220,21 @@ export default {
 <template lang="html">
     <div class="importer-addon-file-upload">
         <div v-if="serviceType === 'geojson'">
-            <span>
+            <span class="fs-5">
                 {{ $t("additional:modules.tools.importerAddon.provideGeoJsonText") }}
             </span>
         </div>
         <div v-if="serviceType === 'shapezip'">
-            <span>
+            <span class="fs-5">
                 {{ $t("additional:modules.tools.importerAddon.provideShapeZipText") }}
             </span>
         </div>
         <div v-if="serviceType === 'geopackage'">
-            <span>
+            <span class="fs-5">
                 {{ $t("additional:modules.tools.importerAddon.provideGeoPackageText") }}
             </span>
         </div>
-        <div :class="['form-group', {['has-error']: !inputValid, ['has-success']: inputValid && inputFile}]">
+        <div :class="['form-group', 'm-4', {['has-error']: !inputValid, ['has-success']: inputValid && inputFile}]">
             <button
                 type="button"
                 class="drop-zone"
@@ -256,31 +256,32 @@ export default {
                     @input="onFileInput"
                 >
             </button>
-            <span
-                v-if="!inputValid && inputFile"
-                id="file-upload-help-block"
-                class="help-block"
-            >
-                <button
-                    type="button"
-                    class="btn btn-link remove-file"
-                    :aria-label="$t('additional:modules.tools.importerAddon.removeFileText')"
-                    @click="onRemoveFileClick"
+            <div class="text-placeholder mt-3">
+                <span
+                    v-if="!inputValid && inputFile"
+                    id="file-upload-help-block"
+                    class="help-block"
                 >
-                    <span
-                        :class="`${removeFileIcon} icon`"
-                        aria-hidden="true"
-                    />
-                </button>
-                {{ $t('additional:modules.tools.importerAddon.removeFileText')+ ': ' + inputFile.name }}
-            </span>
-            <span
-                v-if="!inputFile"
-                id="file-upload-help-block"
-                class="mt-3"
-            >
-                {{ $t("additional:modules.tools.importerAddon.fileUploadRequiredText") }}
-            </span>
+                    <button
+                        type="button"
+                        class="btn btn-link remove-file"
+                        :aria-label="$t('additional:modules.tools.importerAddon.removeFileText')"
+                        @click="onRemoveFileClick"
+                    >
+                        <span
+                            :class="`${removeFileIcon} icon`"
+                            aria-hidden="true"
+                        />
+                    </button>
+                    {{ $t('additional:modules.tools.importerAddon.removeFileText')+ ': ' + inputFile.name }}
+                </span>
+                <span
+                    v-if="!inputFile"
+                    id="file-upload-text-required"
+                >
+                    {{ $t("additional:modules.tools.importerAddon.fileUploadRequiredText") }}
+                </span>
+            </div>
             <!-- This input is only used as focus target so that we can submit when pressing enter -->
             <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
             <input
@@ -294,34 +295,43 @@ export default {
 
 <style lang="scss" scoped>
 
-.form-group {
-    padding: 0.625em;
+.text-placeholder {
+    min-height: 2.75rem;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    #file-upload-text-required {
+        display: block;
+    }
+}
+
+.form-group {
+    display: inline-flex;
+    flex-direction: column;
 
     &.has-error .drop-zone {
-        color: #a94442;
-        border-color: #a94442;
+        color: #af100d;
+        border-color: #af100d;
     }
 
     &.has-success .drop-zone {
-        color: #3c763d;
-        border-color: #3c763d;
+        color: #2a992b;
+        border-color: #2a992b;
     }
 
     .remove-file {
-        color: #a94442;
+        color: #af100d;
 
         .icon {
-            font-size: large; // oder x-large, xx-large, xxx-large
+            font-size: large;
         }
     }
 
     .help-block {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
     }
 
     .drop-zone {
