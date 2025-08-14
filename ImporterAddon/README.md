@@ -15,11 +15,11 @@
 ```
 4. Refer the new addon in your portal's `config.js`:
 ```
-    addons: [
-        "ImporterAddon"
+addons: [
+  "ImporterAddon"
 ]
 ```
-5. Configure the addon in your portal's `config.json`. See an example in `/docs/config.json.md`.
+5. Configure the addon in your portal's `config.json`. See an example in `/doc/config.json.md`.
 
 For more information, please check the official [Masterportal documentation](https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/addOnsVue.md).
 
@@ -33,9 +33,4 @@ For more information, please check the official [Masterportal documentation](htt
 
 ## Notes
 
-As present, this plugin will only work for the tree type `custom`. In future, it will be adapted to new tree component (Masterportal Update v3).
-
-This addon has been developed as part of the project `Erneuerung und Entwicklung des MDI-DE Portals`.
-“Marine Data Infrastructure Germany (MDI-DE)” is jointly operated by three federal authorities and five state authorities of the coastal states of Mecklenburg-Vorpommern, Niedersachsen and Schleswig-Holstein.
-
-[Further information about the MDI-DE Portal](https://projekt.mdi-de.org/)
+This plugin was developed for Masterportal v3.13.0.
