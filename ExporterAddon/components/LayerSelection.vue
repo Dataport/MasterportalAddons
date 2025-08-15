@@ -70,6 +70,8 @@ export default {
 
         /**
          * Load the downloadable layers from the layer tree.
+         * Drawlayers = layers that have been imported bei the importer addon or the AddWMS Tool.
+         * Vectorbaselayers = layers that are created from a selection of a another layer.
          *
          * @returns {any[]} List of downloadable layers.
          */
@@ -80,7 +82,7 @@ export default {
 
             const wfsLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.wfs).map(wfsToDownloadLayer),
                 geojsonLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.geoJson).map(geoJsonToDownloadLayer),
-                drawLayers = layerCollection.getLayers().filter(layer => layer.get("id") === "importDrawLayer").map(drawLayerToDownloadLayer),
+                drawLayers = layerCollection.getLayers().filter(layer => layer.get("id") === "importDrawLayer" || layer.get("id").startsWith("importedLayer_")).map(drawLayerToDownloadLayer),
                 vectorBaseLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.vectorBase && layer.get("id") !== "importDrawLayer").map(vectorBaseDownloadLayer);
 
             layerSelectionList = layerSelectionList
