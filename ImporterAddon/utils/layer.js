@@ -72,35 +72,11 @@ function createWFSLayerConfig (url, version, parentId, {name, title, id}) {
         gfiTheme: "default",
         parentId,
         isExternal: true,
-        // url: addProxyIfNotContained(url),
         url: url,
         version,
         showInLayerTree: true,
         visibility: true
     };
-}
-
-/**
- * Checks if a proxy is contained in the URL and if not, adds it.
- *
- * @param {String} url The URL to check and add proxy to
- * @returns {String} The given URL containing our proxy
- */
-// TODO: This function is not used anywhere in the codebase. Consider removing it.
-// eslint-disable-next-line no-unused-vars
-function addProxyIfNotContained (url) {
-    if (url && url.toLowerCase().indexOf("proxyhttp") < 0) {
-        let proxyUrl;
-
-        if (url.startsWith("http:")) {
-            proxyUrl = window.location.origin + "/proxyhttp/" + url.substring(7);
-        }
-        else if (url.startsWith("https:")) {
-            proxyUrl = window.location.origin + "/proxyhttps/" + url.substring(8);
-        }
-        return proxyUrl;
-    }
-    return url;
 }
 
 /**
