@@ -1,0 +1,9 @@
+{
+    "modules": {
+        "tools": {
+            "geoFilter": {
+                "title": "Räumliches Filtern"
+            }
+        }
+    }
+}

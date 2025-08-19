@@ -4,5 +4,8 @@
   },
   "ExporterAddon": {
     "type": "tool"
+  },
+  "GeoFilter": {
+    "type": "tool"
   }
 }
