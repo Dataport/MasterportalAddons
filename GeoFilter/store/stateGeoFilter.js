@@ -3,7 +3,9 @@ const state = {
     id: "geoFilter",
     type: "geoFilter",
     name: "additional:modules.tools.geoFilter.title",
-    description: "Hier kann was gemacht werden"
+    description: "Hier kann was gemacht werden",
+    filterLayerTypes: ["GeoJSON", "WFS"],
+    targetLayerIds: []
 };
 
 export default state;

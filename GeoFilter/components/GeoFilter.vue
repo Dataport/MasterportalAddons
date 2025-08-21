@@ -1,5 +1,5 @@
 <script>
-// import {mapActions, mapGetters, mapMutations} from "vuex";
+import {mapGetters} from "vuex";
 import layerCollection from "@core/layers/js/layerCollection";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
@@ -21,14 +21,13 @@ export default {
     },
     data () {
         return {
-            filterLayerTypes: ["GeoJSON"],
-            targetLayerIds: ["ensemble_elemente", "fundplatz_elemente", "1711"],
             selectedFilterLayer: null,
             selectedTargetLayer: null,
             loading: false
         };
     },
     computed: {
+        ...mapGetters("Modules/GeoFilter", ["filterLayerTypes", "targetLayerIds"]),
         filterLayers () {
             return layerCollection.getLayers().filter(layer => this.filterLayerTypes.includes(layer.layer.get("typ")) && isPolygonLayer(layer));
         },
@@ -38,11 +37,8 @@ export default {
             }
             return layerCollection.getLayers().filter(layer => layer.layer.get("typ") === "WFS");
         },
-        filterLayerAvailable () {
-            return this.filterLayers.length > 0;
-        },
-        targetLayerAvailable () {
-            return this.targetLayers.length > 0;
+        LayersAvailable () {
+            return this.filterLayers.length > 0 && this.targetLayers.length > 0;
         }
     },
     mounted () {
@@ -71,7 +67,7 @@ export default {
         <hr>
         <SpinnerItem v-if="loading" />
         <div
-            v-if="!filterLayerAvailable && !targetLayerAvailable"
+            v-if="!LayersAvailable"
             class="mt-3"
         >
             {{ $t("additional:modules.tools.geoFilter.noLayersAvailable") }}
@@ -80,43 +76,43 @@ export default {
             v-else
             class="mt-3"
         >
-            <div>
-                {{ $t("additional:modules.tools.geoFilter.chooseLayerText") }}
+            <div v-if="LayersAvailable">
+                <div>
+                    {{ $t("additional:modules.tools.geoFilter.chooseLayerText") }}
+                </div>
+                <select
+                    id="geofilter-select-filterlayer"
+                    v-model="selectedFilterLayer"
+                    class="form-select mt-3"
+                >
+                    <option
+                        v-for="(layer, idx) in filterLayers"
+                        :key="idx"
+                        :value="layer"
+                    >
+                        {{ layer.layer.get("name") }}
+                    </option>
+                </select>
+                <select
+                    id="geofilter-select-targetlayer"
+                    v-model="selectedTargetLayer"
+                    class="form-select mt-3"
+                >
+                    <option
+                        v-for="(layer, idx) in targetLayers"
+                        :key="idx"
+                        :value="layer"
+                    >
+                        {{ layer.layer.get("name") }}
+                    </option>
+                </select>
+                <FlatButton
+                    class="mt-3"
+                    :disabled="!selectedFilterLayer && !selectedTargetLayer"
+                    :text="$t(`additional:modules.tools.geoFilter.filterButton`)"
+                    @click="applyFilter"
+                />
             </div>
-            <select
-                v-if="filterLayerAvailable"
-                id="geofilter-select-filterlayer"
-                v-model="selectedFilterLayer"
-                class="form-select mt-3"
-            >
-                <option
-                    v-for="(layer, idx) in filterLayers"
-                    :key="idx"
-                    :value="layer"
-                >
-                    {{ layer.layer.get("name") }}
-                </option>
-            </select>
-            <select
-                v-if="targetLayerAvailable"
-                id="geofilter-select-targetlayer"
-                v-model="selectedTargetLayer"
-                class="form-select mt-3"
-            >
-                <option
-                    v-for="(layer, idx) in targetLayers"
-                    :key="idx"
-                    :value="layer"
-                >
-                    {{ layer.layer.get("name") }}
-                </option>
-            </select>
-            <FlatButton
-                class="mt-3"
-                :disabled="!selectedFilterLayer && !selectedTargetLayer"
-                :text="$t(`additional:modules.tools.geoFilter.filterButton`)"
-                @click="applyFilter"
-            />
         </div>
     </div>
 </template>
