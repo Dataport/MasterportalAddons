@@ -2,7 +2,9 @@
     "modules": {
         "tools": {
             "geoFilter": {
-                "title": "Räumliches Filtern"
+                "title": "Räumliches Filtern",
+                "chooseLayerText": "Wählen Sie einen Layer als Filter aus",
+                "filterButton": "Filtern"
             }
         }
     }
