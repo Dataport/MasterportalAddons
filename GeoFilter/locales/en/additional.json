@@ -4,7 +4,8 @@
             "geoFilter": {
                 "title": "Spatial Filtering",
                 "chooseLayerText": "Select a layer to filter",
-                "filterButton": "Filter"
+                "filterButton": "Filter",
+                "noLayersAvailable": "No layers available"
             }
         }
     }
