@@ -3,9 +3,8 @@ import {mapGetters} from "vuex";
 import layerCollection from "@core/layers/js/layerCollection";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
-import WFS from "ol/format/WFS";
-import {intersects, or} from "ol/format/filter";
-import Polygon from "ol/geom/Polygon";
+import filterFeaturesByGeometry from "../utils/filterFeaturesByGeometry";
+
 
 /**
  * Checks if the given layer is a polygon layer.
@@ -71,55 +70,11 @@ export default {
             this.loading = true;
 
             const filterLayer = layerCollection.getLayerById(this.selectedFilterLayer.id),
-                targetLayer = layerCollection.getLayerById(this.selectedTargetLayer.id),
-                filterFeatures = filterLayer.layerSource.getFeatures(),
-                coordinates = filterFeatures.map(feature => feature.getGeometry()),
-
-                service = targetLayer.attributes.url,
-                featureType = targetLayer.attributes.featureType,
-                featureNS = targetLayer.attributes.featureNS,
-                featurePrefix = targetLayer.attributes.prefix,
-                geometryName = targetLayer.layerSource.getFeatures()[0].getGeometryName() || "geom",
-                epsg = "EPSG:25832"; // von map abgreifen
+                targetLayer = layerCollection.getLayerById(this.selectedTargetLayer.id);
 
             try {
-                const filters = coordinates.map(geometry => intersects(geometryName, geometry)),
-                    combinedFilter = or(...filters),
 
-                    wfsFormat = new WFS(),
-                    node = wfsFormat.writeGetFeature({
-                        srsName: epsg,
-                        featureNS: featureNS,
-                        featurePrefix: featurePrefix,
-                        featureTypes: [featureType],
-                        filter: combinedFilter
-                    }),
-                    serializer = new XMLSerializer(),
-                    body = serializer.serializeToString(node),
-
-                    response = await fetch(service, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "text/xml"
-                        },
-                        body: body,
-                        credentials: targetLayer.attributes.isSecured ? "include" : "omit"
-                    });
-
-                let responseText = "",
-                    features = null;
-
-
-                if (!response.ok) {
-                    throw new Error(`Request failed with status ${response.status}`);
-                }
-
-                responseText = await response.text();
-
-                features = wfsFormat.readFeatures(responseText, {
-                    dataProjection: targetLayer.get("srsName") || "EPSG:4326",
-                    featureProjection: filterLayer.get("srsName") || "EPSG:4326"
-                });
+                const features = await filterFeaturesByGeometry(targetLayer, filterLayer);
 
                 // eslint-disable-next-line no-console
                 console.log("WFS Features:", features);
