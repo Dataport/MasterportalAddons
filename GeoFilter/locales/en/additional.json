@@ -5,9 +5,11 @@
                 "title": "Spatial Filtering",
                 "chooseLayerText": "Select a layer to filter",
                 "filterButton": "Filter",
-                "noLayersAvailable": "No layers available",
                 "errorMessage": "The filter request failed.",
-                "emptyFeaturesResponse": "No geometries are included in the selection."
+                "emptyFeaturesResponse": "No geometries are included in the selection.",
+                "importFilterLayer": "Import a filter layer.",
+                "import": "Open Importer",
+                "noTargetLayersAvailable": "No target layers available. Please activate a suitable layer in the layer tree."
             }
         }
     }

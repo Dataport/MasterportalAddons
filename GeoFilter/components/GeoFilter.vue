@@ -10,9 +10,14 @@ import filterFeaturesByGeometry from "../utils/filterFeaturesByGeometry";
  * @param {Object} layer - The layer to check.
  * @returns {boolean} - True if the layer is a polygon layer, false otherwise.
  */
-function isPolygonLayer (layer) {
-    return layer.layerSource.getFeatures()[0].getGeometry().getType() === "Polygon";
-}
+// function isPolygonLayer (layerId) {
+//     const layer = layerCollection.getLayerById(layerId);
+
+//     if (!layer) {
+//         return false;
+//     }
+//     return layer.layerSource.getFeatures()[0].getGeometry().getType() === "Polygon";
+// }
 
 export default {
     name: "GeoFilter",
@@ -32,12 +37,14 @@ export default {
             "mainMenu",
             "mainExpanded"
         ]),
+        ...mapGetters(["visibleLayerConfigs"]),
+        ...mapGetters("Menu", ["currentComponentName"]),
         ...mapGetters("Modules/GeoFilter", ["filterLayerTypes", "targetLayerIds"]),
         filterLayers () {
-            return layerCollection.getLayers().filter(layer => this.filterLayerTypes.includes(layer.layer.get("typ")) && isPolygonLayer(layer)).map(layer => {
+            return this.visibleLayerConfigs.filter(layer => this.filterLayerTypes.includes(layer.typ)).map(layer => {
                 return {
-                    id: layer.layer.get("id"),
-                    name: layer.layer.get("name")
+                    id: layer.id,
+                    name: layer.name
                 };
             });
         },
@@ -45,15 +52,15 @@ export default {
             let targetLayers = [];
 
             if (this.targetLayerIds.length > 0) {
-                targetLayers = layerCollection.getLayers().filter(layer => this.targetLayerIds.includes(layer.layer.get("id")));
+                targetLayers = this.visibleLayerConfigs.filter(layer => this.targetLayerIds.includes(layer.id));
             }
             else {
-                targetLayers = layerCollection.getLayers().filter(layer => layer.layer.get("typ") === "WFS");
+                targetLayers = this.visibleLayerConfigs.filter(layer => layer.typ === "WFS");
             }
             return targetLayers.map(layer => {
                 return {
-                    id: layer.layer.get("id"),
-                    name: layer.layer.get("name")
+                    id: layer.id,
+                    name: layer.name
                 };
             });
         },
@@ -72,6 +79,17 @@ export default {
          */
         isImporterAddonAvailable () {
             return this.isModuleInSections(this.mainMenu?.sections, "importerAddon");
+        },
+        importerAddonIsOpen () {
+            return this.currentComponentName("mainMenu") === "importerAddon" || this.currentComponentName("mainMenu") === "modules.importerAddon.name";
+        }
+    },
+    watch: {
+        visibleLayerConfigs (oldVal, newVal) {
+            if (oldVal !== newVal) {
+                this.selectedFilterLayer = this.filterLayers[0] || null;
+                this.selectedTargetLayer = this.targetLayers[0] || null;
+            }
         }
     },
     mounted () {
@@ -82,18 +100,16 @@ export default {
         ...mapActions("Modules/GeoFilter", ["addFilteredFeaturesToTree"]),
         ...mapActions("Alerting", ["addSingleAlert"]),
         ...mapActions("Modules/LayerSelection", ["changeVisibility"]),
-        ...mapActions("Menu", ["changeCurrentComponent", "toggleMenu"]),
+        ...mapActions("Menu", ["changeCurrentComponent", "toggleMenu", "resetMenu"]),
 
         openImporterAddon () {
             if (!this.isImporterAddonAvailable) {
                 return;
             }
-
             // Ensure main menu is open
             if (!this.mainExpanded) {
                 this.toggleMenu("mainMenu");
             }
-
             // Change to importerAddon component in main menu
             this.changeCurrentComponent({
                 type: "importerAddon",
@@ -194,9 +210,11 @@ export default {
             v-if="!filterLayersAvailable"
             class="mt-3"
         >
-            {{ $t("additional:modules.tools.geoFilter.noLayersAvailable") }}
+            {{ $t("additional:modules.tools.geoFilter.importFilterLayer") }}
             <FlatButton
-                :text="$t(`additional:modules.tools.geoFilter.importFilterLayer`)"
+                v-if="!importerAddonIsOpen"
+                class="mt-3"
+                :text="$t(`additional:modules.tools.geoFilter.import`)"
                 @click="openImporterAddon"
             />
         </div>
@@ -204,7 +222,7 @@ export default {
             v-else
             class="mt-3"
         >
-            <div v-if="layersAvailable">
+            <div v-if="filterLayersAvailable">
                 <div>
                     {{ $t("additional:modules.tools.geoFilter.chooseLayerText") }}
                 </div>
@@ -221,6 +239,14 @@ export default {
                         {{ layer.name }}
                     </option>
                 </select>
+            </div>
+            <div
+                v-if="!targetLayersAvailable"
+                class="mt-3"
+            >
+                {{ $t("additional:modules.tools.geoFilter.noTargetLayersAvailable") }}
+            </div>
+            <div v-if="targetLayersAvailable">
                 <select
                     id="geofilter-select-targetlayer"
                     v-model="selectedTargetLayer"
