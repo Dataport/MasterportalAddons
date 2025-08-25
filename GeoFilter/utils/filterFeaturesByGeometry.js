@@ -8,7 +8,7 @@ import {intersects, or} from "ol/format/filter";
  * @param {Object} filterLayer - The filter layer to apply.
  * @returns {Promise<Array>} - A promise that resolves to an array of features.
  */
-async function filterFeaturesByGeometry (targetLayer, filterLayer) {
+async function filterFeaturesByGeometry ({targetLayer, filterLayer}) {
     try {
         const filterFeatures = filterLayer.layerSource.getFeatures(),
             coordinates = filterFeatures.map(feature => feature.getGeometry()),

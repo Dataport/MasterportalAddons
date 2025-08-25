@@ -5,7 +5,9 @@
                 "title": "Räumliches Filtern",
                 "chooseLayerText": "Wählen Sie einen Layer als Filter aus",
                 "filterButton": "Filtern",
-                "noLayersAvailable": "Keine verfügbaren Layer"
+                "noLayersAvailable": "Keine verfügbaren Layer",
+                "errorMessage": "Die Filteranfrage ist fehlgeschlagen.",
+                "emptyFeaturesResponse": "Es sind keine Geometrien in der Auswahl enthalten."
             }
         }
     }
