@@ -1,6 +1,8 @@
 import WFS from "ol/format/WFS";
 import {intersects, or} from "ol/format/filter";
 
+const MAX_PAYLOAD_SIZE = 10 * 1024 * 1024; // 10MB
+
 /**
  * Sends a WFS request to the specified layer (targetLayer) with the given filter (filterLayer).
  * Returns the features that intersect with the geometries from the filter layer.
@@ -31,18 +33,24 @@ async function filterFeaturesByGeometry ({targetLayer, filterLayer}) {
                 filter: combinedFilter
             }),
             serializer = new XMLSerializer(),
-            body = serializer.serializeToString(node),
+            body = serializer.serializeToString(node);
 
-            response = await fetch(service, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "text/xml"
-                },
-                body: body,
-                credentials: targetLayer.attributes.isSecured ? "include" : "omit"
-            });
+        let response = "",
+            responseText = "";
 
-        let responseText = "";
+        if (body.length > MAX_PAYLOAD_SIZE) {
+            throw new Error("Payload size exceeds the maximum limit");
+        }
+
+        response = await fetch(service, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/xml"
+            },
+            body: body,
+            credentials: targetLayer.attributes.isSecured ? "include" : "omit"
+        });
+
 
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`);
