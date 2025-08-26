@@ -5,20 +5,6 @@ import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
 import filterFeaturesByGeometry from "../utils/filterFeaturesByGeometry";
 
-/**
- * Checks if the given layer is a polygon layer.
- * @param {Object} layer - The layer to check.
- * @returns {boolean} - True if the layer is a polygon layer, false otherwise.
- */
-// function isPolygonLayer (layerId) {
-//     const layer = layerCollection.getLayerById(layerId);
-
-//     if (!layer) {
-//         return false;
-//     }
-//     return layer.layerSource.getFeatures()[0].getGeometry().getType() === "Polygon";
-// }
-
 export default {
     name: "GeoFilter",
     components: {
@@ -29,6 +15,7 @@ export default {
         return {
             selectedFilterLayer: null,
             selectedTargetLayer: null,
+            filterLayerName: "",
             loading: false
         };
     },
@@ -37,7 +24,7 @@ export default {
             "mainMenu",
             "mainExpanded"
         ]),
-        ...mapGetters(["visibleLayerConfigs", "layerConfigById"]),
+        ...mapGetters(["visibleLayerConfigs", "layerConfigById", "treeHighlightedFeatures"]),
         ...mapGetters("Menu", ["currentComponentName"]),
         ...mapGetters("Modules/GeoFilter", ["filterLayerTypes", "targetLayerIds"]),
         configuredTargetLayers () {
@@ -85,6 +72,14 @@ export default {
         },
         importerAddonIsOpen () {
             return this.currentComponentName("mainMenu") === "importerAddon" || this.currentComponentName("mainMenu") === "modules.importerAddon.name";
+        },
+        isPolygonLayer () {
+            const layer = layerCollection.getLayerById(this.selectedFilterLayer.id);
+
+            if (!layer) {
+                return false;
+            }
+            return layer.layerSource.getFeatures()[0].getGeometry().getType() === "Polygon";
         }
     },
     watch: {
@@ -96,6 +91,7 @@ export default {
         }
     },
     mounted () {
+        this.filterLayerName = this.treeHighlightedFeatures.layerName ? this.treeHighlightedFeatures.layerName : "common:shared.js.utils.selectedFeatures";
         this.selectedFilterLayer = this.filterLayers[0] || null;
         this.selectedTargetLayer = this.targetLayers[0] || null;
     },
@@ -159,9 +155,12 @@ export default {
             }
             return false;
         },
-
         async applyFilter () {
             if (!this.selectedFilterLayer || !this.selectedTargetLayer) {
+                return;
+            }
+            if (!this.isPolygonLayer) {
+                console.warn("Selected filter layer is not a polygon layer");
                 return;
             }
             this.loading = true;
@@ -184,6 +183,10 @@ export default {
                     layerId: this.selectedTargetLayer.id,
                     features: features
                 });
+                this.changeVisibility({
+                    layerId: this.selectedTargetLayer.id,
+                    value: false
+                });
             }
             catch (error) {
                 console.error("Error during WFS request:", error);
@@ -195,6 +198,11 @@ export default {
             }
             finally {
                 this.loading = false;
+                this.addSingleAlert({
+                    type: "info",
+                    content: this.$t("additional:modules.tools.geoFilter.filteredFeaturesAdded", {layerName: `${this.filterLayerName} ${this.selectedTargetLayer.name}`}),
+                    title: this.$t("additional:modules.tools.geoFilter.title")
+                });
             }
         }
     }

@@ -10,7 +10,8 @@
                 "importFilterLayer": "Import a filter layer.",
                 "import": "Open Importer",
                 "noTargetLayersAvailable": "No target layers available. Please activate a suitable layer in the layer tree.",
-                "configuredLayers": "Suitable layers: {{ layers }}"
+                "configuredLayers": "Suitable layers: {{ layers }}",
+                "filteredFeaturesAdded": "The filtered features have been added to the layer tree: {{ layerName }}"
               }
         }
     }

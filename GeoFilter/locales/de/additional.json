@@ -10,7 +10,8 @@
                 "importFilterLayer": "Importieren Sie einen Filterlayer.",
                 "import": "Importer öffnen",
                 "noTargetLayersAvailable": "Es sind keine Layer zum Filtern verfügbar. Bitte aktivieren Sie einen geeigneten Layer im Themenbaum.",
-                "configuredLayers": "Geeignete Layer: {{ layers }}"
+                "configuredLayers": "Geeignete Layer: {{ layers }}",
+                "filteredFeaturesAdded": "Die gefilterten Feature wurden dem Themenbaum hinzugefügt: {{ layerName }}"
             }
         }
     }
