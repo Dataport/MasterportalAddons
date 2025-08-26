@@ -9,8 +9,9 @@
                 "emptyFeaturesResponse": "No geometries are included in the selection.",
                 "importFilterLayer": "Import a filter layer.",
                 "import": "Open Importer",
-                "noTargetLayersAvailable": "No target layers available. Please activate a suitable layer in the layer tree."
-            }
+                "noTargetLayersAvailable": "No target layers available. Please activate a suitable layer in the layer tree.",
+                "configuredLayers": "Suitable layers: {{ layers }}"
+              }
         }
     }
 }

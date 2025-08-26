@@ -37,9 +37,12 @@ export default {
             "mainMenu",
             "mainExpanded"
         ]),
-        ...mapGetters(["visibleLayerConfigs"]),
+        ...mapGetters(["visibleLayerConfigs", "layerConfigById"]),
         ...mapGetters("Menu", ["currentComponentName"]),
         ...mapGetters("Modules/GeoFilter", ["filterLayerTypes", "targetLayerIds"]),
+        configuredTargetLayers () {
+            return this.targetLayerIds.map(id => this.layerConfigById(id)).filter(layer => layer).map(layer => layer.name).join(", ");
+        },
         filterLayers () {
             return this.visibleLayerConfigs.filter(layer => this.filterLayerTypes.includes(layer.typ)).map(layer => {
                 return {
@@ -245,6 +248,9 @@ export default {
                 class="mt-3"
             >
                 {{ $t("additional:modules.tools.geoFilter.noTargetLayersAvailable") }}
+                <span v-if="configuredTargetLayers">
+                    {{ $t("additional:modules.tools.geoFilter.configuredLayers") }} {{ configuredTargetLayers }}
+                </span>
             </div>
             <div v-if="targetLayersAvailable">
                 <select
