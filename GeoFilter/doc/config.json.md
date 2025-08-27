@@ -1,6 +1,7 @@
 #### Portalconfig.menu.tool.geoFilter
 
-The geofilter allows to filter a WFS Layer (target layer) with another layer, WFS or imported, that contains polygon features (filter layer). As a result all features that lie within or intersect the polygons on the filter layer will be returned on a new layer. To use Imported layers the importerAddon has to be configured as well (link to repo).
+The geofilter allows to filter a WFS Layer (target layer) with another layer, WFS or imported, that contains polygon features (filter layer). As a result all features that lie within or intersect the polygons on the filter layer will be returned on a new layer. The name of the new layer can be configured under `highlightedFeatures.layerName` (**[highlightedFeatures](#portalconfigtreehighlightedfeatures)**).
+To use Imported layers the importerAddon for the v3 has to be configured as well (to be found here: https://github.com/terrestris/masterportal-addons/tree/main).
 
 
 
@@ -21,5 +22,5 @@ The geofilter allows to filter a WFS Layer (target layer) with another layer, WF
   "description": "Spatial Filtering happening here",
   "targetLayerIds": ["ensemble_elemente", "fundplatz_elemente"],
   "filterLayerTypes": ["GeoJSON"]
-},
+}
 ```
