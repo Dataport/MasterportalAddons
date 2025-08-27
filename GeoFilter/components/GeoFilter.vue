@@ -16,16 +16,20 @@ export default {
             selectedFilterLayer: null,
             selectedTargetLayer: null,
             filterLayerName: "",
-            loading: false
+            loading: false,
+            importerAddonId: "importerAddon",
+            importerAddonName: "Import"
         };
     },
     computed: {
         ...mapGetters("Menu", [
             "mainMenu",
-            "mainExpanded"
+            "secondaryMenu",
+            "mainExpanded",
+            "secondaryExpanded"
         ]),
         ...mapGetters(["visibleLayerConfigs", "layerConfigById", "treeHighlightedFeatures"]),
-        ...mapGetters("Menu", ["currentComponentName"]),
+        ...mapGetters("Menu", ["currentComponentName", "menuBySide"]),
         ...mapGetters("Modules/GeoFilter", ["filterLayerTypes", "targetLayerIds"]),
         configuredTargetLayers () {
             return this.targetLayerIds.map(id => this.layerConfigById(id)).filter(layer => layer).map(layer => layer.name).join(", ");
@@ -68,10 +72,21 @@ export default {
          * @returns {Boolean} True if importerAddon is available in main menu
          */
         isImporterAddonAvailable () {
-            return this.isModuleInSections(this.mainMenu?.sections, "importerAddon");
+            return this.isModuleInSections(this.mainMenu?.sections, this.importerAddonId) || this.isModuleInSections(this.secondaryMenu?.sections, this.importerAddonId);
+        },
+        importerAddonMenu () {
+            let menu = null;
+
+            if (this.isModuleInSections(this.mainMenu?.sections, this.importerAddonId)) {
+                menu = "mainMenu";
+            }
+            else if (this.isModuleInSections(this.secondaryMenu?.sections, this.importerAddonId)) {
+                menu = "secondaryMenu";
+            }
+            return menu;
         },
         importerAddonIsOpen () {
-            return this.currentComponentName("mainMenu") === "importerAddon" || this.currentComponentName("mainMenu") === "modules.importerAddon.name";
+            return this.currentComponentName(this.importerAddonMenu) === this.importerAddonId || this.currentComponentName(this.importerAddonMenu) === "modules.importerAddon.name";
         },
         isPolygonLayer () {
             const layer = layerCollection.getLayerById(this.selectedFilterLayer.id);
@@ -99,22 +114,23 @@ export default {
         ...mapActions("Modules/GeoFilter", ["addFilteredFeaturesToTree"]),
         ...mapActions("Alerting", ["addSingleAlert"]),
         ...mapActions("Modules/LayerSelection", ["changeVisibility"]),
-        ...mapActions("Menu", ["changeCurrentComponent", "toggleMenu", "resetMenu"]),
+        ...mapActions("Menu", ["changeCurrentComponent", "toggleMenu"]),
 
         openImporterAddon () {
             if (!this.isImporterAddonAvailable) {
                 return;
             }
-            // Ensure main menu is open
-            if (!this.mainExpanded) {
-                this.toggleMenu("mainMenu");
+            const menuExpanded = this.importerAddonMenu === "mainMenu" ? this.mainExpanded : this.secondaryExpanded;
+
+            if (!menuExpanded) {
+                this.toggleMenu(this.importerAddonMenu);
             }
             // Change to importerAddon component in main menu
             this.changeCurrentComponent({
-                type: "importerAddon",
-                side: "mainMenu",
+                type: this.importerAddonId,
+                side: this.importerAddonMenu,
                 props: {
-                    name: "common:modules.importerAddon.name"
+                    name: this.importerAddonName
                 }
             });
         },
@@ -223,7 +239,7 @@ export default {
         >
             {{ $t("additional:modules.tools.geoFilter.importFilterLayer") }}
             <FlatButton
-                v-if="!importerAddonIsOpen"
+                v-if="!importerAddonIsOpen && isImporterAddonAvailable"
                 class="mt-3"
                 :text="$t(`additional:modules.tools.geoFilter.import`)"
                 @click="openImporterAddon"

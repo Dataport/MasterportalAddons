@@ -16,7 +16,7 @@ export const DEFAULT_VALUES = {
         geoPackageFolderCounter: 0,
         styleFillColor: [104, 170, 204, 1],
         styleStrokeColor: [153, 153, 153, 1],
-        styleStrokeWidth: 5,
+        styleStrokeWidth: 2,
         styleCircleRadius: 10,
         inputFile: undefined,
         onImportFinished: undefined,
