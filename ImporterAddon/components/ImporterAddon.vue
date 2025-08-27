@@ -14,7 +14,7 @@ import {applyStyles} from "../utils/layer";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import buildTreeStructure from "@appstore/js/buildTreeStructure";
 import {processLayersForAdding} from "../utils/processLayersForAdding";
-import layerCollection from "@core/layers/js/layerCollection";
+
 /**
  * ImporterAddon
  * @vue-prop {String} side - The side in which the menu component is being rendered.
