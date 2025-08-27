@@ -2,33 +2,32 @@ import layerCollection from "@core/layers/js/layerCollection";
 
 
 /**
- * Check if a layer with the given ID already exists in the layer collection of the portal.
- * @param {String} layerId The ID of the layer to check.
+ * Check if a layer with the given attribute value already exists in the layer collection of the portal.
+ * @param {String} attribute - The attribute to check (e.g., "name" or "id").
+ * @param {String} value - The value to check for uniqueness.
+ * @returns {Boolean} - True if the value is already taken.
  */
-function isLayerNameTaken (layer) {
-    return Boolean(layerCollection.getLayers().find(existingLayer => existingLayer.get("name") === layer.name));
+function isLayerAttributeTaken (attribute, value) {
+    return Boolean(layerCollection.getLayers().find(existingLayer => existingLayer.get(attribute) === value));
 }
 
 /**
- * Generates a unique layer name by checking if the name already exists in the layer collection.
- * If it exists, appends _1, _2, etc. until a unique name is found.
- * @param {string} baseName - The base name to check
- * @returns {string} - Unique layer name
+ * Generates a unique value for a given layer attribute (e.g., name or id).
+ * If the value already exists, appends _1, _2, etc. until a unique value is found.
+ * @param {string} baseValue - The base value to check.
+ * @param {string} attribute - The attribute to check (e.g., "name" or "id").
+ * @returns {string} - Unique value for the attribute.
  */
-function generateUniqueLayerName (baseName) {
-    let uniqueName = baseName,
+function generateUniqueLayerAttribute (baseValue, attribute) {
+    let uniqueValue = baseValue,
         counter = 1;
 
-    // Create a temporary layer object for checking
-    const tempLayer = {name: uniqueName};
-
-    // Check if the base name already exists
-    while (isLayerNameTaken(tempLayer)) {
-        uniqueName = `${baseName}_${counter}`;
-        tempLayer.name = uniqueName;
+    // Check if the base value already exists
+    while (isLayerAttributeTaken(attribute, uniqueValue)) {
+        uniqueValue = `${baseValue}_${counter}`;
         counter++;
     }
-    return uniqueName;
+    return uniqueValue;
 }
 
 /**
@@ -39,6 +38,7 @@ function generateUniqueLayerName (baseName) {
 export function processLayersForAdding (selectedLayers) {
     return selectedLayers.map(layer => ({
         ...layer,
-        name: generateUniqueLayerName(layer.name)
+        name: generateUniqueLayerAttribute(layer.name, "name"),
+        id: generateUniqueLayerAttribute(layer.id, "id")
     }));
 }
