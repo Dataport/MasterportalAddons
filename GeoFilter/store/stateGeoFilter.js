@@ -3,7 +3,7 @@ const state = {
     id: "geoFilter",
     type: "geoFilter",
     name: "additional:modules.tools.geoFilter.title",
-    description: "Hier kann was gemacht werden",
+    description: "additional:modules.tools.geoFilter.description",
     filterLayerTypes: ["GeoJSON", "WFS"],
     targetLayerIds: []
 };
