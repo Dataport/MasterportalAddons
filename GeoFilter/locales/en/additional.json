@@ -3,11 +3,12 @@
         "tools": {
             "geoFilter": {
                 "title": "Spatial Filtering",
+                "description": "Filter features by polygon features.",
                 "chooseLayerText": "Select a layer to filter",
                 "filterButton": "Filter",
                 "errorMessage": "The filter request failed.",
                 "emptyFeaturesResponse": "No geometries are included in the selection.",
-                "importFilterLayer": "Import a filter layer.",
+                "importFilterLayer": "Import a filter layer or activate an existing one in the layer tree.",
                 "import": "Open Importer",
                 "noTargetLayersAvailable": "No target layers available. Please activate a suitable layer in the layer tree.",
                 "configuredLayers": "Suitable layers: {{ layers }}",

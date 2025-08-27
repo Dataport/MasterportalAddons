@@ -3,11 +3,12 @@
         "tools": {
             "geoFilter": {
                 "title": "Räumliches Filtern",
+                "description": "Features anhand von Polygon-Features filtern.",
                 "chooseLayerText": "Wählen Sie einen Layer als Filter aus",
                 "filterButton": "Filtern",
                 "errorMessage": "Die Filteranfrage ist fehlgeschlagen.",
                 "emptyFeaturesResponse": "Es sind keine Geometrien in der Auswahl enthalten.",
-                "importFilterLayer": "Importieren Sie einen Filterlayer.",
+                "importFilterLayer": "Importieren Sie einen Filterlayer oder aktivieren Sie einen vorhandenen im Themenbaum.",
                 "import": "Importer öffnen",
                 "noTargetLayersAvailable": "Es sind keine Layer zum Filtern verfügbar. Bitte aktivieren Sie einen geeigneten Layer im Themenbaum.",
                 "configuredLayers": "Geeignete Layer: {{ layers }}",
