@@ -31,6 +31,7 @@ export default {
     },
     computed: {
         ...mapGetters("Modules/ImporterAddon", Object.keys(getters)),
+        ...mapGetters("Menu", ["mainMenu", "secondaryMenu"]),
 
         steps () {
             return STEPS;
@@ -59,6 +60,17 @@ export default {
                     this.setImportedFolderCounter();
                     return this.$t("additional:modules.tools.importerAddon.layerTreeFolderTitle", {count: this.importedFolderCounter});
             }
+        },
+        currentMenuSide () {
+            let menu = null;
+
+            if (this.isModuleInSections(this.mainMenu?.sections, this.type)) {
+                menu = "mainMenu";
+            }
+            else if (this.isModuleInSections(this.secondaryMenu?.sections, this.type)) {
+                menu = "secondaryMenu";
+            }
+            return menu;
         }
     },
     mounted () {
@@ -71,6 +83,35 @@ export default {
         ...mapActions("Menu", ["resetMenu"]),
         applyStyles,
         processLayersForAdding,
+        /**
+         * Recursively searches for a module type in menu sections
+         * @param {Array} sections - The menu sections to search in
+         * @param {String} moduleType - The module type to search for
+         * @returns {Boolean} True if module is found
+        */
+        isModuleInSections (sections, moduleType) {
+            if (!Array.isArray(sections)) {
+                return false;
+            }
+
+            return sections.some(section => {
+                if (Array.isArray(section)) {
+                    return this.isModuleInSections(section, moduleType);
+                }
+                if (section && typeof section === "object") {
+                    if (section.type === moduleType) {
+                        return true;
+                    }
+                    if (section.type === "folder" && section.elements) {
+                        return this.isModuleInSections(section.elements, moduleType);
+                    }
+                    if (section.elements) {
+                        return this.isModuleInSections(section.elements, moduleType);
+                    }
+                }
+                return false;
+            });
+        },
 
         /**
          * Handler for closing the tool.
@@ -79,6 +120,7 @@ export default {
          */
         close () {
             this.resetImporterAddon();
+            this.resetMenu(this.currentMenuSide);
         },
 
         /**
