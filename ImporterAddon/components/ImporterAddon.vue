@@ -182,65 +182,63 @@ export default {
         class="row"
     >
         <hr>
-        <form @submit.prevent>
-            <div class="importer-addon-wizard-content">
-                <div
-                    v-if="isCurrentWorkflowUndefined"
-                >
-                    <WorkflowSelection
-                        :workflows="supportedImportWorkflows"
-                    />
-                </div>
-                <div
-                    v-if="!isCurrentWorkflowUndefined"
-                >
-                    <ProvideOgcService
-                        v-if="currentStep === steps.provideOgcService"
-                        :service-type="currentWorkflow"
-                    />
-                    <LayerSelection
-                        v-if="currentStep === steps.selectLayers"
-                        :service-type="currentWorkflow"
-                        :capabilities-url="capabilitiesUrl"
-                    />
-                    <FileUpload
-                        v-if="currentStep === steps.uploadFile"
-                        :service-type="currentWorkflow"
-                    />
-                    <StyleLayers
-                        v-if="currentStep === steps.styleLayers"
-                        :layers="selectedLayers"
-                    />
-                </div>
-            </div>
-            <div class="importer-addon-wizard-navigation mt-3">
-                <FlatButton
-                    v-if="!isCurrentWorkflowUndefined"
-                    type="button"
-                    :text="$t('additional:modules.tools.importerAddon.prev')"
-                    class="btn btn-default"
-                    @click="onPrevClick"
-                />
-                <FlatButton
-                    v-if="!isLastStep"
-                    ref="importer-addon-next-btn"
-                    type="submit"
-                    :text="$t('additional:modules.tools.importerAddon.next')"
-                    :class="{btn: true, 'btn-default': !currentFormValid, 'btn-primary': currentFormValid}"
-                    :disabled="!currentFormValid"
-                    @click="onNextClick"
-                />
-                <FlatButton
-                    v-if="isLastStep"
-                    ref="importer-addon-finish-btn"
-                    type="submit"
-                    :text="$t('additional:modules.tools.importerAddon.finish')"
-                    :class="{btn: true, 'btn-default': !currentFormValid, 'btn-primary': currentFormValid}"
-                    :disabled="!currentFormValid"
-                    @click="onFinishClick"
+        <div class="importer-addon-wizard-content">
+            <div
+                v-if="isCurrentWorkflowUndefined"
+            >
+                <WorkflowSelection
+                    :workflows="supportedImportWorkflows"
                 />
             </div>
-        </form>
+            <div
+                v-if="!isCurrentWorkflowUndefined"
+            >
+                <ProvideOgcService
+                    v-if="currentStep === steps.provideOgcService"
+                    :service-type="currentWorkflow"
+                />
+                <LayerSelection
+                    v-if="currentStep === steps.selectLayers"
+                    :service-type="currentWorkflow"
+                    :capabilities-url="capabilitiesUrl"
+                />
+                <FileUpload
+                    v-if="currentStep === steps.uploadFile"
+                    :service-type="currentWorkflow"
+                />
+                <StyleLayers
+                    v-if="currentStep === steps.styleLayers"
+                    :layers="selectedLayers"
+                />
+            </div>
+        </div>
+        <div class="importer-addon-wizard-navigation mt-3">
+            <FlatButton
+                v-if="!isCurrentWorkflowUndefined"
+                type="button"
+                :text="$t('additional:modules.tools.importerAddon.prev')"
+                class="btn btn-default"
+                @click="onPrevClick"
+            />
+            <FlatButton
+                v-if="!isLastStep"
+                ref="importer-addon-next-btn"
+                type="submit"
+                :text="$t('additional:modules.tools.importerAddon.next')"
+                :class="{btn: true, 'btn-default': !currentFormValid, 'btn-primary': currentFormValid}"
+                :disabled="!currentFormValid"
+                @click="onNextClick"
+            />
+            <FlatButton
+                v-if="isLastStep"
+                ref="importer-addon-finish-btn"
+                type="submit"
+                :text="$t('additional:modules.tools.importerAddon.finish')"
+                :class="{btn: true, 'btn-default': !currentFormValid, 'btn-primary': currentFormValid}"
+                :disabled="!currentFormValid"
+                @click="onFinishClick"
+            />
+        </div>
     </div>
 </template>
 
