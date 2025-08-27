@@ -86,7 +86,10 @@ export default {
             return menu;
         },
         importerAddonIsOpen () {
-            return this.currentComponentName(this.importerAddonMenu) === this.importerAddonId || this.currentComponentName(this.importerAddonMenu) === "modules.importerAddon.name";
+            if (this.isImporterAddonAvailable) {
+                return this.currentComponentName(this.importerAddonMenu) === this.importerAddonId || this.currentComponentName(this.importerAddonMenu) === "modules.importerAddon.name";
+            }
+            return null;
         },
         isPolygonLayer () {
             const layer = layerCollection.getLayerById(this.selectedFilterLayer.id);
