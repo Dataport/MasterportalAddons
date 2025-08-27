@@ -19,7 +19,6 @@ export const DEFAULT_VALUES = {
         styleStrokeWidth: 2,
         styleCircleRadius: 10,
         inputFile: undefined,
-        onImportFinished: undefined,
         supportedImportWorkflows: getWorkflowNames(),
         fileUploadIcon: "bi bi-cloud-arrow-up-fill",
         removeFileIcon: "bi bi-x-circle-fill"
@@ -45,7 +44,6 @@ export const DEFAULT_VALUES = {
      * @property {Number} shapeFileFolderCounter The counter used for shape file folder ids.
      * @property {Number} geoPackageFolderCounter The counter used for geo package folder ids.
      * @property {File} inputFile The input file for local uploads.
-     * @property {Function} onImportFinished A function that is triggered, when the import has finished.
      * @property {String[]} supportedImportWorkflows The import workflows that will be supported.
      * @property {String} fileUploadIcon The icon string for the upload icon.
      * @property {String} removeFileIcon The icon string for the remove-file icon.

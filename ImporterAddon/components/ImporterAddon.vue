@@ -171,10 +171,6 @@ export default {
             }
             this.applyStyles(processedLayers);
             this.close();
-            if (this.onImportFinished) {
-                this.onImportFinished();
-                this.setOnImportFinished(undefined);
-            }
         }
     }
 };
