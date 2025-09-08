@@ -1,6 +1,17 @@
 <script>
+import AddonOpenerButton from "../../AddonOpenerButton.vue";
+
 export default {
-    name: "WfstUploader"
+    name: "WfstUploader",
+    components: {
+        AddonOpenerButton
+    },
+    data () {
+        return {
+            importerAddonId: "importerAddon",
+            importerAddonName: "Import"
+        };
+    }
 };
 </script>
 
@@ -9,7 +20,12 @@ export default {
         id="wfstUploader"
         class="row"
     >
-        HALLO HIER IST WAS IM GANGE
+        <AddonOpenerButton
+            button-text="Geometrie hochladen - huihuihui"
+            :button-class="'mt-3'"
+            :addon-id="importerAddonId"
+            :addon-name="importerAddonName"
+        />
     </div>
 </template>
 
