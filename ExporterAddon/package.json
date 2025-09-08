@@ -1,6 +1,6 @@
 {
   "name": "exporteraddon",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A generic exporter addon for Masterportal",
   "main": "index.js",
   "directories": {
@@ -10,8 +10,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Dataport AöR",
+  "license": "MIT",
   "dependencies": {
     "@crmackey/shp-write": "^0.4.5"
   }
