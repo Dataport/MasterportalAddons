@@ -1,0 +1,10 @@
+{
+    "modules": {
+        "tools": {
+            "wfstUploader": {
+                "title": "WFST-Uploader",
+                "description": "Save features on WFST layers."
+            }
+        }
+    }
+}
