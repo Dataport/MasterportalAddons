@@ -4,12 +4,14 @@ import layerCollection from "@core/layers/js/layerCollection";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
 import filterFeaturesByGeometry from "../utils/filterFeaturesByGeometry";
+import AddonOpenerButton from "../../AddonOpenerButton.vue";
 
 export default {
     name: "GeoFilter",
     components: {
         SpinnerItem,
-        FlatButton
+        FlatButton,
+        AddonOpenerButton
     },
     data () {
         return {
@@ -67,30 +69,6 @@ export default {
         layersAvailable () {
             return this.filterLayers.length > 0 && this.targetLayers.length > 0;
         },
-        /**
-         * Checks if the ImporterAddon is available/configured in the main menu only
-         * @returns {Boolean} True if importerAddon is available in main menu
-         */
-        isImporterAddonAvailable () {
-            return this.isModuleInSections(this.mainMenu?.sections, this.importerAddonId) || this.isModuleInSections(this.secondaryMenu?.sections, this.importerAddonId);
-        },
-        importerAddonMenu () {
-            let menu = null;
-
-            if (this.isModuleInSections(this.mainMenu?.sections, this.importerAddonId)) {
-                menu = "mainMenu";
-            }
-            else if (this.isModuleInSections(this.secondaryMenu?.sections, this.importerAddonId)) {
-                menu = "secondaryMenu";
-            }
-            return menu;
-        },
-        importerAddonIsOpen () {
-            if (this.isImporterAddonAvailable) {
-                return this.currentComponentName(this.importerAddonMenu) === this.importerAddonId || this.currentComponentName(this.importerAddonMenu) === "modules.importerAddon.name";
-            }
-            return null;
-        },
         isPolygonLayer () {
             const layer = layerCollection.getLayerById(this.selectedFilterLayer.id);
 
@@ -117,63 +95,6 @@ export default {
         ...mapActions("Modules/GeoFilter", ["addFilteredFeaturesToTree"]),
         ...mapActions("Alerting", ["addSingleAlert"]),
         ...mapActions("Modules/LayerSelection", ["changeVisibility"]),
-        ...mapActions("Menu", ["changeCurrentComponent", "toggleMenu"]),
-
-        openImporterAddon () {
-            if (!this.isImporterAddonAvailable) {
-                return;
-            }
-            const menuExpanded = this.importerAddonMenu === "mainMenu" ? this.mainExpanded : this.secondaryExpanded;
-
-            if (!menuExpanded) {
-                this.toggleMenu(this.importerAddonMenu);
-            }
-            // Change to importerAddon component in main menu
-            this.changeCurrentComponent({
-                type: this.importerAddonId,
-                side: this.importerAddonMenu,
-                props: {
-                    name: this.importerAddonName
-                }
-            });
-        },
-        /**
-         * Recursively searches for a module type in menu sections
-         * @param {Array} sections - The menu sections to search in
-         * @param {String} moduleType - The module type to search for
-         * @returns {Boolean} True if module is found
-         */
-        isModuleInSections (sections, moduleType) {
-            if (!Array.isArray(sections)) {
-                return false;
-            }
-
-            for (const section of sections) {
-                if (Array.isArray(section)) {
-                    // Handle array of sections
-                    if (this.isModuleInSections(section, moduleType)) {
-                        return true;
-                    }
-                }
-                else if (section && typeof section === "object") {
-                    // Check if this section has the module type
-                    if (section.type === moduleType) {
-                        return true;
-                    }
-                    // Check if this is a folder with elements
-                    if (section.type === "folder" && section.elements) {
-                        if (this.isModuleInSections(section.elements, moduleType)) {
-                            return true;
-                        }
-                    }
-                    // Check if this section has elements
-                    if (section.elements && this.isModuleInSections(section.elements, moduleType)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        },
         async applyFilter () {
             if (!this.selectedFilterLayer || !this.selectedTargetLayer) {
                 return;
@@ -241,11 +162,11 @@ export default {
             class="mt-3"
         >
             {{ $t("additional:modules.tools.geoFilter.importFilterLayer") }}
-            <FlatButton
-                v-if="!importerAddonIsOpen && isImporterAddonAvailable"
-                class="mt-3"
-                :text="$t(`additional:modules.tools.geoFilter.import`)"
-                @click="openImporterAddon"
+            <AddonOpenerButton
+                :button-text="$t(`additional:modules.tools.geoFilter.import`)"
+                :button-class="'mt-3'"
+                :addon-id="importerAddonId"
+                :addon-name="importerAddonName"
             />
         </div>
         <div
