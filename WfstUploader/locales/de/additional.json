@@ -3,7 +3,8 @@
         "tools": {
             "wfstUploader": {
                 "title": "WFST-Uploader",
-                "description": "Features auf WFST Layern speichern."
+                "description": "Features auf WFST Layern speichern.",
+                "uploadButton": "Geometrie hochladen"
             }
         }
     }

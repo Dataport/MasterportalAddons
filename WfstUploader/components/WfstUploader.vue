@@ -21,7 +21,7 @@ export default {
         class="row"
     >
         <AddonOpenerButton
-            button-text="Geometrie hochladen - huihuihui"
+            :button-text="$t('additional:modules.tools.wfstUploader.uploadButton')"
             :button-class="'mt-3'"
             :addon-id="importerAddonId"
             :addon-name="importerAddonName"
