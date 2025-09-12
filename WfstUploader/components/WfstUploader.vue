@@ -1,5 +1,5 @@
 <script>
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
@@ -25,12 +25,13 @@ export default {
             selectInteraction: null,
             selectEvent: null,
             selectedWfstLayer: null,
+            selectedFeature: null,
             wfsFeatureProperties: null,
             isloading: false
         };
     },
     computed: {
-        ...mapGetters("Modules/WfstUploader", ["selectedFeature", "wfstLayers", "wfstAttributesForInput"]),
+        ...mapGetters("Modules/WfstUploader", ["wfstLayers", "wfstAttributesForInput"]),
         ...mapGetters(["visibleLayerConfigs", "layerConfigById"]),
         wfstLayersForSelection () {
             return this.visibleLayerConfigs.filter(layer => this.wfstLayers.includes(layer.id)).map(layer => {
@@ -67,7 +68,7 @@ export default {
         this.removeInteraction(this.selectEvent);
     },
     methods: {
-        ...mapMutations("Modules/WfstUploader", ["setSelectedFeature"]),
+        ...mapActions("Modules/WfstUploader", ["uploadFeature"]),
         ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
         createInteractions () {
             const select = new Select({
@@ -93,7 +94,7 @@ export default {
                 }
 
                 if (layer.get("visible") && layer.get("source") instanceof VectorSource) {
-                    this.setSelectedFeature(feature);
+                    this.selectedFeature = feature;
                 }
                 else {
                     console.warn("Layer not visible or not a vector source", layer);
@@ -131,7 +132,6 @@ export default {
          * @param {Array} properties The updated properties array
          */
         onPropertiesChanged (properties) {
-            console.log("WFS Feature Properties updated:", {newVal: properties});
             // Handle property changes here
             // You can validate, format, or trigger other actions
             properties.forEach((prop) => {
@@ -140,8 +140,14 @@ export default {
                 }
             });
         },
-        uploadFeature () {
-          console.log("Upload feature clicked");
+        async uploadFeatureForTransaction () {
+            const payload = {
+                feature: this.selectedFeature,
+                properties: this.wfsFeatureProperties,
+                targetLayer: this.layerConfigById(this.selectedWfstLayer.id)
+            };
+
+            await this.uploadFeature(payload);
         }
     }
 };
@@ -198,13 +204,13 @@ export default {
                 class="mt-3"
                 :disabled="!selectedWfstLayer"
                 text="Verwerfen"
-                @click="setSelectedFeature(null)"
+                @click="selectedFeature = null"
             />
             <FlatButton
                 class="mt-3"
                 :disabled="!selectedWfstLayer"
                 text="Hochladen"
-                @click="uploadFeature"
+                @click="uploadFeatureForTransaction"
             />
         </div>
     </div>

@@ -7,7 +7,6 @@ const state = {
     description: "additional:modules.tools.wfstUploader.description",
     uploadLayerTypes: ["GeoJSON", "WFS"],
     wfstLayers: [],
-    selectedFeature: null,
     wfstAttributesForInput: "all"
 };
 
