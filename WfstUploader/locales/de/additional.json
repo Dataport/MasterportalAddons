@@ -4,7 +4,11 @@
             "wfstUploader": {
                 "title": "WFST-Uploader",
                 "description": "Features auf WFST Layern speichern.",
-                "uploadButton": "Geometrie hochladen"
+                "uploadButton": "Geometrie hochladen",
+                "selectedFeature": "Ausgewähltes Feature",
+                "propertyName": "Eigenschaft",
+                "propertyValue": "Wert",
+                "noProperties": "Keine Eigenschaften verfügbar"
             }
         }
     }

@@ -4,7 +4,11 @@
             "wfstUploader": {
                 "title": "WFST-Uploader",
                 "description": "Save features on WFST layers.",
-                "uploadButton": "Upload geometry"
+                "uploadButton": "Upload geometry",
+                "selectedFeature": "Selected Feature",
+                "propertyName": "Property",
+                "propertyValue": "Value",
+                "noProperties": "No properties available"
             }
         }
     }

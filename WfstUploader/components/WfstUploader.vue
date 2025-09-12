@@ -1,13 +1,15 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import AddonOpenerButton from "../../AddonOpenerButton.vue";
+import FeaturePropertiesDisplay from "./FeaturePropertiesDisplay.vue";
 import VectorSource from "ol/source/Vector.js";
 import {Select} from "ol/interaction";
 
 export default {
     name: "WfstUploader",
     components: {
-        AddonOpenerButton
+        AddonOpenerButton,
+        FeaturePropertiesDisplay
     },
     data () {
         return {
@@ -21,8 +23,8 @@ export default {
         ...mapGetters("Modules/WfstUploader", ["selectedFeature"])
     },
     watch: {
-        selectedFeature (newFeature, oldFeature) {
-            console.log("feature-selected event", newFeature);
+        selectedFeature () {
+            // Handle feature selection changes if needed
         }
     },
     mounted () {
@@ -82,7 +84,16 @@ export default {
             :addon-id="importerAddonId"
             :addon-name="importerAddonName"
         />
+        <span v-if="!selectedFeature">Halten Sie die Strg-Taste gedrückt und klicken Sie auf ein Feature, um es auszuwählen.</span>
+        <FeaturePropertiesDisplay
+            v-else
+            :feature="selectedFeature"
+            :title="$t('additional:modules.tools.wfstUploader.selectedFeature')"
+            class="mt-3"
+        />
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* Styles for WfstUploader component */
+</style>
