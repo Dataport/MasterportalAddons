@@ -16,11 +16,21 @@ export default {
             importerAddonId: "importerAddon",
             importerAddonName: "Import",
             selectInteraction: null,
-            selectEvent: null
+            selectEvent: null,
+            selectedWfstLayer: null
         };
     },
     computed: {
-        ...mapGetters("Modules/WfstUploader", ["selectedFeature"])
+        ...mapGetters("Modules/WfstUploader", ["selectedFeature", "wfstLayers"]),
+        ...mapGetters(["visibleLayerConfigs", "layerConfigById"]),
+        wfstLayersForSelection () {
+            return this.visibleLayerConfigs.filter(layer => this.wfstLayers.includes(layer.id)).map(layer => {
+                return {
+                    id: layer.id,
+                    name: layer.name
+                };
+            });
+        }
     },
     watch: {
         selectedFeature () {
@@ -85,12 +95,29 @@ export default {
             :addon-name="importerAddonName"
         />
         <span v-if="!selectedFeature">Halten Sie die Strg-Taste gedrückt und klicken Sie auf ein Feature, um es auszuwählen.</span>
-        <FeaturePropertiesDisplay
-            v-else
-            :feature="selectedFeature"
-            :title="$t('additional:modules.tools.wfstUploader.selectedFeature')"
-            class="mt-3"
-        />
+        <div v-else>
+            <FeaturePropertiesDisplay
+                :feature="selectedFeature"
+                :title="$t('additional:modules.tools.wfstUploader.selectedFeature')"
+                class="mt-3"
+            />
+            <div class="mt-3">
+                Wählen sie einen WFST Layer aus, auf den das Feature hochgeladen werden soll:
+            </div>
+            <select
+                id="wfstUpload-select-wfstlayer"
+                v-model="selectedWfstLayer"
+                class="form-select mt-3"
+            >
+                <option
+                    v-for="(layer, idx) in wfstLayersForSelection"
+                    :key="idx"
+                    :value="layer"
+                >
+                    {{ layer.name }}
+                </option>
+            </select>
+        </div>
     </div>
 </template>
 
