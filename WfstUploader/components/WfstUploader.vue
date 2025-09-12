@@ -1,5 +1,6 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
+import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import AddonOpenerButton from "../../AddonOpenerButton.vue";
 import FeaturePropertiesDisplay from "./FeaturePropertiesDisplay.vue";
 import VectorSource from "ol/source/Vector.js";
@@ -9,7 +10,8 @@ export default {
     name: "WfstUploader",
     components: {
         AddonOpenerButton,
-        FeaturePropertiesDisplay
+        FeaturePropertiesDisplay,
+        FlatButton
     },
     data () {
         return {
@@ -117,6 +119,18 @@ export default {
                     {{ layer.name }}
                 </option>
             </select>
+            <FlatButton
+                class="mt-3"
+                :disabled="!selectedWfstLayer"
+                text="Verwerfen"
+                @click="setSelectedFeature(null)"
+            />
+            <FlatButton
+                class="mt-3"
+                :disabled="!selectedWfstLayer"
+                text="Hochladen"
+                @click="console.log('Upload feature to WFST layer', selectedWfstLayer)"
+            />
         </div>
     </div>
 </template>
