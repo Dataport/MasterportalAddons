@@ -1,6 +1,9 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
+import InputText from "@shared/modules/inputs/components/InputText.vue";
+import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
+import wfs from "@masterportal/masterportalapi/src/layer/wfs";
 import AddonOpenerButton from "../../AddonOpenerButton.vue";
 import FeaturePropertiesDisplay from "./FeaturePropertiesDisplay.vue";
 import VectorSource from "ol/source/Vector.js";
@@ -11,7 +14,9 @@ export default {
     components: {
         AddonOpenerButton,
         FeaturePropertiesDisplay,
-        FlatButton
+        FlatButton,
+        InputText,
+        SpinnerItem
     },
     data () {
         return {
@@ -19,11 +24,13 @@ export default {
             importerAddonName: "Import",
             selectInteraction: null,
             selectEvent: null,
-            selectedWfstLayer: null
+            selectedWfstLayer: null,
+            wfsFeatureProperties: null,
+            isloading: false
         };
     },
     computed: {
-        ...mapGetters("Modules/WfstUploader", ["selectedFeature", "wfstLayers"]),
+        ...mapGetters("Modules/WfstUploader", ["selectedFeature", "wfstLayers", "wfstAttributesForInput"]),
         ...mapGetters(["visibleLayerConfigs", "layerConfigById"]),
         wfstLayersForSelection () {
             return this.visibleLayerConfigs.filter(layer => this.wfstLayers.includes(layer.id)).map(layer => {
@@ -37,6 +44,19 @@ export default {
     watch: {
         selectedFeature () {
             // Handle feature selection changes if needed
+        },
+        selectedWfstLayer () {
+            this.getFeaturePropertiesFromWFST();
+        },
+        wfsFeatureProperties: {
+            handler (newVal, oldVal) {
+                // Handle changes to WFS feature properties
+                if (newVal && oldVal) {
+                    // Properties have been updated
+                    this.onPropertiesChanged(newVal);
+                }
+            },
+            deep: true
         }
     },
     mounted () {
@@ -80,6 +100,48 @@ export default {
                 }
                 return true;
             });
+        },
+        async getFeaturePropertiesFromWFST () {
+            this.isloading = true;
+            this.wfsFeatureProperties = null;
+            const {url, version, featureType, isSecured} = this.layerConfigById(this.selectedWfstLayer.id),
+                properties = await wfs.receivePossibleProperties(url, version, featureType, isSecured ?? false);
+
+            if (this.wfstAttributesForInput !== "all") {
+                this.wfsFeatureProperties = properties.filter(prop => this.wfstAttributesForInput.includes(prop.label));
+            }
+            else {
+                this.wfsFeatureProperties = properties;
+            }
+            this.isloading = false;
+        },
+        /**
+         * Updates a property value in the wfsFeatureProperties array
+         * @param {Number} index The index of the property to update
+         * @param {String} value The new value
+         */
+        updatePropertyValue (index, value) {
+            if (this.wfsFeatureProperties && this.wfsFeatureProperties[index]) {
+                // Vue 3: Direct assignment works with reactive arrays
+                this.wfsFeatureProperties[index].value = value;
+            }
+        },
+        /**
+         * Called when WFS feature properties change
+         * @param {Array} properties The updated properties array
+         */
+        onPropertiesChanged (properties) {
+            console.log("WFS Feature Properties updated:", {newVal: properties});
+            // Handle property changes here
+            // You can validate, format, or trigger other actions
+            properties.forEach((prop) => {
+                if (prop.value !== undefined && prop.value !== null && prop.value !== "") {
+                    // Property has a value - you can add validation logic here
+                }
+            });
+        },
+        uploadFeature () {
+          console.log("Upload feature clicked");
         }
     }
 };
@@ -109,7 +171,7 @@ export default {
             <select
                 id="wfstUpload-select-wfstlayer"
                 v-model="selectedWfstLayer"
-                class="form-select mt-3"
+                class="form-select mt-3 mb-3"
             >
                 <option
                     v-for="(layer, idx) in wfstLayersForSelection"
@@ -119,6 +181,19 @@ export default {
                     {{ layer.name }}
                 </option>
             </select>
+            <SpinnerItem v-if="isloading" />
+            <div v-if="wfsFeatureProperties">
+                <InputText
+                    v-for="(property, idx) in wfsFeatureProperties"
+                    :id="`wfs-property-${idx}`"
+                    :key="idx"
+                    :type="property.type"
+                    :label="property.label"
+                    :placeholder="property.label"
+                    :model-value="property.value || ''"
+                    @update:model-value="updatePropertyValue(idx, $event)"
+                />
+            </div>
             <FlatButton
                 class="mt-3"
                 :disabled="!selectedWfstLayer"
@@ -129,7 +204,7 @@ export default {
                 class="mt-3"
                 :disabled="!selectedWfstLayer"
                 text="Hochladen"
-                @click="console.log('Upload feature to WFST layer', selectedWfstLayer)"
+                @click="uploadFeature"
             />
         </div>
     </div>
