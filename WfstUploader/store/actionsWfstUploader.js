@@ -1,5 +1,6 @@
-import Feature from "ol/Feature";
 import addFeaturePropertiesToFeature from "../../../src/modules/wfst/js/addFeaturePropertiesToFeature";
+import wfs from "@masterportal/masterportalapi/src/layer/wfs";
+import layerCollection from "@core/layers/js/layerCollection";
 
 const actions = {
     /**
@@ -10,35 +11,50 @@ const actions = {
      * @param {Array} payload.properties Array of property objects with values
      * @param {Object} payload.targetLayer Target WFST layer configuration
      */
-    async uploadFeature (context, {feature, properties, targetLayer}) {
-        // TODO: Implement the actual upload logic
-        // const featureWithProperties = await addFeaturePropertiesToFeature(
-        //     {
-        //         id: feature.getId(),
-        //         geometryName: feature.getGeometryName(),
-        //         geometry: feature.getGeometry()
-        //     },
-        //     properties,
-        //     false, // isUpdate
-        //     targetLayer.featurePrefix,
-        //     targetLayer.attributes
-        // );
+    async uploadFeature ({rootGetters}, {feature, properties, targetLayer}) {
+        let featureWithProperties = null,
+            response = null;
 
-        // const response = await wfs.sendTransaction(
-        //     rootGetters["Maps/projectionCode"],
-        //     featureWithProperties,
-        //     targetLayer.url,
-        //     targetLayer,
-        //     "insert"
-        // );
+        const targetLayerSource = layerCollection.getLayerById(targetLayer.id).getLayerSource(),
+            geometryName = targetLayerSource.getFeatures().length > 0
+                ? targetLayerSource.getFeatures()[0].getGeometryName()
+                : "geom",
+            propertiesWithGeometry = [...properties];
 
-        // return response;
+        if (!propertiesWithGeometry.some(prop => prop.type === "geometry")) {
+            propertiesWithGeometry.push({
+                key: geometryName,
+                label: "geometry",
+                type: "geometry",
+                value: null
+            });
+        }
 
-        // Temporary placeholder
-        console.log("Uploading feature:", feature);
-        console.log("With properties:", properties);
-        console.log("To target layer:", targetLayer);
-        return {feature, properties, targetLayer};
+        featureWithProperties = await addFeaturePropertiesToFeature(
+            {
+                geometryName: geometryName,
+                geometry: feature.getGeometry()
+            },
+            propertiesWithGeometry,
+            false, // isUpdate
+            targetLayer.featurePrefix
+        );
+
+        try {
+            response = await wfs.sendTransaction(
+                rootGetters["Maps/projectionCode"],
+                featureWithProperties,
+                targetLayer.url,
+                targetLayer,
+                "insert"
+            );
+        }
+        catch (error) {
+            console.error("Error uploading feature:", error);
+            throw error;
+        }
+
+        return response;
     }
 };
 
