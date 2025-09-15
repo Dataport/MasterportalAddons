@@ -30,7 +30,8 @@ export default {
             selectedFeature: null,
             wfsFeatureProperties: null,
             isloading: false,
-            errorMessage: null
+            errorMessage: null,
+            highlightFeatureObject: {}
         };
     },
     computed: {
@@ -64,12 +65,13 @@ export default {
         this.createInteractions();
     },
     unmounted () {
+        this.removeHighlightFeature(this.selectedFeature);
         this.selectedFeature = null;
         this.removeInteraction(this.selectEvent);
     },
     methods: {
         ...mapActions("Modules/WfstUploader", ["uploadFeature"]),
-        ...mapActions("Maps", ["addInteraction", "removeInteraction"]),
+        ...mapActions("Maps", ["addInteraction", "removeInteraction", "highlightFeature", "removeHighlightFeature"]),
         createInteractions () {
             const select = new Select({
                 condition: (event) => event.originalEvent.ctrlKey && event.type === "pointerdown",
@@ -98,6 +100,10 @@ export default {
 
                 if (layer.get("visible") && layer.get("source") instanceof VectorSource) {
                     this.selectedFeature = feature;
+                    this.highlightFeatureObject.feature = this.selectedFeature;
+                    this.highlightFeatureObject.type = "highlightPolygon";
+                    this.highlightFeatureObject.layer = layer;
+                    this.highlightFeature(this.highlightFeatureObject);
                 }
                 else {
                     console.warn("Layer not visible or not a vector source", layer);
@@ -205,11 +211,14 @@ export default {
                 };
 
                 await this.uploadFeature(payload);
-                this.selectedFeature = null;
             }
             catch (error) {
                 this.errorMessage = "Fehler beim Hochladen des Features. Überprüfen Sie die Konsole für weitere Details.";
                 console.error("Fehler beim Hochladen des Features:", error);
+            }
+            finally {
+                this.removeHighlightFeature(this.selectedFeature);
+                this.selectedFeature = null;
             }
         }
     }
