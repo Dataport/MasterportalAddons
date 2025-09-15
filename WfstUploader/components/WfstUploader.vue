@@ -10,6 +10,8 @@ import AddonOpenerButton from "../../AddonOpenerButton.vue";
 import FeaturePropertiesDisplay from "./FeaturePropertiesDisplay.vue";
 import VectorSource from "ol/source/Vector.js";
 import {Select} from "ol/interaction";
+import getHighlightType from "../utils/getHighlightType";
+import validateGeometryCompatibility from "../utils/validateGeometryCompatibility";
 
 export default {
     name: "WfstUploader",
@@ -52,9 +54,7 @@ export default {
         },
         wfsFeatureProperties: {
             handler (newVal, oldVal) {
-                // Handle changes to WFS feature properties
                 if (newVal && oldVal) {
-                    // Properties have been updated
                     this.onPropertiesChanged(newVal);
                 }
             },
@@ -89,7 +89,6 @@ export default {
                 coordinate = event.coordinate,
                 pixel = map.getPixelFromCoordinate(coordinate);
 
-            // Reset error message when selecting a new feature
             this.errorMessage = null;
 
             map.forEachFeatureAtPixel(pixel, (feature, layer) => {
@@ -101,7 +100,7 @@ export default {
                 if (layer.get("visible") && layer.get("source") instanceof VectorSource) {
                     this.selectedFeature = feature;
                     this.highlightFeatureObject.feature = this.selectedFeature;
-                    this.highlightFeatureObject.type = "highlightPolygon";
+                    this.highlightFeatureObject.type = getHighlightType(feature);
                     this.highlightFeatureObject.layer = layer;
                     this.highlightFeature(this.highlightFeatureObject);
                 }
@@ -134,7 +133,6 @@ export default {
          */
         updatePropertyValue (index, value) {
             if (this.wfsFeatureProperties && this.wfsFeatureProperties[index]) {
-                // Vue 3: Direct assignment works with reactive arrays
                 this.wfsFeatureProperties[index].value = value;
             }
         },
@@ -151,48 +149,12 @@ export default {
                 }
             });
         },
-        /**
-         * Validates if the geometry type of the selected feature is compatible with the target WFST layer
-         * @param {ol.Feature} feature The OpenLayers feature to validate
-         * @param {Object} targetLayer The target WFST layer configuration
-         * @returns {Boolean} True if geometry types are compatible, false otherwise
-         */
-        validateGeometryCompatibility (feature, targetLayer) {
-            if (!feature || !feature.getGeometry() || !targetLayer) {
-                return false;
-            }
-
-            const featureGeometryType = feature.getGeometry().getType(),
-                layerSource = layerCollection.getLayerById(targetLayer.id).getLayerSource(),
-                existingFeatures = layerSource.getFeatures(),
-                compatibilityMap = {
-                    "Point": ["Point", "MultiPoint"],
-                    "MultiPoint": ["Point", "MultiPoint"],
-                    "LineString": ["LineString", "MultiLineString"],
-                    "MultiLineString": ["LineString", "MultiLineString"],
-                    "Polygon": ["Polygon", "MultiPolygon"],
-                    "MultiPolygon": ["Polygon", "MultiPolygon"]
-                };
-
-            let expectedGeometryType = null,
-                compatibleTypes = [];
-
-            if (existingFeatures.length === 0) {
-                // No existing features, allow any geometry type
-                return true;
-            }
-
-            expectedGeometryType = existingFeatures[0].getGeometry().getType();
-            compatibleTypes = compatibilityMap[expectedGeometryType] || [expectedGeometryType];
-
-            return compatibleTypes.includes(featureGeometryType);
-        },
         async uploadFeatureForTransaction () {
             this.errorMessage = null;
 
             const targetLayer = this.layerConfigById(this.selectedWfstLayer.id);
 
-            if (!this.validateGeometryCompatibility(this.selectedFeature, targetLayer)) {
+            if (!validateGeometryCompatibility(this.selectedFeature, targetLayer)) {
                 const featureGeometryType = this.selectedFeature.getGeometry().getType(),
                     layerSource = layerCollection.getLayerById(targetLayer.id).getLayerSource(),
                     existingFeatures = layerSource.getFeatures(),
