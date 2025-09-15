@@ -43,9 +43,6 @@ export default {
         }
     },
     watch: {
-        selectedFeature () {
-            // Handle feature selection changes if needed
-        },
         selectedWfstLayer () {
             this.getFeaturePropertiesFromWFST();
         },
@@ -64,7 +61,7 @@ export default {
         this.createInteractions();
     },
     unmounted () {
-        this.setSelectedFeature(null);
+        this.selectedFeature = null;
         this.removeInteraction(this.selectEvent);
     },
     methods: {
@@ -148,6 +145,7 @@ export default {
             };
 
             await this.uploadFeature(payload);
+            this.selectedFeature = null;
         }
     }
 };
