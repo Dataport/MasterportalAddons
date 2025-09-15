@@ -53,6 +53,9 @@ const actions = {
             console.error("Error uploading feature:", error);
             throw error;
         }
+        finally {
+            targetLayerSource.refresh();
+        }
 
         return response;
     }
