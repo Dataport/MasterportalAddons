@@ -4,7 +4,6 @@ import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
 import wfs from "@masterportal/masterportalapi/src/layer/wfs";
-import layerCollection from "@core/layers/js/layerCollection";
 import mapCollection from "@core/maps/js/mapCollection";
 import AddonOpenerButton from "../../AddonOpenerButton.vue";
 import FeaturePropertiesDisplay from "./FeaturePropertiesDisplay.vue";
@@ -134,12 +133,9 @@ export default {
             const targetLayer = this.layerConfigById(this.selectedWfstLayer.id);
 
             if (!validateGeometryCompatibility(this.selectedFeature, targetLayer)) {
-                const featureGeometryType = this.selectedFeature.getGeometry().getType(),
-                    layerSource = layerCollection.getLayerById(targetLayer.id).getLayerSource(),
-                    existingFeatures = layerSource.getFeatures(),
-                    expectedGeometryType = existingFeatures.length > 0 ? existingFeatures[0].getGeometry().getType() : "unbekannt";
+                const featureGeometryType = this.selectedFeature.getGeometry().getType();
 
-                this.errorMessage = `Geometrietyp-Konflikt: Das ausgewählte Feature hat den Geometrietyp "${featureGeometryType}", aber der WFST-Layer erwartet "${expectedGeometryType}".`;
+                this.errorMessage = `Geometrietyp-Konflikt: Das ausgewählte Feature hat den Geometrietyp "${featureGeometryType}", welcher nicht mit den vorhandenen Features im WFST-Layer kompatibel ist.`;
                 console.warn(this.errorMessage);
                 return;
             }

@@ -10,6 +10,8 @@ export default function (feature, targetLayer) {
     if (!feature || !feature.getGeometry() || !targetLayer) {
         return false;
     }
+    let existingGeometryTypes = [],
+        isCompatible = false;
 
     const featureGeometryType = feature.getGeometry().getType(),
         layerSource = layerCollection.getLayerById(targetLayer.id).getLayerSource(),
@@ -23,16 +25,18 @@ export default function (feature, targetLayer) {
             "MultiPolygon": ["Polygon", "MultiPolygon"]
         };
 
-    let expectedGeometryType = null,
-        compatibleTypes = [];
-
     if (existingFeatures.length === 0) {
-        // No existing features, allow any geometry type
         return true;
     }
 
-    expectedGeometryType = existingFeatures[0].getGeometry().getType();
-    compatibleTypes = compatibilityMap[expectedGeometryType] || [expectedGeometryType];
+    existingGeometryTypes = [...new Set(
+        existingFeatures.map(existingFeature => existingFeature.getGeometry().getType())
+    )];
+    isCompatible = existingGeometryTypes.some(existingType => {
+        const compatibleTypes = compatibilityMap[existingType] || [existingType];
 
-    return compatibleTypes.includes(featureGeometryType);
+        return compatibleTypes.includes(featureGeometryType);
+    });
+
+    return isCompatible;
 }
