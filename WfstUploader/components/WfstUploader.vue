@@ -4,6 +4,8 @@ import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
 import wfs from "@masterportal/masterportalapi/src/layer/wfs";
+import layerCollection from "@core/layers/js/layerCollection";
+import mapCollection from "@core/maps/js/mapCollection";
 import AddonOpenerButton from "../../AddonOpenerButton.vue";
 import FeaturePropertiesDisplay from "./FeaturePropertiesDisplay.vue";
 import VectorSource from "ol/source/Vector.js";
@@ -27,7 +29,8 @@ export default {
             selectedWfstLayer: null,
             selectedFeature: null,
             wfsFeatureProperties: null,
-            isloading: false
+            isloading: false,
+            errorMessage: null
         };
     },
     computed: {
@@ -84,6 +87,9 @@ export default {
                 coordinate = event.coordinate,
                 pixel = map.getPixelFromCoordinate(coordinate);
 
+            // Reset error message when selecting a new feature
+            this.errorMessage = null;
+
             map.forEachFeatureAtPixel(pixel, (feature, layer) => {
                 if (!layer) {
                     console.warn("No layer found for feature", feature);
@@ -102,6 +108,8 @@ export default {
         async getFeaturePropertiesFromWFST () {
             this.isloading = true;
             this.wfsFeatureProperties = null;
+            this.errorMessage = null; // Reset error message when changing layer
+
             const {url, version, featureType, isSecured} = this.layerConfigById(this.selectedWfstLayer.id),
                 properties = await wfs.receivePossibleProperties(url, version, featureType, isSecured ?? false);
 
@@ -137,15 +145,72 @@ export default {
                 }
             });
         },
-        async uploadFeatureForTransaction () {
-            const payload = {
-                feature: this.selectedFeature,
-                properties: this.wfsFeatureProperties,
-                targetLayer: this.layerConfigById(this.selectedWfstLayer.id)
-            };
+        /**
+         * Validates if the geometry type of the selected feature is compatible with the target WFST layer
+         * @param {ol.Feature} feature The OpenLayers feature to validate
+         * @param {Object} targetLayer The target WFST layer configuration
+         * @returns {Boolean} True if geometry types are compatible, false otherwise
+         */
+        validateGeometryCompatibility (feature, targetLayer) {
+            if (!feature || !feature.getGeometry() || !targetLayer) {
+                return false;
+            }
 
-            await this.uploadFeature(payload);
-            this.selectedFeature = null;
+            const featureGeometryType = feature.getGeometry().getType(),
+                layerSource = layerCollection.getLayerById(targetLayer.id).getLayerSource(),
+                existingFeatures = layerSource.getFeatures(),
+                compatibilityMap = {
+                    "Point": ["Point", "MultiPoint"],
+                    "MultiPoint": ["Point", "MultiPoint"],
+                    "LineString": ["LineString", "MultiLineString"],
+                    "MultiLineString": ["LineString", "MultiLineString"],
+                    "Polygon": ["Polygon", "MultiPolygon"],
+                    "MultiPolygon": ["Polygon", "MultiPolygon"]
+                };
+
+            let expectedGeometryType = null,
+                compatibleTypes = [];
+
+            if (existingFeatures.length === 0) {
+                // No existing features, allow any geometry type
+                return true;
+            }
+
+            expectedGeometryType = existingFeatures[0].getGeometry().getType();
+            compatibleTypes = compatibilityMap[expectedGeometryType] || [expectedGeometryType];
+
+            return compatibleTypes.includes(featureGeometryType);
+        },
+        async uploadFeatureForTransaction () {
+            this.errorMessage = null;
+
+            const targetLayer = this.layerConfigById(this.selectedWfstLayer.id);
+
+            if (!this.validateGeometryCompatibility(this.selectedFeature, targetLayer)) {
+                const featureGeometryType = this.selectedFeature.getGeometry().getType(),
+                    layerSource = layerCollection.getLayerById(targetLayer.id).getLayerSource(),
+                    existingFeatures = layerSource.getFeatures(),
+                    expectedGeometryType = existingFeatures.length > 0 ? existingFeatures[0].getGeometry().getType() : "unbekannt";
+
+                this.errorMessage = `Geometrietyp-Konflikt: Das ausgewählte Feature hat den Geometrietyp "${featureGeometryType}", aber der WFST-Layer erwartet "${expectedGeometryType}".`;
+                console.warn(this.errorMessage);
+                return;
+            }
+
+            try {
+                const payload = {
+                    feature: this.selectedFeature,
+                    properties: this.wfsFeatureProperties,
+                    targetLayer: targetLayer
+                };
+
+                await this.uploadFeature(payload);
+                this.selectedFeature = null;
+            }
+            catch (error) {
+                this.errorMessage = "Fehler beim Hochladen des Features. Überprüfen Sie die Konsole für weitere Details.";
+                console.error("Fehler beim Hochladen des Features:", error);
+            }
         }
     }
 };
@@ -164,6 +229,15 @@ export default {
         />
         <span v-if="!selectedFeature">Halten Sie die Strg-Taste gedrückt und klicken Sie auf ein Feature, um es auszuwählen.</span>
         <div v-else>
+            <!-- Error message display -->
+            <div
+                v-if="errorMessage"
+                class="alert alert-danger mt-3"
+                role="alert"
+            >
+                {{ errorMessage }}
+            </div>
+
             <FeaturePropertiesDisplay
                 :feature="selectedFeature"
                 :title="$t('additional:modules.tools.wfstUploader.selectedFeature')"
