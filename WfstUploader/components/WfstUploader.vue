@@ -54,6 +54,7 @@ export default {
     },
     mounted () {
         this.createInteractions();
+        this.selectedWfstLayer = this.wfstLayersForSelection[0] || null;
     },
     unmounted () {
         this.removeHighlightFeature(this.selectedFeature);
