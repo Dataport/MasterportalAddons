@@ -51,14 +51,6 @@ export default {
     watch: {
         selectedWfstLayer () {
             this.getFeaturePropertiesFromWFST();
-        },
-        wfsFeatureProperties: {
-            handler (newVal, oldVal) {
-                if (newVal && oldVal) {
-                    this.onPropertiesChanged(newVal);
-                }
-            },
-            deep: true
         }
     },
     mounted () {
@@ -135,19 +127,6 @@ export default {
             if (this.wfsFeatureProperties && this.wfsFeatureProperties[index]) {
                 this.wfsFeatureProperties[index].value = value;
             }
-        },
-        /**
-         * Called when WFS feature properties change
-         * @param {Array} properties The updated properties array
-         */
-        onPropertiesChanged (properties) {
-            // Handle property changes here
-            // You can validate, format, or trigger other actions
-            properties.forEach((prop) => {
-                if (prop.value !== undefined && prop.value !== null && prop.value !== "") {
-                    // Property has a value - you can add validation logic here
-                }
-            });
         },
         async uploadFeatureForTransaction () {
             this.errorMessage = null;
