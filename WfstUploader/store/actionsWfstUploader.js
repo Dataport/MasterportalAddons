@@ -1,6 +1,7 @@
 import addFeaturePropertiesToFeature from "../../../src/modules/wfst/js/addFeaturePropertiesToFeature";
 import wfs from "@masterportal/masterportalapi/src/layer/wfs";
 import layerCollection from "@core/layers/js/layerCollection";
+import {Polygon} from "ol/geom";
 
 const actions = {
     /**
@@ -11,9 +12,10 @@ const actions = {
      * @param {Array} payload.properties Array of property objects with values
      * @param {Object} payload.targetLayer Target WFST layer configuration
      */
-    async uploadFeature ({rootGetters}, {feature, properties, targetLayer}) {
+    async uploadFeature ({rootGetters, dispatch}, {feature, properties, targetLayer}) {
         let featureWithProperties = null,
-            response = null;
+            response = null,
+            geometry = feature.getGeometry();
 
         const targetLayerSource = layerCollection.getLayerById(targetLayer.id).getLayerSource(),
             geometryName = targetLayerSource.getFeatures().length > 0
@@ -30,10 +32,19 @@ const actions = {
             });
         }
 
+        // Convert MultiPolygon to Polygon for WFS-T compatibility
+        if (geometry.getType() === "MultiPolygon") {
+            const polygons = geometry.getPolygons();
+
+            // Always convert to the first polygon only to prevent multiple uploads
+            // This ensures only one polygon is sent to the WFS service
+            geometry = new Polygon(polygons[0].getCoordinates());
+        }
+
         featureWithProperties = await addFeaturePropertiesToFeature(
             {
                 geometryName: geometryName,
-                geometry: feature.getGeometry()
+                geometry: geometry
             },
             propertiesWithGeometry,
             false, // isUpdate
@@ -51,6 +62,10 @@ const actions = {
         }
         catch (error) {
             console.error("Error uploading feature:", error);
+            dispatch("Alerting/addSingleAlert", {
+                category: "error",
+                content: i18next.t("additional:modules.tools.wfstUploader.uploadError", error, {root: true})
+            }, {root: true});
             throw error;
         }
         finally {
