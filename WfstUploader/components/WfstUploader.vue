@@ -143,7 +143,7 @@ export default {
             if (!validateGeometryCompatibility(this.selectedFeature, targetLayer)) {
                 const featureGeometryType = this.selectedFeature.getGeometry().getType();
 
-                this.errorMessage = `Geometrietyp-Konflikt: Das ausgewählte Feature hat den Geometrietyp "${featureGeometryType}", welcher nicht mit den vorhandenen Features im WFST-Layer kompatibel ist.`;
+                this.errorMessage = this.$t("additional:modules.tools.wfstUploader.geometryTypeConflict", {featureGeometryType});
                 console.warn(this.errorMessage);
                 return;
             }
@@ -158,8 +158,8 @@ export default {
                 await this.uploadFeature(payload);
             }
             catch (error) {
-                this.errorMessage = "Fehler beim Hochladen des Features. Überprüfen Sie die Konsole für weitere Details.";
-                console.error("Fehler beim Hochladen des Features:", error);
+                this.errorMessage = this.$t("additional:modules.tools.wfstUploader.uploadError");
+                console.error("Error uploading the feature:", error);
             }
             finally {
                 this.reset();
@@ -186,7 +186,7 @@ export default {
             :addon-id="importerAddonId"
             :addon-name="importerAddonName"
         />
-        <span v-if="!selectedFeature">Halten Sie die Strg-Taste gedrückt und klicken Sie auf ein Feature, um es auszuwählen.</span>
+        <span v-if="!selectedFeature">{{ $t('additional:modules.tools.wfstUploader.selectFeatureHint') }}</span>
         <div v-else>
             <!-- Error message display -->
             <div
@@ -203,7 +203,7 @@ export default {
                 class="mt-3"
             />
             <div class="mt-3">
-                Wählen sie einen WFST Layer aus, auf den das Feature hochgeladen werden soll:
+                {{ $t('additional:modules.tools.wfstUploader.selectedFeature') }}
             </div>
             <select
                 id="wfstUpload-select-wfstlayer"
@@ -234,13 +234,13 @@ export default {
             <FlatButton
                 class="mt-3"
                 :disabled="!selectedWfstLayer"
-                text="Verwerfen"
+                :text="$t('additional:modules.tools.wfstUploader.resetButton')"
                 @click="reset()"
             />
             <FlatButton
                 class="mt-3"
                 :disabled="!selectedWfstLayer"
-                text="Hochladen"
+                :text="$t('additional:modules.tools.wfstUploader.uploadFeatureButton')"
                 @click="uploadFeatureForTransaction"
             />
         </div>
