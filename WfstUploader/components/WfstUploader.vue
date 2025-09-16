@@ -36,7 +36,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/WfstUploader", ["wfstLayers", "wfstAttributesForInput"]),
+        ...mapGetters("Modules/WfstUploader", ["wfstLayers", "wfstAttributesForInput", "highlightStyles"]),
         ...mapGetters(["visibleLayerConfigs", "layerConfigById"]),
         wfstLayersForSelection () {
             return this.visibleLayerConfigs.filter(layer => this.wfstLayers.includes(layer.id)).map(layer => {
@@ -57,8 +57,7 @@ export default {
         this.selectedWfstLayer = this.wfstLayersForSelection[0] || null;
     },
     unmounted () {
-        this.removeHighlightFeature(this.selectedFeature);
-        this.selectedFeature = null;
+        this.reset();
         this.removeInteraction(this.selectEvent);
     },
     methods: {
@@ -155,9 +154,13 @@ export default {
                 console.error("Fehler beim Hochladen des Features:", error);
             }
             finally {
-                this.removeHighlightFeature(this.selectedFeature);
-                this.selectedFeature = null;
+                this.reset();
             }
+        },
+        reset () {
+            this.removeHighlightFeature(this.selectedFeature);
+            this.selectedFeature = null;
+            this.errorMessage = null;
         }
     }
 };
@@ -223,7 +226,7 @@ export default {
                 class="mt-3"
                 :disabled="!selectedWfstLayer"
                 text="Verwerfen"
-                @click="selectedFeature = null"
+                @click="reset()"
             />
             <FlatButton
                 class="mt-3"
