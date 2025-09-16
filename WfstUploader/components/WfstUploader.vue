@@ -11,6 +11,7 @@ import VectorSource from "ol/source/Vector.js";
 import {Select} from "ol/interaction";
 import getHighlightType from "../utils/getHighlightType";
 import validateGeometryCompatibility from "../utils/validateGeometryCompatibility";
+import getHighlightStyleFromType from "../utils/getHighlightStyleFromType";
 
 export default {
     name: "WfstUploader",
@@ -78,9 +79,10 @@ export default {
         setFeaturesFromClick (event) {
             const map = mapCollection.getMap("2D"),
                 coordinate = event.coordinate,
-                pixel = map.getPixelFromCoordinate(coordinate);
+                pixel = map.getPixelFromCoordinate(coordinate),
+                pointFeature = ["Point", "MultiPoint"];
 
-            this.errorMessage = null;
+            this.reset();
 
             map.forEachFeatureAtPixel(pixel, (feature, layer) => {
                 if (!layer) {
@@ -93,6 +95,12 @@ export default {
                     this.highlightFeatureObject.feature = this.selectedFeature;
                     this.highlightFeatureObject.type = getHighlightType(feature);
                     this.highlightFeatureObject.layer = layer;
+                    // reset style for point features does not work so we skip highlighting points. The default is an increase of scale.
+                    if (!pointFeature.includes(this.selectedFeature.getGeometry().getType())) {
+                        this.highlightFeatureObject.layer.id = this.selectedWfstLayer?.id;
+                        this.highlightFeatureObject.styleId = this.visibleLayerConfigs.find(l => l.id === this.selectedWfstLayer?.id)?.styleId;
+                        this.highlightFeatureObject.highlightStyle = getHighlightStyleFromType(this.selectedFeature.getGeometry()?.getType(), this.highlightStyles);
+                    }
                     this.highlightFeature(this.highlightFeatureObject);
                 }
                 else {
@@ -161,6 +169,7 @@ export default {
             this.removeHighlightFeature(this.selectedFeature);
             this.selectedFeature = null;
             this.errorMessage = null;
+            this.highlightFeatureObject = {};
         }
     }
 };
