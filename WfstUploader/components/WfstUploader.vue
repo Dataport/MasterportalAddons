@@ -202,13 +202,13 @@ export default {
                 :title="$t('additional:modules.tools.wfstUploader.selectedFeature')"
                 class="mt-3"
             />
-            <div class="mt-3">
-                {{ $t('additional:modules.tools.wfstUploader.selectedFeature') }}
+            <div class="mt-3 font-size-big">
+                {{ $t('additional:modules.tools.wfstUploader.selectedWfstLayer') }}
             </div>
             <select
                 id="wfstUpload-select-wfstlayer"
                 v-model="selectedWfstLayer"
-                class="form-select mt-3 mb-3"
+                class="form-select mt-3"
             >
                 <option
                     v-for="(layer, idx) in wfstLayersForSelection"
@@ -219,6 +219,9 @@ export default {
                 </option>
             </select>
             <SpinnerItem v-if="isloading" />
+            <div class="mt-4 mb-3 font-size-big">
+                {{ $t('additional:modules.tools.wfstUploader.properties') }}
+            </div>
             <div v-if="wfsFeatureProperties">
                 <InputText
                     v-for="(property, idx) in wfsFeatureProperties"
@@ -247,6 +250,10 @@ export default {
     </div>
 </template>
 
-<style scoped>
-/* Styles for WfstUploader component */
+<style lang="scss" scoped>
+@import "~variables";
+
+.font-size-big {
+    font-size: $font_size_big;
+}
 </style>
