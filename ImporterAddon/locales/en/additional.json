@@ -32,8 +32,8 @@
                 "removeFileText": "Remove file",
                 "provideShapeZipText": "Click on icon or use Drag&Drop to upload zipped Shapefile.",
                 "provideGeoPackageText": "Click on icon or use Drag&Drop to upload GeoPackage.",
-                "completeMessage": "The layer has been added to the topic tree under <strong>External subject data</strong>!",
-                "completeMessage_other": "The layers has been added to the topic tree under <strong>External subject data</strong>!"
+                "completeMessage": "The layer has been added to the layer tree.",
+                "completeMessage_other": "The layers have been added to the layer tree."
             }
         }
     }
