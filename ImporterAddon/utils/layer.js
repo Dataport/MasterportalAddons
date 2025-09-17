@@ -1,6 +1,7 @@
 import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
 import {readGeoJsonFile, readShapeZipFile, readGeoPackageFile} from "./file";
 import layerCollection from "@core/layers/js/layerCollection";
+import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
 
 /**
  * Generates a layer id.
@@ -60,6 +61,10 @@ function createWMSLayerConfig (url, version, parentId, {name, title, id}) {
  * @returns {Object} A valid WFS config object.
  */
 function createWFSLayerConfig (url, version, parentId, {name, title, id}) {
+    const styleId = id;
+
+    // Add empty style to styleList to avoid warning
+    styleList.addToStyleList([{styleId, rules: []}]);
 
     return {
         type: "layer",
@@ -68,6 +73,7 @@ function createWFSLayerConfig (url, version, parentId, {name, title, id}) {
         featureNS: name.split(":")[0],
         featureType: name.split(":")[1] ? name.split(":")[1] : name,
         id,
+        styleId,
         gfiAttributes: "showAll",
         gfiTheme: "default",
         parentId,
@@ -126,13 +132,18 @@ function createGeoJsonLayerConfig (geojson, name, id, parentId) {
         gfiTheme = "default",
         visibility = true,
         showInLayerTree = true,
+        styleId = id,
         blob = new Blob([JSON.stringify(geojson)], {type: "application/geojson"}),
         url = URL.createObjectURL(blob);
+
+    // Add empty style to styleList to avoid warning
+    styleList.addToStyleList([{styleId, rules: []}]);
 
     return {
         id,
         name,
         parentId,
+        styleId,
         typ,
         type,
         url,
