@@ -38,7 +38,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/ImporterAddon", [
+        ...mapGetters("Modules/Importer", [
             "idCounter",
             "capabilitiesBaseUrl",
             "capabilitiesVersion",
@@ -62,7 +62,7 @@ export default {
         this.setCurrentFormValid(isValid);
     },
     methods: {
-        ...mapMutations("Modules/ImporterAddon", Object.keys(mutations)),
+        ...mapMutations("Modules/Importer", Object.keys(mutations)),
 
         async handleCapabilitiesDocument () {
             this.showErrorMessage = false;
@@ -188,14 +188,14 @@ export default {
     <div class="importer-addon-layer-selection">
         <div v-if="isLoading">
             <SpinnerItem />
-            {{ $t("additional:modules.tools.importerAddon.loadingText") }}
+            {{ $t("additional:modules.tools.importer.loadingText") }}
         </div>
         <div v-if="showErrorMessage">
-            {{ $t("additional:modules.tools.importerAddon.layerLoadingErrorText") }}
+            {{ $t("additional:modules.tools.importer.layerLoadingErrorText") }}
         </div>
         <div v-if="layerSelectionList">
             <span class="mb-2">
-                {{ $t("additional:modules.tools.importerAddon.layerSelectionText") }}
+                {{ $t("additional:modules.tools.importer.layerSelectionText") }}
             </span>
             <div class="form-group m-1">
                 <label class="form-check-label layer-select-all">
@@ -206,7 +206,7 @@ export default {
                         value="all"
                         @change="onSelectAllCheckboxChange"
                     >
-                    {{ $t("additional:modules.tools.importerAddon.layerSelectionSelectAllText") }}
+                    {{ $t("additional:modules.tools.importer.layerSelectionSelectAllText") }}
                 </label>
             </div>
             <div
@@ -234,7 +234,7 @@ export default {
                 v-if="!inputValid"
                 class="mt-2"
             >
-                {{ $t("additional:modules.tools.importerAddon.layerSelectionRequiredText") }}
+                {{ $t("additional:modules.tools.importer.layerSelectionRequiredText") }}
             </span>
         </div>
     </div>

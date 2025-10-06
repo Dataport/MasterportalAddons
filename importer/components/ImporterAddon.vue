@@ -46,7 +46,7 @@ export default {
                         return this.selectedLayers[0]?.layers;
                     }
                     this.setImportedFolderCounter();
-                    return this.$t("additional:modules.tools.importerAddon.layerTreeFolderTitle", {count: this.importedFolderCounter});
+                    return this.$t("additional:modules.tools.importer.layerTreeFolderTitle", {count: this.importedFolderCounter});
 
                 case "geojson":
                     this.setGeoJsonFolderCounter();
@@ -59,7 +59,7 @@ export default {
                     return `GeoPackage Import ${this.geoPackageFolderCounter}`;
                 default:
                     this.setImportedFolderCounter();
-                    return this.$t("additional:modules.tools.importerAddon.layerTreeFolderTitle", {count: this.importedFolderCounter});
+                    return this.$t("additional:modules.tools.importer.layerTreeFolderTitle", {count: this.importedFolderCounter});
             }
         },
         currentMenuSide () {
@@ -168,7 +168,7 @@ export default {
             await this.addLayerToLayerConfig({layerConfig: folder, parentKey: treeSubjectsKey});
 
             if (isMobile) {
-                this.addSingleAlert(i18next.t("additional:modules.tools.importerAddon.completeMessage"));
+                this.addSingleAlert(i18next.t("additional:modules.tools.importer.completeMessage"));
             }
             this.applyStyles(processedLayers);
             this.close();
@@ -179,7 +179,7 @@ export default {
 
 <template lang="html">
     <div
-        id="importerAddon"
+        id="importer"
         class="row"
     >
         <hr>
@@ -217,7 +217,7 @@ export default {
             <FlatButton
                 v-if="!isCurrentWorkflowUndefined"
                 type="button"
-                :text="$t('additional:modules.tools.importerAddon.prev')"
+                :text="$t('additional:modules.tools.importer.prev')"
                 class="btn btn-default"
                 @click="onPrevClick"
             />
@@ -225,7 +225,7 @@ export default {
                 v-if="!isLastStep"
                 ref="importer-addon-next-btn"
                 type="submit"
-                :text="$t('additional:modules.tools.importerAddon.next')"
+                :text="$t('additional:modules.tools.importer.next')"
                 :class="{btn: true, 'btn-default': !currentFormValid, 'btn-primary': currentFormValid}"
                 :disabled="!currentFormValid"
                 @click="onNextClick"
@@ -234,7 +234,7 @@ export default {
                 v-if="isLastStep"
                 ref="importer-addon-finish-btn"
                 type="submit"
-                :text="$t('additional:modules.tools.importerAddon.finish')"
+                :text="$t('additional:modules.tools.importer.finish')"
                 :class="{btn: true, 'btn-default': !currentFormValid, 'btn-primary': currentFormValid}"
                 :disabled="!currentFormValid"
                 @click="onFinishClick"

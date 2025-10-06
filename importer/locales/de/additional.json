@@ -1,7 +1,7 @@
 {
     "modules": {
         "tools": {
-            "importerAddon": {
+            "importer": {
                 "title": "Import",
                 "prev": "Zurück",
                 "next": "Weiter",

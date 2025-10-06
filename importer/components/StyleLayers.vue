@@ -102,13 +102,13 @@ export default {
                 class="style-form"
             >
                 <p>
-                    <b>{{ $t("additional:modules.tools.importerAddon.setStyleMessage") }} {{ layer.name }}</b>
+                    <b>{{ $t("additional:modules.tools.importer.setStyleMessage") }} {{ layer.name }}</b>
                 </p>
                 <div
                     class="style-selector fill-color"
                 >
                     <label for="importer-addon-color">
-                        {{ $t("additional:modules.tools.importerAddon.styleSelectFillColor") }}
+                        {{ $t("additional:modules.tools.importer.styleSelectFillColor") }}
                     </label>
                     <input
                         :id="`importer-addon-color-${index}`"
@@ -121,7 +121,7 @@ export default {
                     class="style-selector stroke-color"
                 >
                     <label for="importer-addon-stroke-color">
-                        {{ $t("additional:modules.tools.importerAddon.styleSelectStrokeColor") }}
+                        {{ $t("additional:modules.tools.importer.styleSelectStrokeColor") }}
                     </label>
                     <input
                         :id="`importer-addon-stroke-color-${index}`"
@@ -134,7 +134,7 @@ export default {
                     class="style-selector stroke-width"
                 >
                     <label for="importer-addon-stroke-width">
-                        {{ $t("additional:modules.tools.importerAddon.styleSelectStrokeWidth") }}
+                        {{ $t("additional:modules.tools.importer.styleSelectStrokeWidth") }}
                     </label>
                     <input
                         :id="`importer-addon-stroke-width-${index}`"

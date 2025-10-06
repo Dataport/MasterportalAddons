@@ -96,7 +96,7 @@ export default {
             class="provide-ogc-service mb-3"
         >
             <span>
-                {{ $t("additional:modules.tools.importerAddon.provideWMSText") }}
+                {{ $t("additional:modules.tools.importer.provideWMSText") }}
             </span>
         </div>
         <div
@@ -104,7 +104,7 @@ export default {
             class="provide-ogc-service mb-3"
         >
             <span>
-                {{ $t("additional:modules.tools.importerAddon.provideWFSText") }}
+                {{ $t("additional:modules.tools.importer.provideWFSText") }}
             </span>
         </div>
         <div class="'form-group'">
@@ -112,7 +112,7 @@ export default {
                 ref="importer-addon-capabilities-input"
                 v-model="capabilitiesUrlValue"
                 class="form-control"
-                :placeholder="$t('additional:modules.tools.importerAddon.capabilitiesUrlPlaceholder')"
+                :placeholder="$t('additional:modules.tools.importer.capabilitiesUrlPlaceholder')"
                 aria-describedby="capabilities-url-help-block"
                 @input="onInputChange"
                 @blur="onInputChange"

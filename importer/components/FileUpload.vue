@@ -221,17 +221,17 @@ export default {
     <div class="importer-addon-file-upload">
         <div v-if="serviceType === 'geojson'">
             <span class="fs-5">
-                {{ $t("additional:modules.tools.importerAddon.provideGeoJsonText") }}
+                {{ $t("additional:modules.tools.importer.provideGeoJsonText") }}
             </span>
         </div>
         <div v-if="serviceType === 'shapezip'">
             <span class="fs-5">
-                {{ $t("additional:modules.tools.importerAddon.provideShapeZipText") }}
+                {{ $t("additional:modules.tools.importer.provideShapeZipText") }}
             </span>
         </div>
         <div v-if="serviceType === 'geopackage'">
             <span class="fs-5">
-                {{ $t("additional:modules.tools.importerAddon.provideGeoPackageText") }}
+                {{ $t("additional:modules.tools.importer.provideGeoPackageText") }}
             </span>
         </div>
         <div :class="['form-group', 'm-4', {['has-error']: !inputValid, ['has-success']: inputValid && inputFile}]">
@@ -265,7 +265,7 @@ export default {
                     <button
                         type="button"
                         class="btn btn-link remove-file"
-                        :aria-label="$t('additional:modules.tools.importerAddon.removeFileText')"
+                        :aria-label="$t('additional:modules.tools.importer.removeFileText')"
                         @click="onRemoveFileClick"
                     >
                         <span
@@ -273,13 +273,13 @@ export default {
                             aria-hidden="true"
                         />
                     </button>
-                    {{ $t('additional:modules.tools.importerAddon.removeFileText')+ ': ' + inputFile.name }}
+                    {{ $t('additional:modules.tools.importer.removeFileText')+ ': ' + inputFile.name }}
                 </span>
                 <span
                     v-if="!inputFile"
                     id="file-upload-text-required"
                 >
-                    {{ $t("additional:modules.tools.importerAddon.fileUploadRequiredText") }}
+                    {{ $t("additional:modules.tools.importer.fileUploadRequiredText") }}
                 </span>
             </div>
             <!-- This input is only used as focus target so that we can submit when pressing enter -->

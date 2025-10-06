@@ -60,7 +60,7 @@ export default {
         <form>
             <div class="input-group">
                 <span>
-                    {{ $t("additional:modules.tools.importerAddon.selectWorkflowText") }}
+                    {{ $t("additional:modules.tools.importer.selectWorkflowText") }}
                 </span>
                 <div
                     v-for="workflow in workflows"
@@ -71,7 +71,7 @@ export default {
                         :id="`importer-workflow-radio-${workflow}`"
                         :value="workflow"
                         :selected-value="selectedWorkflow"
-                        :text="$t('additional:modules.tools.importerAddon.workflows.' + workflow)"
+                        :text="$t('additional:modules.tools.importer.workflows.' + workflow)"
                         name="workflow-selection"
                         @change="onRadioChange"
                     />
