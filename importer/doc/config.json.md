@@ -1,4 +1,4 @@
-#### Portalconfig.menu.tool.importerAddon
+#### Portalconfig.menu.tool.importer
 
 The importer tool allows importing layer from different sources, i.e. WMS, WFS.
 
@@ -20,7 +20,7 @@ The basic tool configurations apply. Following additional properties can be set 
 ```json
 {
   "type": "importer",
-  "name": "additional:modules.tools.importerAddon.title",
+  "name": "additional:modules.tools.importer.title",
   "icon": "bi-upload",
   "fileUploadIcon": "bi-cloud-arrow-up",
   "removeFileIcon": "bi bi-x-circle-fill",
