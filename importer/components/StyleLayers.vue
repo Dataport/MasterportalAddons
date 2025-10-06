@@ -13,7 +13,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters("Modules/ImporterAddon", Object.keys(getters))
+        ...mapGetters("Modules/Importer", Object.keys(getters))
     },
     created () {
         this.layers.forEach(layer => {
@@ -41,7 +41,7 @@ export default {
         this.focusOnHiddenInput();
     },
     methods: {
-        ...mapMutations("Modules/ImporterAddon", Object.keys(mutations)),
+        ...mapMutations("Modules/Importer", Object.keys(mutations)),
         rgbToHex (color) {
             return ColorUtil.rgbToHex(color[0], color[1], color[2]);
         },

@@ -24,7 +24,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/ImporterAddon", Object.keys(getters)),
+        ...mapGetters("Modules/Importer", Object.keys(getters)),
         capabilitiesUrlValue: {
             get () {
                 return this.capabilitiesUrl;
@@ -43,9 +43,9 @@ export default {
         this.focusOnCapabilitiesInput();
     },
     methods: {
-        ...mapActions("Modules/ImporterAddon", [
+        ...mapActions("Modules/Importer", [
         ]),
-        ...mapMutations("Modules/ImporterAddon", Object.keys(mutations)),
+        ...mapMutations("Modules/Importer", Object.keys(mutations)),
 
         /**
          * Handler for the Capabilities URL input events.

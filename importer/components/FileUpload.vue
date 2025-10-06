@@ -29,7 +29,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/ImporterAddon", [
+        ...mapGetters("Modules/Importer", [
             "inputFile",
             "idCounter",
             "layerTreeFolderId",
@@ -70,10 +70,10 @@ export default {
         }
     },
     methods: {
-        ...mapActions("Modules/ImporterAddon", [
+        ...mapActions("Modules/Importer", [
             "setSelectedLayerFromFile"
         ]),
-        ...mapMutations("Modules/ImporterAddon", Object.keys(mutations)),
+        ...mapMutations("Modules/Importer", Object.keys(mutations)),
 
         /**
          * Handler for the drop event.

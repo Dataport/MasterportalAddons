@@ -20,7 +20,8 @@ import {processLayersForAdding} from "../utils/processLayersForAdding";
  * @vue-prop {String} side - The side in which the menu component is being rendered.
  */
 export default {
-    name: "ImporterAddon",
+    // eslint-disable-next-line vue/multi-word-component-names, vue/match-component-file-name
+    name: "Importer",
     components: {
         FileUpload,
         LayerSelection,
@@ -30,7 +31,7 @@ export default {
         FlatButton
     },
     computed: {
-        ...mapGetters("Modules/ImporterAddon", Object.keys(getters)),
+        ...mapGetters("Modules/Importer", Object.keys(getters)),
         ...mapGetters("Menu", ["mainMenu", "secondaryMenu"]),
 
         steps () {
@@ -77,7 +78,7 @@ export default {
         this.applyTranslationKey(this.name);
     },
     methods: {
-        ...mapMutations("Modules/ImporterAddon", Object.keys(mutations)),
+        ...mapMutations("Modules/Importer", Object.keys(mutations)),
         ...mapActions("Alerting", {addSingleAlert: "addSingleAlert"}),
         ...mapActions(["addLayerToLayerConfig"]),
         ...mapActions("Menu", ["resetMenu"]),

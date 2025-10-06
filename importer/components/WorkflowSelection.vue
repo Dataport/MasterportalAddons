@@ -19,7 +19,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/ImporterAddon", ["selectedWorkflow"])
+        ...mapGetters("Modules/Importer", ["selectedWorkflow"])
     },
     created () {
         const isValid = this.isFormValid();
@@ -27,7 +27,7 @@ export default {
         this.setCurrentFormValid(isValid);
     },
     methods: {
-        ...mapMutations("Modules/ImporterAddon", [
+        ...mapMutations("Modules/Importer", [
             "setSelectedWorkflow",
             "setCurrentFormValid"
         ]),
