@@ -13,6 +13,6 @@
   "author": "terrestris GmbH & Co. KG, Dataport AöR",
   "license": "MIT",
   "dependencies": {
-    "shpjs": "^4.0.4"
+    "shpjs": "^6.2.0"
   }
 }
