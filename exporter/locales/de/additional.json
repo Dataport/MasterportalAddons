@@ -1,7 +1,7 @@
 {
     "modules": {
         "tools": {
-            "exporterAddon": {
+            "exporter": {
                 "title": "Export",
                 "prev": "Zurück",
                 "next": "Weiter",

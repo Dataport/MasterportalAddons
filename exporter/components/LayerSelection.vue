@@ -139,11 +139,11 @@ export default {
             v-if="layerSelectionList.length === 0"
             class="exporter-addon-empty-layer-selection mb-3"
         >
-            {{ $t("additional:modules.tools.exporterAddon.emptyLayerSelectionText") }}
+            {{ $t("additional:modules.tools.exporter.emptyLayerSelectionText") }}
         </div>
         <div v-if="layerSelectionList.length > 0">
             <span class="exporter-addon-layer-selection-text mb-3">
-                {{ $t("additional:modules.tools.exporterAddon.layerSelectionText") }}
+                {{ $t("additional:modules.tools.exporter.layerSelectionText") }}
             </span>
             <div
                 v-for="layerType in [layerTypes.wfs, layerTypes.geoJson, layerTypes.draw, layerTypes.vectorBase]"
@@ -151,7 +151,7 @@ export default {
             >
                 <AccordionItem
                     :id="`exporter-layer-type-${layerType}`"
-                    :title="layerType === layerTypes.draw ? $t(`additional:modules.tools.exporterAddon.drawLayerText`) : layerType === layerTypes.vectorBase ? $t(`additional:modules.tools.exporterAddon.vectorBaseLayerText`) : layerType"
+                    :title="layerType === layerTypes.draw ? $t(`additional:modules.tools.exporter.drawLayerText`) : layerType === layerTypes.vectorBase ? $t(`additional:modules.tools.exporter.vectorBaseLayerText`) : layerType"
                     :is-open="layerTypeSelectionList(layerType).length > 0"
                 >
                     <div
@@ -169,7 +169,7 @@ export default {
                         />
                     </div>
                     <div v-if="layerTypeSelectionList(layerType).length === 0">
-                        <span class="exporter-layer-empty">{{ $t("additional:modules.tools.exporterAddon.emptyLayerSelectionTypeText") }}</span>
+                        <span class="exporter-layer-empty">{{ $t("additional:modules.tools.exporter.emptyLayerSelectionTypeText") }}</span>
                     </div>
                 </AccordionItem>
             </div>
@@ -178,7 +178,7 @@ export default {
                     v-if="!inputValid"
                     class="help-block"
                 >
-                    {{ $t("additional:modules.tools.exporterAddon.layerSelectionRequiredText") }}
+                    {{ $t("additional:modules.tools.exporter.layerSelectionRequiredText") }}
                 </span>
             </div>
         </div>

@@ -35,7 +35,7 @@ export const DEFAULT_VALUES = {
         active: false,
         icon: "bi-download",
         id: "exporter",
-        name: "additional:modules.tools.exporterAddon.title",
+        name: "additional:modules.tools.exporter.title",
         ...DEFAULT_VALUES
     };
 

@@ -80,10 +80,10 @@ export default {
                 await downloadLayer(this.selectedLayer, this.selectedExportFormat);
             }
             catch (e) {
-                let msg = i18next.t("additional:modules.tools.exporterAddon.downloadFailedForFormat");
+                let msg = i18next.t("additional:modules.tools.exporter.downloadFailedForFormat");
 
                 if (e.sender === "shapeUnsupportedMultiPolygon") {
-                    msg = i18next.t("additional:modules.tools.exporterAddon.shapeUnsupportedMultiPolygon");
+                    msg = i18next.t("additional:modules.tools.exporter.shapeUnsupportedMultiPolygon");
                 }
                 this.$store.dispatch("Alerting/addSingleAlert", {
                     content: msg
@@ -111,7 +111,7 @@ export default {
     >
         <hr>
         <div v-if="isLoading">
-            {{ $t("additional:modules.tools.exporterAddon.loadingText") }}
+            {{ $t("additional:modules.tools.exporter.loadingText") }}
         </div>
         <div v-if="!isLoading">
             <div class="exporter-addon-wizard-content">
@@ -125,20 +125,20 @@ export default {
             <div class="exporter-addon-wizard-navigation">
                 <FlatButton
                     v-if="!isFirstStep"
-                    :text="$t(`additional:modules.tools.exporterAddon.prev`)"
+                    :text="$t(`additional:modules.tools.exporter.prev`)"
                     class="btn btn-default"
                     @click="onPrevClick"
                 />
                 <FlatButton
                     v-if="!isLastStep"
-                    :text="$t(`additional:modules.tools.exporterAddon.next`)"
+                    :text="$t(`additional:modules.tools.exporter.next`)"
                     class="btn btn-default"
                     :disabled="!currentFormValid"
                     @click="onNextClick"
                 />
                 <FlatButton
                     v-if="isLastStep"
-                    :text="$t(`additional:modules.tools.exporterAddon.finish`)"
+                    :text="$t(`additional:modules.tools.exporter.finish`)"
                     class="btn btn-default"
                     :disabled="!currentFormValid"
                     @click="onFinishClick"

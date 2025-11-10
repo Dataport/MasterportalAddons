@@ -68,7 +68,7 @@ export default {
         <form>
             <div class="input-group">
                 <span class="format-selection-text">
-                    {{ $t("additional:modules.tools.exporterAddon.formatSelectionText") }}
+                    {{ $t("additional:modules.tools.exporter.formatSelectionText") }}
                 </span>
                 <div
                     v-for="format in supportedExportFormatsForSelectedLayer"
