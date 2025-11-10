@@ -2,7 +2,7 @@
   "importer": {
     "type": "tool"
   },
-  "ExporterAddon": {
+  "exporter": {
     "type": "tool"
   },
   "GeoFilter": {
