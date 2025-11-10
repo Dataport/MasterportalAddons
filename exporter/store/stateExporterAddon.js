@@ -34,7 +34,7 @@ export const DEFAULT_VALUES = {
     state = {
         active: false,
         icon: "bi-download",
-        id: "exporterAddon",
+        id: "exporter",
         name: "additional:modules.tools.exporterAddon.title",
         ...DEFAULT_VALUES
     };
