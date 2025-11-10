@@ -27,7 +27,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/ExporterAddon", ["selectedLayer", "layerSelectionList"]),
+        ...mapGetters("Modules/Exporter", ["selectedLayer", "layerSelectionList"]),
         layerSelectionRadioId (id) {
             return "exporter-layer-radio-" + id;
         },
@@ -64,9 +64,9 @@ export default {
         this.setLayerSelectionList([]);
     },
     methods: {
-        ...mapActions("Modules/ExporterAddon", [
+        ...mapActions("Modules/Exporter", [
         ]),
-        ...mapMutations("Modules/ExporterAddon", Object.keys(mutations)),
+        ...mapMutations("Modules/Exporter", Object.keys(mutations)),
 
         /**
          * Load the downloadable layers from the layer tree.

@@ -13,7 +13,8 @@ import STEPS from "../constants/steps";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 
 export default {
-    name: "ExporterAddon",
+    // eslint-disable-next-line vue/multi-word-component-names, vue/match-component-file-name
+    name: "Exporter",
     components: {
         LayerDownloadOptions,
         LayerSelection,
@@ -25,7 +26,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/ExporterAddon", Object.keys(getters)),
+        ...mapGetters("Modules/Exporter", Object.keys(getters)),
 
         steps () {
             return STEPS;
@@ -35,9 +36,9 @@ export default {
         this.applyTranslationKey(this.name);
     },
     methods: {
-        ...mapActions("Modules/ExporterAddon", [
+        ...mapActions("Modules/Exporter", [
         ]),
-        ...mapMutations("Modules/ExporterAddon", Object.keys(mutations)),
+        ...mapMutations("Modules/Exporter", Object.keys(mutations)),
 
         /**
          * Handler for closing the tool.
@@ -105,7 +106,7 @@ export default {
 
 <template>
     <div
-        id="exporterAddon"
+        id="exporter"
         class="row"
     >
         <hr>

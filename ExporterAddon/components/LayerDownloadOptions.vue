@@ -17,7 +17,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/ExporterAddon", [
+        ...mapGetters("Modules/Exporter", [
             "selectedLayer",
             "supportedExportFormatsForSelectedLayer",
             "selectedExportFormat",
@@ -33,9 +33,9 @@ export default {
         this.setCurrentFormValid(isValid);
     },
     methods: {
-        ...mapActions("Modules/ExporterAddon", [
+        ...mapActions("Modules/Exporter", [
         ]),
-        ...mapMutations("Modules/ExporterAddon", Object.keys(mutations)),
+        ...mapMutations("Modules/Exporter", Object.keys(mutations)),
 
         /**
          * Handler for the radio change events.
