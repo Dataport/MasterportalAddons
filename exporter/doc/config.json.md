@@ -1,6 +1,6 @@
 #### Portalconfig.menu.tool.exporter
 
-The exporter tool allows exporting layer from different sources, i.e. WMS, WFS.
+The exporter tool allows exporting vector layers from different sources, i.e. WFS.
 
 The basic tool configurations apply. Following additional properties can be set in config.json:
 
