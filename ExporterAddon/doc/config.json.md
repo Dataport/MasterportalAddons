@@ -1,6 +1,6 @@
-#### Portalconfig.menu.tool.exporterAddon
+#### Portalconfig.menu.tool.exporter
 
-The exporterAddon tool allows exporting layer from different sources, i.e. WMS, WFS.
+The exporter tool allows exporting layer from different sources, i.e. WMS, WFS.
 
 The basic tool configurations apply. Following additional properties can be set in config.json:
 

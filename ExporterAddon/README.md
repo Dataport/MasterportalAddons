@@ -4,11 +4,11 @@
 
 ### Basic
 1. Copy the folder to your `addons` folder within your masterportal project.
-2. Run `npm i` within the specific addon folder: `addons/ExporterAddon`
+2. Run `npm i` within the specific addon folder: `addons/exporter`
 3. Adapt the `addons/addons.conf` by adding:
 ```json
 {
-  "ExporterAddon": {
+  "exporter": {
     "type": "tool"
   }
 }
@@ -16,7 +16,7 @@
 4. Refer the new addon in your portal's `config.js`:
 ```json
 addons: [
-  "ExporterAddon"
+  "exporter"
 ]
 ```
 5. Configure the addon in your portal's `config.json`. See an example in `/doc/config.json.md`.
