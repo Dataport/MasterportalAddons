@@ -19,7 +19,7 @@ export default {
             selectedTargetLayer: null,
             filterLayerName: "",
             loading: false,
-            importerAddonId: "importerAddon",
+            importerAddonId: "importer",
             importerAddonName: "Import"
         };
     },

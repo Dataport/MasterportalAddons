@@ -24,7 +24,7 @@ export default {
     },
     data () {
         return {
-            importerAddonId: "importerAddon",
+            importerAddonId: "importer",
             importerAddonName: "Import",
             selectInteraction: null,
             selectEvent: null,
