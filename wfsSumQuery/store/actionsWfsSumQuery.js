@@ -285,7 +285,8 @@ const actions = {
             source = new VectorSource({wrapX: false}),
             vector = new VectorLayer({
                 source: source,
-                name: "definedCircleWfsSumQuery"
+                name: "definedCircleWfsSumQuery",
+                zIndex: 99999999999 // set zIndex so circle is on top
             }),
 
             interaction = new Draw({
