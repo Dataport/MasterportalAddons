@@ -24,7 +24,6 @@ export default {
             selectedAttributes: [],
             currentTabId: "all",
             visibleLayer: 0,
-            definedCircle: false,
             selectedLayerIndex: 0,
             label: "additional:modules.wfsSumQuery.selectQueryLayer"
         };
@@ -41,7 +40,8 @@ export default {
             "selectedLayerId",
             "newDrawend",
             "layerIndex",
-            "layersForSelection"
+            "layersForSelection",
+            "definedCircle"
         ]),
         ...mapGetters("Modules/GraphicalSelect", [
             "selectedAreaGeoJson"
@@ -112,7 +112,7 @@ export default {
          * @returns {void}
          */
         selectedAreaGeoJson (newValue) {
-            this.fetchFeaturesFromSelection({geometry: newValue, type: "polygonFromGraphicalSelect"});
+            this.fetchFeaturesFromSelection({geometry: newValue, type: "polygonFromGraphicalSelect", definedCircle: this.definedCircle});
         },
         /**
          * Watches the `circleRadius` value for changes. If a positive value is set and a circle is defined, it creates a drawing interaction for the circle on the visible layer.
@@ -172,7 +172,7 @@ export default {
         this.makeAllWfsLayersInvisible();
     },
     methods: {
-        ...mapMutations("Modules/WfsSumQuery", ["setAllSelectedFeatureProperties", "setUniqueAttributes", "setSelectedFeatures", "setCircleRadius", "setSelectedLayerId", "setActive", "setNewDrawend"]),
+        ...mapMutations("Modules/WfsSumQuery", ["setAllSelectedFeatureProperties", "setUniqueAttributes", "setSelectedFeatures", "setCircleRadius", "setSelectedLayerId", "setActive", "setNewDrawend", "setDefinedCircle"]),
         ...mapActions("Modules/WfsSumQuery", ["getLayerForSelection", "fetchFeaturesFromSelection", "highlightFeaturesFromSelection", "removeHighlightingWhenDeselected", "createDrawInteraction", "removeDefinedCircleLayer"]),
         ...mapActions("Maps", ["removeInteraction"]),
         ...mapActions("Alerting", ["addSingleAlert"]),
@@ -254,7 +254,7 @@ export default {
          * @returns {void} - void
          */
         circleSwitchStatus (value) {
-            this.definedCircle = value;
+            this.setDefinedCircle(value);
             this.removeHighlightingWhenDeselected();
             if (!value) {
                 this.resetSelection();
