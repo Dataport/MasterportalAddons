@@ -33,7 +33,9 @@ export default {
             wfsFeatureProperties: null,
             isloading: false,
             errorMessage: null,
-            highlightFeatureObject: {}
+            highlightFeatureObject: {},
+            uuid: "",
+            uploadLayerId: ""
         };
     },
     computed: {
@@ -54,8 +56,10 @@ export default {
         }
     },
     mounted () {
+        this.uuid = this.getUuid();
+        this.uploadLayerId = this.getUploadLayerId();
         this.createInteractions();
-        this.selectedWfstLayer = this.wfstLayersForSelection[0] || null;
+        this.selectedWfstLayer = this.getSelectedWfstLayer();
     },
     unmounted () {
         this.reset();
@@ -117,6 +121,14 @@ export default {
             const {url, version, featureType, isSecured} = this.layerConfigById(this.selectedWfstLayer.id),
                 properties = await wfs.receivePossibleProperties(url, version, featureType, isSecured ?? false);
 
+            if (Array.isArray(properties)) {
+                properties.forEach((propertie) => {
+                    if (propertie.key === "uuid") {
+                        propertie.value = this.uuid || propertie.value;
+                    }
+                });
+            }
+
             if (this.wfstAttributesForInput !== "all") {
                 this.wfsFeatureProperties = properties.filter(prop => this.wfstAttributesForInput.includes(prop.label));
             }
@@ -170,6 +182,31 @@ export default {
             this.selectedFeature = null;
             this.errorMessage = null;
             this.highlightFeatureObject = {};
+        },
+        getUrlParamValue (paramName) {
+            const params = new URL(location).searchParams,
+                keyName = Array.from(params.keys()).find((key) => key.toLowerCase() === paramName.toLowerCase());
+
+            return params.get(keyName);
+        },
+        getUuid () {
+            return this.getUrlParamValue("UUID");
+        },
+        getUploadLayerId () {
+            return this.getUrlParamValue("UPLOADLAYERID");
+        },
+        getSelectedWfstLayer () {
+            let result = this.wfstLayersForSelection[0] || null;
+
+            if (Array.isArray(this.wfstLayersForSelection)) {
+                this.wfstLayersForSelection.forEach((layer) => {
+                    if (layer.id === this.uploadLayerId) {
+                        result = layer;
+                    }
+                });
+            }
+
+            return result;
         }
     }
 };
