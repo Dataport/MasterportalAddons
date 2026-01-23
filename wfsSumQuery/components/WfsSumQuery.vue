@@ -29,7 +29,7 @@ export default {
             options: {
                 "Box": this.$t("common:shared.modules.graphicalSelect.selectBySquare"),
                 "Circle": this.$t("common:shared.modules.graphicalSelect.selectByCircle"),
-                "Polygon": this.$t("common:shared.modules.graphicalSelect.selectByPolygon"),
+                "Polygon": this.$t("common:shared.modules.graphicalSelect.selectByPolygon")
             }
         };
     },
