@@ -7,6 +7,7 @@ import {Circle} from "ol/geom.js";
 import Feature from "ol/Feature.js";
 import store from "../../../src/app-store";
 import layerCollection from "../../../src/core/layers/js/layerCollection";
+import spatialSelection from "../../../src/modules/featureLister/js/getSpatialSelection.js";
 
 /**
  * Searches the portalConfig for the given key and value.
@@ -60,35 +61,35 @@ function assignTypeBasedOnFeature (feature) {
  * @param {*} server the server of the service
  * @returns {Object} attributes from the Layer
  */
-function getAttributes (describeFeatureXmlDoc, featureType, server) {
-    if (server === "qgis") {
-        return getAttributesFromQGISLayer(describeFeatureXmlDoc, featureType);
-    }
-    return getAttributesFromDeegreeLayer(describeFeatureXmlDoc, featureType);
+// function getAttributes (describeFeatureXmlDoc, featureType, server) {
+//     if (server === "qgis") {
+//         return getAttributesFromQGISLayer(describeFeatureXmlDoc, featureType);
+//     }
+//     return getAttributesFromDeegreeLayer(describeFeatureXmlDoc, featureType);
 
-}
+// }
 /**
  * Returns attributes from a 'Describe Feature Request' to a QGIS server that has been cast to an xml doc.
  * @param {object} describeFeatureXmlDoc - xmlDoc
  * @param {String} featureType - name of the layer
  * @returns  {Object} attributes from the Layer
  */
-function getAttributesFromQGISLayer (describeFeatureXmlDoc, featureType) {
-    const findLayerAttributes = describeFeatureXmlDoc.querySelector(`complexType[name="${featureType + "Type"}"]`);
+// function getAttributesFromQGISLayer (describeFeatureXmlDoc, featureType) {
+//     const findLayerAttributes = describeFeatureXmlDoc.querySelector(`complexType[name="${featureType + "Type"}"]`);
 
-    return findLayerAttributes?.getElementsByTagName("element");
-}
+//     return findLayerAttributes?.getElementsByTagName("element");
+// }
 /**
  * Returns attributes from a 'Describe Feature Request' to a deegree server that has been cast to an xml doc.
  * @param {object} describeFeatureXmlDoc - xmlDoc
  * @param {String} featureType - name of the layer
  * @returns  {Object} attributes from the Layer
  */
-function getAttributesFromDeegreeLayer (describeFeatureXmlDoc, featureType) {
-    const findLayerAttributes = describeFeatureXmlDoc.querySelector(`element[name="${featureType.replace("app:", "")}"]`);
+// function getAttributesFromDeegreeLayer (describeFeatureXmlDoc, featureType) {
+//     const findLayerAttributes = describeFeatureXmlDoc.querySelector(`element[name="${featureType}"]`);
 
-    return findLayerAttributes?.getElementsByTagName("element") || [];
-}
+//     return findLayerAttributes?.getElementsByTagName("element") || [];
+// }
 
 const actions = {
 
@@ -112,6 +113,9 @@ const actions = {
                         name: layer.name,
                         url: layer.url,
                         featureType: layer.featureType,
+                        featurePrefix: layer.featurePrefix,
+                        outputFormat: layer.outputFormat || "XML",
+                        featureNS: layer.featureNS,
                         version: layer.version || "1.1.0",
                         typ: layer.typ,
                         layerFromConfig: layer,
@@ -135,97 +139,54 @@ const actions = {
             return;
         }
 
-        let drawnGeometry, coordinatesArray,
-            polygon, uniqueTagNames;
+        let geomGeoJson = payload.geometry;
 
         if (payload.type === "circleFromPolygon") {
-            polygon = payload.geometry;
-            coordinatesArray = polygon.getCoordinates()[0];
-        }
-        else if (payload.type === "polygonFromGraphicalSelect") {
-            drawnGeometry = JSON.stringify(payload.geometry);
-            coordinatesArray = JSON.parse(drawnGeometry).coordinates[0];
+            const polygon = payload.geometry,
+                coordinatesArray = polygon.getCoordinates()[0];
+
+            geomGeoJson = {
+                type: "Polygon",
+                coordinates: [coordinatesArray]
+            };
         }
 
         const selectedLayer = getters.layersForSelection.filter(layer => layer.id === getters.selectedLayerId)[0],
-            featureType = selectedLayer.featureType,
-            epsg = store.getters["Maps/projectionCode"].split(":")[1],
-            service = selectedLayer.url,
-            version = selectedLayer.version,
-            coordinates = coordinatesArray.map(coord => coord.join(",")).join(" "),
-            questionMarkOrAmpersand = service.includes("?MAP=") ? "&" : "?",
-            body =
-                `<wfs:GetFeature xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-                xsi:schemaLocation="http://www.opengis.net/wfs" 
-                xmlns:gml="http://www.opengis.net/gml" 
-                xmlns:wfs="http://www.opengis.net/wfs" 
-                xmlns:ogc="http://www.opengis.net/ogc" 
-                service="WFS" version="${version}"> 
-                <wfs:Query typeName="${featureType}"> 
-                <ogc:Filter><ogc:Intersects><ogc:PropertyName>app:geom</ogc:PropertyName>
-                <gml:Polygon srsName="http://www.opengis.net/gml/srs/epsg.xml#${epsg}">
-                <gml:outerBoundaryIs><gml:LinearRing>
-                <gml:coordinates>${coordinates}</gml:coordinates>
-                </gml:LinearRing></gml:outerBoundaryIs>
-                </gml:Polygon></ogc:Intersects></ogc:Filter></wfs:Query></wfs:GetFeature>`,
-            response = await fetch(`${service}${questionMarkOrAmpersand}REQUEST=GetFeature&TYPENAME=${featureType}&SERVICE=WFS&VERSION=${version}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "text/xml"
-                },
-                body: body
-            }),
-            text = await response.text(),
-            parser = new DOMParser(),
-            xmlDoc = parser.parseFromString(text, "text/xml"),
-            isQGIS = selectedLayer.server === "qgis",
-            prefix = isQGIS ? "qgs:" : "",
-            features = xmlDoc.getElementsByTagName(prefix + featureType),
-            tagNames = [],
-            allSelectedFeatureProperties = [],
-            describeFeatureResponse = await fetch(`${service}${questionMarkOrAmpersand}service=WFS&version=${version}&request=DescribeFeatureType&typeName=${featureType}`),
-            describeFeatureText = await describeFeatureResponse.text(),
-            describeFeatureXmlDoc = parser.parseFromString(describeFeatureText, "text/xml"),
-            elements = getAttributes(describeFeatureXmlDoc, featureType, selectedLayer.server);
+            featureType = selectedLayer.featureType;
 
-        for (let i = 0; i < elements.length; i++) {
-            const attribute = elements[i].getAttribute("name");
+        const features = await spatialSelection.getSpatialSelection(geomGeoJson, selectedLayer, store.getters["Maps/projectionCode"], {dispatch, commit});
 
-            tagNames.push(attribute);
+        if (!features || features.length === 0) {
+            const infoContent = {
+                category: "Info",
+                displayClass: "info",
+                content: i18next.t("additional:modules.wfsSumQuery.noFeatureFound", selectedLayer.name)
+            };
+
+            dispatch("Alerting/addSingleAlert", infoContent, {root: true});
+            return;
         }
-
-        uniqueTagNames = new Set(tagNames);
-        uniqueTagNames = [...uniqueTagNames];
-        uniqueTagNames = uniqueTagNames.filter(tagName => tagName !== "geom" && tagName !== "geometry");
-
-        commit("setUniqueAttributes", uniqueTagNames);
-        commit("setFeatureType", featureType);
+        const allSelectedFeatureProperties = [],
+            uniqueTagNames = Object.keys(features[0].getProperties());
 
         features.forEach(feature => {
-            const selectedFeatureProperty = {id: feature.getAttribute("gml:id")};
+            const selectedFeature = {id: feature.getId(), ...feature.getProperties()};
 
-            uniqueTagNames.forEach(tagName => {
-                const prefixForAttributes = isQGIS ? prefix : "app:",
-                    tagNameWithPrefix = prefixForAttributes + tagName;
-
-                if (feature.getElementsByTagName(tagNameWithPrefix)[0]) {
-                    selectedFeatureProperty[tagName] = feature.getElementsByTagName(tagNameWithPrefix)[0].textContent;
-                }
-            });
-            allSelectedFeatureProperties.push(selectedFeatureProperty);
+            allSelectedFeatureProperties.push(selectedFeature);
         });
 
-        commit("setAllSelectedFeatureProperties", allSelectedFeatureProperties);
+        if (features && features.length > 0) {
+            commit("setUniqueAttributes", uniqueTagNames);
+            commit("setFeatureType", featureType);
+            commit("setAllSelectedFeatureProperties", allSelectedFeatureProperties);
+        }
 
-        if (uniqueTagNames.length === 0 || allSelectedFeatureProperties.length === 0) {
-            const messageKey = uniqueTagNames.length === 0
-                    ? "noAttributesFound" : "noFeatureFound",
-                options = selectedLayer.name,
-                infoContent = {
-                    category: "Info",
-                    displayClass: "info",
-                    content: i18next.t(`additional:modules.wfsSumQuery.${messageKey}`, options)
-                };
+        if (uniqueTagNames.length === 0) {
+            const infoContent = {
+                category: "Info",
+                displayClass: "info",
+                content: i18next.t("additional:modules.wfsSumQuery.noAttributesFound", selectedLayer.name)
+            };
 
             dispatch("Alerting/addSingleAlert", infoContent, {root: true});
         }
