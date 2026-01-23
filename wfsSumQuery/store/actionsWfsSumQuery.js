@@ -54,42 +54,6 @@ function assignTypeBasedOnFeature (feature) {
         ? geomTypeSet.get(geomType.toUpperCase())
         : "NOT FOUND";
 }
-/**
- * Returns attributes from a 'Describe Feature Request' that has been cast to an xml doc.
- * @param {object} describeFeatureXmlDoc - xmlDoc
- * @param {String} featureType name of the layer
- * @param {*} server the server of the service
- * @returns {Object} attributes from the Layer
- */
-// function getAttributes (describeFeatureXmlDoc, featureType, server) {
-//     if (server === "qgis") {
-//         return getAttributesFromQGISLayer(describeFeatureXmlDoc, featureType);
-//     }
-//     return getAttributesFromDeegreeLayer(describeFeatureXmlDoc, featureType);
-
-// }
-/**
- * Returns attributes from a 'Describe Feature Request' to a QGIS server that has been cast to an xml doc.
- * @param {object} describeFeatureXmlDoc - xmlDoc
- * @param {String} featureType - name of the layer
- * @returns  {Object} attributes from the Layer
- */
-// function getAttributesFromQGISLayer (describeFeatureXmlDoc, featureType) {
-//     const findLayerAttributes = describeFeatureXmlDoc.querySelector(`complexType[name="${featureType + "Type"}"]`);
-
-//     return findLayerAttributes?.getElementsByTagName("element");
-// }
-/**
- * Returns attributes from a 'Describe Feature Request' to a deegree server that has been cast to an xml doc.
- * @param {object} describeFeatureXmlDoc - xmlDoc
- * @param {String} featureType - name of the layer
- * @returns  {Object} attributes from the Layer
- */
-// function getAttributesFromDeegreeLayer (describeFeatureXmlDoc, featureType) {
-//     const findLayerAttributes = describeFeatureXmlDoc.querySelector(`element[name="${featureType}"]`);
-
-//     return findLayerAttributes?.getElementsByTagName("element") || [];
-// }
 
 const actions = {
 
@@ -151,8 +115,7 @@ const actions = {
             };
         }
 
-        const selectedLayer = getters.layersForSelection.filter(layer => layer.id === getters.selectedLayerId)[0],
-            featureType = selectedLayer.featureType;
+        const selectedLayer = getters.layersForSelection.filter(layer => layer.id === getters.selectedLayerId)[0];
 
         const features = await spatialSelection.getSpatialSelection(geomGeoJson, selectedLayer, store.getters["Maps/projectionCode"], {dispatch, commit});
 
@@ -177,7 +140,6 @@ const actions = {
 
         if (features && features.length > 0) {
             commit("setUniqueAttributes", uniqueTagNames);
-            commit("setFeatureType", featureType);
             commit("setAllSelectedFeatureProperties", allSelectedFeatureProperties);
         }
 
@@ -195,7 +157,6 @@ const actions = {
      * Highlights the Features that were selected by graphical selection.
      * @param {object} context - The context of the store.
      * @param {object} visibleLayer - The Layer from which the features were selected from.
-     * @param {String} featureType - The Layer name
      * @returns {void}
      */
     highlightFeaturesFromSelection ({dispatch, getters, state}, visibleLayer) {
@@ -208,7 +169,7 @@ const actions = {
             feature => {
                 const featureId = feature.id,
                     layerSource = layerCollection.getLayerById(visibleLayer.id)?.layerSource,
-                    featureFromLayer = layerSource?.getFeatureById(featureId) || layerSource?.getFeatureById(`${getters.featureType}.${featureId}`);
+                    featureFromLayer = layerSource?.getFeatureById(featureId) || layerSource?.getFeatureById(`${visibleLayer.featureType}.${featureId}`);
 
                 if (featureFromLayer) {
                     const geometryType = featureFromLayer?.getGeometry().getType().toUpperCase(),
