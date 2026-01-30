@@ -33,17 +33,20 @@ function searchForConfig (portalConfig, key, value) {
 }
 
 /**
- * Returns the right type based on the geometry type of the given feature. Does not support Line geometries.
+ * Returns the right type based on the geometry type of the given feature.
  * @param {Feature} feature - feature from layer.
  * @returns {String} - the type for the highlightObject that is needed in the highlightFeature function.
  */
 function assignTypeBasedOnFeature (feature) {
-    const geomTypeSet = new Map(),
+    const geomTypeSet = new Map([
+            ["POINT", "increase"],
+            ["MULTIPOINT", "increase"],
+            ["LINESTRING", "highlightLine"],
+            ["MULTILINESTRING", "highlightLine"],
+            ["POLYGON", "highlightPolygon"],
+            ["MULTIPOLYGON", "highlightMultiPolygon"]
+        ]),
         geomType = feature.getGeometry().getType();
-
-    geomTypeSet.set("POINT", "increase");
-    geomTypeSet.set("POLYGON", "highlightPolygon");
-    geomTypeSet.set("MULTIPOLYGON", "highlightMultiPolygon");
 
     if (!geomTypeSet.get(geomType.toUpperCase())) {
         console.warn("Highlighting not possible because geometry type is not supported.");
