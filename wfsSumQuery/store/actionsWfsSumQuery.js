@@ -33,7 +33,7 @@ function searchForConfig (portalConfig, key, value) {
 }
 
 /**
- * Returns the right type based on the geometry type of the given feature.
+ * Returns the right type based on the geometry type of the given feature. Does not support Line geometries.
  * @param {Feature} feature - feature from layer.
  * @returns {String} - the type for the highlightObject that is needed in the highlightFeature function.
  */
@@ -42,7 +42,6 @@ function assignTypeBasedOnFeature (feature) {
         geomType = feature.getGeometry().getType();
 
     geomTypeSet.set("POINT", "increase");
-    geomTypeSet.set("LINESTRING", "highlightLine");
     geomTypeSet.set("POLYGON", "highlightPolygon");
     geomTypeSet.set("MULTIPOLYGON", "highlightMultiPolygon");
 

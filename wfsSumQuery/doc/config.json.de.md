@@ -18,7 +18,7 @@ Das Modul umfasst
 Das Addon muss in der config.json wie im Folgenden beschrieben konfiguriert werden. Dabei müssen die layer, deren ids in `layerIdsForSelection` aufgeführt werden, zuvor entsprechend für das Masterportal konfiguriert worden sein. Notwendige Konfigurationsparameter, die in der services.json für die verwendeten WFS gesetzt sein müssen, sind `featurePrefix`, `featureType` und `featureNS`. Ohne diese kann das Addon nicht richtig arbeiten.
 Für QGIS WFS muss der `MAP` Parameter Teil der konfigurierten URL in der services.json sein. 
 
-Die Konfiguration muss außerdem eine styleId spezifiziern. Ohne diese wird das Highlighting der ausgewählten Feature nicht funktionieren.
+Die Konfiguration muss außerdem eine styleId spezifiziern. Ohne diese wird das Highlighting der ausgewählten Feature nicht funktionieren. Das Highlighting funktioniert nicht für Multilinestring, da die Funktionalität im Masterportal derzeit kaputt ist.
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
