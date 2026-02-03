@@ -1,11 +1,11 @@
-# Masterportal Addons
+# Masterportal Addons für die Masterportal-Versionen 3.X
+
+Die Addons für die Versionen 2.X des Masterportals befinden sich in dem [MPv2-Branch](https://github.com/Dataport/MasterportalAddons/tree/MPv2).
 
 ## Beschreibung der Addons
 
 | Addon             | Beschreibung                                       | Kompatibilität |
 |-------------------|----------------------------------------------------|----------------|
-| gfiPie            | Tortendiagramm zur Darstellung von Feature Attributen | 2.49.X, 3.X         |
-| vas               | Wiener Suchdienst zum Einbinden ins Masterportal   | 2.X            |
 | wiengaz           | Addressuchdienst der Stadt Wien                    | 3.X            |
 | bulkDownload      | Layerabhängige Datendownloadanfrage an Backend     | 3.X            |
 | wfs-SumQuery      | Attibutsanzeige und Summierung von grafisch selektierten Features | 3.X            |
@@ -19,14 +19,6 @@
 Für jedes manuell hinzugefügte Addon wird in der addonsConf.json ein Eintrag erstellt.
 Nicht benötigte Addons können hier gelöscht werden.
 
-#### Beispiel für addonsConf.json in v2:
-```
-"vas": "model.js",
-"gfiPie": {
-    "path": "gfiThemes/gfiPie",
-    "type": "gfiTheme"
-}
-```
 #### Beispiel für addonsConf.json in v3:
 ```
 "wiengaz": {
@@ -35,7 +27,7 @@ Nicht benötigte Addons können hier gelöscht werden.
 },
 "bulkDownload": {
   "type": "tool"
-}
+},
 "wfsSumQuery": {
   "type": "tool"
 },
@@ -54,7 +46,7 @@ In der config.js des Portals muss als nächstes der in der addonsConf.json verwe
 
 #### Beispiel in config.js:
 ```
-addons: ["gfiPie", "vas", "obliqueViewer", "trinkwasser"],
+addons: ["gfiPie", "bulkDownload", "obliqueViewer", "trinkwasser"],
 ```
 
 ### 4. Alle nicht benötigten Addons aus dem Addons-Ordner löschen.
