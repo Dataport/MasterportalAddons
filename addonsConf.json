@@ -1,0 +1,19 @@
+{
+  "wiengaz": {
+    "type": "searchInterface",
+    "path": "searchInterfaces/wiengaz"
+  },
+  "bulkDownload": {
+    "type": "tool"
+  },
+  "wfsSumQuery": {
+    "type": "tool"
+  },
+  "gfiPie": {
+    "path":"gfiThemes/gfiPie",
+    "type": "gfiTheme"
+  },
+  "strassenBefahrung": {
+    "type": "tool"
+  }
+}

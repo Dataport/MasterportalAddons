@@ -129,7 +129,12 @@ const actions = {
      * @param {Object} payload - The payload containing the geometry and type of the selection.
      * @returns {void} void
      */
-    async fetchFeaturesFromSelection ({commit, dispatch, getters}, payload) {
+    async fetchFeaturesFromSelection ({commit, dispatch, getters, state}, payload) {
+        // extra check needed because action is also triggered with type circleFromPolygon from graphicalSelect for polygon selection
+        if (payload.type === "circleFromPolygon" && !state.definedCircle) {
+            return;
+        }
+
         let drawnGeometry, coordinatesArray,
             polygon, uniqueTagNames;
 
@@ -156,7 +161,7 @@ const actions = {
                 xmlns:wfs="http://www.opengis.net/wfs" 
                 xmlns:ogc="http://www.opengis.net/ogc" 
                 service="WFS" version="${version}"> 
-                <wfs:Query typeName="${featureType}">     
+                <wfs:Query typeName="${featureType}"> 
                 <ogc:Filter><ogc:Intersects><ogc:PropertyName>app:geom</ogc:PropertyName>
                 <gml:Polygon srsName="http://www.opengis.net/gml/srs/epsg.xml#${epsg}">
                 <gml:outerBoundaryIs><gml:LinearRing>
@@ -285,13 +290,15 @@ const actions = {
             source = new VectorSource({wrapX: false}),
             vector = new VectorLayer({
                 source: source,
-                name: "definedCircleWfsSumQuery"
+                name: "definedCircleWfsSumQuery",
+                zIndex: 99999999999 // set zIndex so circle is on top
             }),
 
             interaction = new Draw({
                 source: vector.getSource(),
                 type: "Point",
-                name: "wfsSumQueryInteraction"
+                name: "wfsSumQueryInteraction",
+                id: "wfsSumQueryInteraction"
             });
 
         if (existingInteraction) {
@@ -319,13 +326,17 @@ const actions = {
                         color: "rgb(84, 169, 210)",
                         width: 2
                     })
-                });
+                }),
+                existingLayer = map.getLayers().getArray().find(l => l.get("name") === "definedCircleWfsSumQuery");
 
             source.clear();
             circleFeature.setStyle(circleStyle);
             source.addFeature(circleFeature);
 
-            dispatch("Maps/addLayer", vector, {root: true});
+            if (!existingLayer) {
+                dispatch("Maps/addLayer", vector, {root: true});
+            }
+
             payload = {geometry: circleFeature.getGeometry(), type: "circleFromPolygon"};
             dispatch("fetchFeaturesFromSelection", payload);
             commit("setNewDrawend", true);
