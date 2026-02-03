@@ -3,7 +3,7 @@
 import {mapGetters, mapMutations} from "vuex";
 import * as convertFunctions from "../converters";
 
-import getters from "../../../../src/modules/getFeatureInfo/store/gettersGetFeatureInfo";
+import getters from "@modules/getFeatureInfo/store/gettersGetFeatureInfo";
 import WienGfiGetters from "../store/gettersWienGfi";
 import {sanitizeHtml} from "bootstrap/js/src/util/sanitizer";
 

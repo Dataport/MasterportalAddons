@@ -1,15 +1,13 @@
-# Masterportal Addons
+# Masterportal Addons für die Masterportal-Versionen 2.X
+
+Die Addons für die Versionen 3.X des Masterportals befinden sich in dem [Main-Branch](https://github.com/Dataport/MasterportalAddons/tree/main).
 
 ## Beschreibung der Addons
 
 | Addon             | Beschreibung                                       | Kompatibilität |
 |-------------------|----------------------------------------------------|----------------|
-| gfiPie            | Tortendiagramm zur Darstellung von Feature Attributen | 2.49.X, 3.X         |
+| gfiPie            | Tortendiagramm zur Darstellung von Feature Attributen | 2.49.X         |
 | vas               | Wiener Suchdienst zum Einbinden ins Masterportal   | 2.X            |
-| wiengaz           | Addressuchdienst der Stadt Wien                    | 3.X            |
-| bulkDownload      | Layerabhängige Datendownloadanfrage an Backend     | 3.X            |
-| wfs-SumQuery      | Attibutsanzeige und Summierung von grafisch selektierten Features | 3.X            |
-| strassenBefahrung | Anbindung der infra3d-API der Firma iNovitas.      | 3.X            |
 
 ## Dokumentation für die Einbindung der zusätzlichen Addons
 
@@ -26,26 +24,6 @@ Nicht benötigte Addons können hier gelöscht werden.
     "path": "gfiThemes/gfiPie",
     "type": "gfiTheme"
 }
-```
-#### Beispiel für addonsConf.json in v3:
-```
-"wiengaz": {
-  "type": "searchInterface",
-  "path": "searchInterfaces/wiengaz"
-},
-"bulkDownload": {
-  "type": "tool"
-}
-"wfsSumQuery": {
-  "type": "tool"
-},
-"gfiPie": {
-    "path":"gfiThemes/gfiPie",
-    "type": "gfiTheme"
-},
-"strassenBefahrung": {
-    "type": "tool"
-},
 ```
 
 ### 3. config.js des Portals anpassen
