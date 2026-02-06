@@ -15,7 +15,7 @@ The module includes
 
 ### WFS-SumQuery - Configuration
 
-The addon must be configured in config.json as described below. The layers whose ids are listed in `layerIdsForSelection` must have been configured accordingly for the masterportal beforehand. Mandatory configuration parameters that must be set in the services.json for the used WFS are `featurePrefix`, `featureType` and `featureNS`, otherwise the addon will not work correctly. 
+The addon must be configured in config.json as described below. The layers whose ids are listed in `layerIdsForSelection` must have been configured accordingly for the masterportal beforehand. Mandatory configuration parameters that must be set in the services.json for the used WFS are `featureType` and `featureNS`, otherwise the addon will not work correctly. If available, `featurePrefix` must also be configured.
 Please note that for QGIS WFS the `MAP` parameter must be part or the url configured in the services.json.
 
 The WFS must be configured with a styleId. Without this, the highlighting of the selected feature will not work.
