@@ -132,7 +132,7 @@ const actions = {
             return;
         }
         const allSelectedFeatureProperties = [],
-            uniqueTagNames = Object.keys(features[0].getProperties());
+            uniqueTagNames = Object.keys(features[0]?.getProperties() || {});
 
         features.forEach(feature => {
             const selectedFeature = {id: feature.getId(), ...feature.getProperties()};
