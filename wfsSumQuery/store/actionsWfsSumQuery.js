@@ -135,7 +135,13 @@ const actions = {
             uniqueTagNames = Object.keys(features[0]?.getProperties() || {});
 
         features.forEach(feature => {
-            const selectedFeature = {id: feature.getId(), ...feature.getProperties()};
+            const featureId = feature.getId();
+
+            if (featureId === undefined || featureId === null) {
+                console.warn("Feature has no ID, skipping...");
+                return;
+            }
+            const selectedFeature = {id: featureId, ...feature.getProperties()};
 
             allSelectedFeatureProperties.push(selectedFeature);
         });
