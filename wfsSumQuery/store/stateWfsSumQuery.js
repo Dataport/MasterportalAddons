@@ -45,7 +45,6 @@ const state = {
     selectedLayerId: null,
     newDrawend: false,
     layersForSelection: [],
-    featureType: "",
     definedCircle: false
 };
 
