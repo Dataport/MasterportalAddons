@@ -34,6 +34,7 @@ export default {
                     const params = this.feature.getTheme?.()?.params || {},
                         stationNameProperty = params.stationNameProperty || "stationbf",
                         textVersionProperty = params.textVersionProperty || "text_link",
+                        hasCustomMappings = Boolean(params.propertyMappings),
                         propertyMappings = params.propertyMappings || this.getDefaultPropertyMappings(),
                         position = props.position || "",
                         stationBf = props[stationNameProperty] || props.stationbf || "";
@@ -54,28 +55,48 @@ export default {
                         combinedHtml += `<p class="text-version"><a href="${textVersionUrl}" target="_blank" rel="noopener noreferrer">Link zur Textversion</a></p>`;
                     }
 
-                    Object.entries(props).forEach(([key, value]) => {
-                        if (typeof value === "string" && value.includes("<table") && value.includes("class=\"featureInfo\"")) {
-                            let sectionTitle = "";
+                    if (hasCustomMappings) {
+                        Object.keys(propertyMappings).forEach((key) => {
+                            const value = props[key];
 
-                            if (propertyMappings[key]) {
+                            if (typeof value === "string" && value.includes("<table") && value.includes("class=\"featureInfo\"")) {
                                 const mapping = propertyMappings[key],
                                     title = mapping.title || key,
                                     timestampProperty = mapping.timestampProperty,
-                                    timestamp = timestampProperty ? props[timestampProperty] || "" : "";
+                                    timestamp = timestampProperty ? props[timestampProperty] || "" : "",
+                                    sectionTitle = timestamp ? `${title} ${timestamp}` : title;
 
-                                sectionTitle = timestamp ? `${title} ${timestamp}` : title;
+                                if (sectionTitle) {
+                                    combinedHtml += `<h4>${sectionTitle}</h4>`;
+                                }
+                                combinedHtml += value;
                             }
-                            else {
-                                sectionTitle = key.replace(/_/g, " ");
-                            }
+                        });
+                    }
+                    else {
+                        Object.entries(props).forEach(([key, value]) => {
+                            if (typeof value === "string" && value.includes("<table") && value.includes("class=\"featureInfo\"")) {
+                                let sectionTitle = "";
 
-                            if (sectionTitle) {
-                                combinedHtml += `<h4>${sectionTitle}</h4>`;
+                                if (propertyMappings[key]) {
+                                    const mapping = propertyMappings[key],
+                                        title = mapping.title || key,
+                                        timestampProperty = mapping.timestampProperty,
+                                        timestamp = timestampProperty ? props[timestampProperty] || "" : "";
+
+                                    sectionTitle = timestamp ? `${title} ${timestamp}` : title;
+                                }
+                                else {
+                                    sectionTitle = key.replace(/_/g, " ");
+                                }
+
+                                if (sectionTitle) {
+                                    combinedHtml += `<h4>${sectionTitle}</h4>`;
+                                }
+                                combinedHtml += value;
                             }
-                            combinedHtml += value;
-                        }
-                    });
+                        });
+                    }
 
                     return combinedHtml;
                 }
