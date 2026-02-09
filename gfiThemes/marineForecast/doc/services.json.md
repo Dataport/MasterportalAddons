@@ -115,6 +115,12 @@ Für maximale Flexibilität können Sie alle Aspekte der Darstellung konfigurier
 - **Standard**: Vordefinierte Mappings für deutsche Marinestation-Properties
 - **Beschreibung**: Ein Objekt, das die Zuordnung von Property-Namen zu Anzeigeinformationen definiert.
 
+**Wichtig**: Wenn Sie eigene `propertyMappings` konfigurieren, werden **nur die explizit aufgelisteten Properties** angezeigt, und zwar **in der Reihenfolge**, wie sie im Objekt definiert sind. Dies ermöglicht:
+- **Filterung**: Nur gewünschte Tabellen werden angezeigt
+- **Sortierung**: Die Anzeigereihenfolge entspricht der Reihenfolge im `propertyMappings`-Objekt
+
+Wenn keine eigenen Mappings konfiguriert sind, werden automatisch alle Properties mit HTML-Tabellen angezeigt.
+
 Jedes Property-Mapping kann folgende Attribute enthalten:
 
 #### `title` (erforderlich)
@@ -314,7 +320,31 @@ Falls Ihre Datenquelle andere Property-Namen verwendet oder Sie eigene Titel ver
 }
 ```
 
-**Hinweis:** Nicht konfigurierte Properties mit HTML-Tabellen werden automatisch mit dem Property-Namen (Unterstriche werden durch Leerzeichen ersetzt) angezeigt.
+**Wichtig:** Sobald Sie `propertyMappings` definieren, werden **nur** die dort aufgelisteten Properties angezeigt. Andere Properties (auch wenn sie HTML-Tabellen enthalten) werden ignoriert.
+
+### Filterung und Sortierung von Tabellen
+
+Um nur bestimmte Tabellen in einer gewünschten Reihenfolge anzuzeigen:
+
+```json
+"gfiTheme": {
+  "name": "marineForecast",
+  "params": {
+    "propertyMappings": {
+      "ws_vorhersage": {
+        "title": "Wasserstandsvorhersage",
+        "timestampProperty": "stand"
+      },
+      "windvorhersage": {
+        "title": "DWD Windvorhersagen",
+        "timestampProperty": "stand_wind"
+      }
+    }
+  }
+}
+```
+
+**Ergebnis:** Es werden nur die Wasserstandsvorhersage und Windvorhersage angezeigt, in genau dieser Reihenfolge. Alle anderen Tabellen (z.B. Temperatur, Mondereignisse) werden ausgeblendet.
 
 ### Anpassung des Erscheinungsbilds
 
@@ -343,7 +373,10 @@ Alle Styling-Parameter sind optional und können individuell kombiniert werden.
 ## Hinweise
 
 - **HTML-Tabellen-Erkennung**: Das Theme erkennt nur Properties, die HTML-Code mit `<table` und `class="featureInfo"` enthalten
-- **Automatisches Fallback**: Wenn ein Property HTML-Tabellen enthält, aber nicht in `propertyMappings` definiert ist, wird es trotzdem angezeigt
+- **Filterung via propertyMappings**: 
+  - **Mit eigenen Mappings**: Nur explizit aufgelistete Properties werden angezeigt
+  - **Ohne eigene Mappings**: Alle Properties mit HTML-Tabellen werden automatisch angezeigt
+- **Reihenfolge-Kontrolle**: Die Reihenfolge der Properties in `propertyMappings` bestimmt die Anzeigereihenfolge
 - **Flexibilität**: Sie können das Theme für beliebige WFS-/WMS-Dienste verwenden, solange diese HTML-Tabellen mit der entsprechenden Klasse zurückgeben
 - **Stationsnamen-Formatierung**: Unterstriche in Stationsnamen werden automatisch durch Leerzeichen ersetzt
 - **Koordinaten-Darstellung**: Die Position wird aus dem `position`-Property gelesen und in Klammern neben dem Stationsnamen angezeigt, z.B. "Kiel Holtenau (54°22'20\"N)"
