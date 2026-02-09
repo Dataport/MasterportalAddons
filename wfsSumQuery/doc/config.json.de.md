@@ -15,7 +15,10 @@ Das Modul umfasst
 
 ### WFS-SumQuery - Konfiguration
 
-Das Addon muss in der config.json wie im Folgenden beschrieben konfiguriert werden. Dabei müssen die layer, deren ids in `layerIdsForSelection` aufgeführt werden, zuvor entsprechend für das Masterportal konfiguriert worden sein. Die Konfiguration muss außerdem eine styleId spezifiziern. Ohne diese wird das Highlighting der ausgewählten Feature nicht funktionieren.
+Das Addon muss in der config.json wie im Folgenden beschrieben konfiguriert werden. Dabei müssen die layer, deren ids in `layerIdsForSelection` aufgeführt werden, zuvor entsprechend für das Masterportal konfiguriert worden sein. Notwendige Konfigurationsparameter, die in der services.json für die verwendeten WFS gesetzt sein müssen, sind `featureType` und `featureNS`. Ohne diese kann das Addon nicht richtig arbeiten. Falls vorhanden muss `featurePrefix` ebenfalls konfiguriert werden. 
+Für QGIS WFS muss der `MAP` Parameter Teil der konfigurierten URL in der services.json sein. 
+
+Die Konfiguration muss außerdem eine styleId spezifiziern. Ohne diese wird das Highlighting der ausgewählten Feature nicht funktionieren.
 
 |Name|Verpflichtend|Typ|Default|Beschreibung|Expert|
 |----|-------------|---|-------|------------|------|
@@ -31,7 +34,7 @@ Das Addon muss in der config.json wie im Folgenden beschrieben konfiguriert werd
 {
     "name": "WFS-SumQuery",
     "type": "wfsSumQuery",
-    "layerIdsForSelection": ["129", "122333", "123333", {"id": "333333", "type": "qgis"}],
+    "layerIdsForSelection": ["129", "122333", "123333"],
     "highlightVectorRulesPointLine": {
         "fill": {
             "color": [255, 0, 255, 0.9]
