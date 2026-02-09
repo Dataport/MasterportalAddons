@@ -25,7 +25,12 @@ export default {
             currentTabId: "all",
             visibleLayer: 0,
             selectedLayerIndex: 0,
-            label: "additional:modules.wfsSumQuery.selectQueryLayer"
+            label: "additional:modules.wfsSumQuery.selectQueryLayer",
+            options: {
+                "Box": this.$t("common:shared.modules.graphicalSelect.selectBySquare"),
+                "Circle": this.$t("common:shared.modules.graphicalSelect.selectByCircle"),
+                "Polygon": this.$t("common:shared.modules.graphicalSelect.selectByPolygon")
+            }
         };
     },
     computed: {
@@ -515,6 +520,7 @@ export default {
                     <GraphicalSelect
                         ref="graphicalSelection"
                         :label="'additional:modules.wfsSumQuery.select.action'"
+                        :options="options"
                     />
                 </div>
             </div>
