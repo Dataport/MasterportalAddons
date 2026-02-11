@@ -8,7 +8,7 @@ Die Addons für die Versionen 2.X des Masterportals befinden sich in dem [MPv2-B
 |-------------------|----------------------------------------------------|----------------|
 | wiengaz           | Addressuchdienst der Stadt Wien                    | 3.X            |
 | bulkDownload      | Layerabhängige Datendownloadanfrage an Backend     | 3.X            |
-| wfs-SumQuery      | Attibutsanzeige und Summierung von grafisch selektierten Features | 3.X            |
+| wfs-SumQuery      | Attibutsanzeige und Summierung von grafisch selektierten Features | ^3.17.0            |
 | strassenBefahrung | Anbindung der infra3d-API der Firma iNovitas.      | 3.X            |
 
 ## Dokumentation für die Einbindung der zusätzlichen Addons
