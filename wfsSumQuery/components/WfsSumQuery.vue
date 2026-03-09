@@ -735,7 +735,7 @@ export default {
 </style>
 
 <style lang="scss">
-@import "~variables";
+@import "/src/assets/css/variables.scss";
 
 #tooltip-overlay {
     position: relative;
