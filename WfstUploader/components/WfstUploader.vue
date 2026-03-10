@@ -288,7 +288,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+@import "/src/assets/css/variables.scss";
 
 .font-size-big {
     font-size: $font_size_big;

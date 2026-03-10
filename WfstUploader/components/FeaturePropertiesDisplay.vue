@@ -182,7 +182,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+@import "/src/assets/css/variables.scss";
 
 .property-item {
     padding: 0.75rem 0;
