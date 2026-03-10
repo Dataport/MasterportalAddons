@@ -47,7 +47,6 @@ Für maximale Flexibilität können Sie alle Aspekte der Darstellung konfigurier
   "gfiTheme": {
     "name": "marineForecast",
     "params": {
-      "stationNameProperty": "stationbf",
       "textVersionProperty": "text_link",
       "fontFamily": "Calibri, Arial, sans-serif",
       "fontSize": "14px",
@@ -90,8 +89,8 @@ Für maximale Flexibilität können Sie alle Aspekte der Darstellung konfigurier
 ### `stationNameProperty` (optional)
 
 - **Typ**: String
-- **Standard**: `"stationbf"`
-- **Beschreibung**: Der Name des Properties, das den Stationsnamen enthält. Falls nicht vorhanden, wird auf `"name"` zurückgegriffen.
+- **Standard**: `"name"`
+- **Beschreibung**: Der Name des Properties, das den Stationsnamen enthält. Der Standardwert `"name"` liefert den korrekt formatierten Namen aus der Datenbank mit Leerzeichen, Umlauten und Bindestrichen. Falls das Property nicht vorhanden ist, wird auf `"stationbf"` zurückgegriffen.
 
 **Beispiel:**
 ```json
@@ -102,7 +101,7 @@ Für maximale Flexibilität können Sie alle Aspekte der Darstellung konfigurier
 
 - **Typ**: String
 - **Standard**: `"text_link"`
-- **Beschreibung**: Der Name des Properties, das einen Link zur Textversion der Vorhersage enthält. Falls dieses Property nicht vorhanden ist, wird der Link automatisch aus dem `stationNameProperty` generiert mit dem Muster: `https://marineforecast.bsh.de/Meeresinformationen/bf/{stationbf}.html`. Der Link wird als "Link zur Textversion" unterhalb des Stationskopfes angezeigt.
+- **Beschreibung**: Der Name des Properties, das einen Link zur Textversion der Vorhersage enthält. Falls dieses Property nicht vorhanden ist, wird der Link automatisch aus dem Wert des `stationNameProperty` generiert mit dem Muster: `https://marineforecast.bsh.de/Meeresinformationen/bf/{stationName}.html`. Der Link wird als "Link zur Textversion" unterhalb des Stationskopfes angezeigt.
 
 **Beispiel:**
 ```json
@@ -382,7 +381,7 @@ Alle Styling-Parameter sind optional und können individuell kombiniert werden.
 - **Koordinaten-Darstellung**: Die Position wird aus dem `position`-Property gelesen und in Klammern neben dem Stationsnamen angezeigt, z.B. "Kiel Holtenau (54°22'20\"N)"
 - **Textausrichtung**: Alle Hauptinhalte (Überschriften, Text, Tabellen) sind linksbündig. Nur Erklärungstexte innerhalb von Tabellen (z.B. Mondphasen-Beschreibungen) sind zentriert
 - **Styling**: Das Theme verwendet standardmäßig ein sauberes weißes Design mit alternierenden Tabellenzeilen für bessere Lesbarkeit. Alle Farben, Schriftarten und Abstände sind vollständig konfigurierbar
-- **Link zur Textversion**: Falls das konfigurierte `textVersionProperty` keinen Wert enthält, wird der Link automatisch aus dem Stationsnamen mit dem Muster `https://marineforecast.bsh.de/Meeresinformationen/bf/{stationbf}.html` generiert
+- **Link zur Textversion**: Falls das konfigurierte `textVersionProperty` keinen Wert enthält, wird der Link automatisch aus dem Wert des `stationNameProperty` mit dem Muster `https://marineforecast.bsh.de/Meeresinformationen/bf/{stationName}.html` generiert
 
 ## Technische Details
 

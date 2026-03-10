@@ -32,7 +32,7 @@ export default {
 
                 if (htmlProperties.length > 0) {
                     const params = this.feature.getTheme?.()?.params || {},
-                        stationNameProperty = params.stationNameProperty || "stationbf",
+                        stationNameProperty = params.stationNameProperty || "name",
                         textVersionProperty = params.textVersionProperty || "text_link",
                         hasCustomMappings = Boolean(params.propertyMappings),
                         propertyMappings = params.propertyMappings || this.getDefaultPropertyMappings(),
