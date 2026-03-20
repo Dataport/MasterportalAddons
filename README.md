@@ -1,6 +1,8 @@
-# Masterportal Addons für die Masterportal-Versionen 3.X
+# Masterportal Addons für Masterportal-Versionen 3.X
 
-Die Addons für die Versionen 2.X des Masterportals befinden sich in dem [MPv2-Branch](https://github.com/Dataport/MasterportalAddons/tree/MPv2).
+Diese Repository enthält Addons für das [Masterportal](https://www.masterportal.org), eine Software zur Erstellung von Geo-Webanwendungen in Version 3.X.
+
+Addons für die Versionen 2.X des Masterportals befinden sich in dem [MPv2-Branch](https://github.com/Dataport/MasterportalAddons/tree/MPv2).
 
 ## Beschreibung der Addons
 
@@ -75,3 +77,5 @@ Für einige Addons werden Konfigurationsparameter benötigt, damit diese funktio
 ### 7. Bauen der Portale mit dem Befehl "npm run build" innerhalb des Masterportal-Ordners.
 
 ### 8. Im Ordner "dist" befinden sich nun die gebauten Portale.
+
+made by [Dataport](https://www.dataport.de/) with ❤️
