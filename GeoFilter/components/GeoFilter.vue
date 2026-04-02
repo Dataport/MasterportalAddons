@@ -127,22 +127,22 @@ export default {
                     layerId: this.selectedTargetLayer.id,
                     value: false
                 });
+                this.addSingleAlert({
+                    category: "info",
+                    content: this.$t("additional:modules.tools.geoFilter.filteredFeaturesAdded", {layerName: `${this.filterLayerName} ${this.selectedTargetLayer.name}`}),
+                    title: this.$t("additional:modules.tools.geoFilter.title")
+                });
             }
             catch (error) {
                 console.error("Error during WFS request:", error);
                 this.addSingleAlert({
-                    type: "error",
+                    category: "error",
                     content: this.$t("additional:modules.tools.geoFilter.errorMessage"),
                     title: this.$t("additional:modules.tools.geoFilter.title")
                 });
             }
             finally {
                 this.loading = false;
-                this.addSingleAlert({
-                    type: "info",
-                    content: this.$t("additional:modules.tools.geoFilter.filteredFeaturesAdded", {layerName: `${this.filterLayerName} ${this.selectedTargetLayer.name}`}),
-                    title: this.$t("additional:modules.tools.geoFilter.title")
-                });
             }
         }
     }
