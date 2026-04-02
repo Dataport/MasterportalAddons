@@ -21,7 +21,7 @@ async function filterFeaturesByGeometry ({targetLayer, filterLayer}) {
         const geometryName = targetLayer.layerSource.getFeatures()[0].getGeometryName() || "geom";
         const epsg = mapCollection.getMap("2D").getView().getProjection().getCode();
         const filters = coordinates.map(geometry => intersects(geometryName, geometry));
-        const combinedFilter = or(...filters);
+        const combinedFilter = filters.length > 1 ? or(...filters) : filters[0];
         const wfsFormat = new WFS(),
             node = wfsFormat.writeGetFeature({
                 srsName: epsg,
