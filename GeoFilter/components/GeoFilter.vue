@@ -19,8 +19,6 @@ export default {
             selectedTargetLayer: null,
             filterLayerName: "",
             loading: false,
-            importerAddonId: "importer",
-            importerAddonName: "Import",
             activeTab: "geofilter"
         };
     },
