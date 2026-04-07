@@ -75,7 +75,7 @@ export default {
             if (!layer) {
                 return false;
             }
-            return layer.layerSource.getFeatures()[0].getGeometry().getType() === "Polygon";
+            return layer.layerSource.getFeatures()[0].getGeometry().getType() === "Polygon" || layer.layerSource.getFeatures()[0].getGeometry().getType() === "MultiPolygon";
         }
     },
     watch: {
