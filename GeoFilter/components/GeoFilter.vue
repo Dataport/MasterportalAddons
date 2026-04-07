@@ -86,6 +86,9 @@ export default {
                 return false;
             }
             return layer.layerSource.getFeatures()[0].getGeometry().getType() === "Polygon" || layer.layerSource.getFeatures()[0].getGeometry().getType() === "MultiPolygon";
+        },
+        activeInitialTab () {
+            return this.filterLayersAvailable ? "geofilter" : "importer";
         }
     },
     watch: {
@@ -165,7 +168,7 @@ export default {
         id="geoFilter"
         class="row"
     >
-        <TabContainer :tabs="tabs">
+        <TabContainer :tabs="tabs" :initial-tab="activeInitialTab">
             <!-- GeoFilter Tab Content -->
             <template #geofilter>
                 <SpinnerItem v-if="loading" />
