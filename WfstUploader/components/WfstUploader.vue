@@ -5,7 +5,7 @@ import InputText from "@shared/modules/inputs/components/InputText.vue";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
 import wfs from "@masterportal/masterportalapi/src/layer/wfs";
 import mapCollection from "@core/maps/js/mapCollection";
-import AddonOpenerButton from "../../AddonOpenerButton.vue";
+import AddonOpenerButton from "../../shared-components/AddonOpenerButton.vue";
 import FeaturePropertiesDisplay from "./FeaturePropertiesDisplay.vue";
 import VectorSource from "ol/source/Vector.js";
 import {Select} from "ol/interaction";

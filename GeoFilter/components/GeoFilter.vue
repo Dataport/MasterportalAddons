@@ -3,6 +3,7 @@ import {mapGetters, mapActions} from "vuex";
 import layerCollection from "@core/layers/js/layerCollection";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
+import TabContainer from "../../shared-components/TabContainer.vue";
 import filterFeaturesByGeometry from "../utils/filterFeaturesByGeometry";
 import ImporterAddon from "../../importer/components/ImporterAddon.vue";
 
@@ -11,6 +12,7 @@ export default {
     components: {
         SpinnerItem,
         FlatButton,
+        TabContainer,
         ImporterAddon
     },
     data () {
@@ -19,7 +21,16 @@ export default {
             selectedTargetLayer: null,
             filterLayerName: "",
             loading: false,
-            activeTab: "geofilter"
+            tabs: [
+                {
+                    id: "geofilter",
+                    label: "additional:modules.tools.geoFilter.title"
+                },
+                {
+                    id: "importer",
+                    label: "additional:modules.tools.importer.title"
+                }
+            ]
         };
     },
     computed: {
@@ -154,116 +165,76 @@ export default {
         id="geoFilter"
         class="row"
     >
-        <hr>
-        <!-- Tab Navigation -->
-        <ul
-            class="nav nav-tabs mb-3"
-            role="tablist"
-        >
-            <li
-                class="nav-item"
-                role="presentation"
-            >
-                <button
-                    class="nav-link"
-                    :class="{ active: activeTab === 'geofilter' }"
-                    type="button"
-                    role="tab"
-                    @click="activeTab = 'geofilter'"
-                >
-                    {{ $t("additional:modules.tools.geoFilter.title") }}
-                </button>
-            </li>
-            <li
-                class="nav-item"
-                role="presentation"
-            >
-                <button
-                    class="nav-link"
-                    :class="{ active: activeTab === 'importer' }"
-                    type="button"
-                    role="tab"
-                    @click="activeTab = 'importer'"
-                >
-                    {{ $t("additional:modules.tools.importer.title") }}
-                </button>
-            </li>
-        </ul>
-
-        <!-- GeoFilter Tab Content -->
-        <div
-            v-if="activeTab === 'geofilter'"
-            role="tabpanel"
-        >
-            <SpinnerItem v-if="loading" />
-            <div
-                v-if="!filterLayersAvailable"
-                class="mt-3"
-            >
-                {{ $t("additional:modules.tools.geoFilter.importFilterLayer") }}
-            </div>
-            <div
-                v-else
-                class="mt-3"
-            >
-                <div v-if="filterLayersAvailable">
-                    <div>
-                        {{ $t("additional:modules.tools.geoFilter.chooseLayerText") }}
-                    </div>
-                    <select
-                        id="geofilter-select-filterlayer"
-                        v-model="selectedFilterLayer"
-                        class="form-select mt-3"
-                    >
-                        <option
-                            v-for="(layer, idx) in filterLayers"
-                            :key="idx"
-                            :value="layer"
-                        >
-                            {{ layer.name }}
-                        </option>
-                    </select>
-                </div>
+        <TabContainer :tabs="tabs">
+            <!-- GeoFilter Tab Content -->
+            <template #geofilter>
+                <SpinnerItem v-if="loading" />
                 <div
-                    v-if="!targetLayersAvailable"
+                    v-if="!filterLayersAvailable"
                     class="mt-3"
                 >
-                    {{ $t("additional:modules.tools.geoFilter.noTargetLayersAvailable") }}
-                    <span v-if="configuredTargetLayers">
-                        {{ $t("additional:modules.tools.geoFilter.configuredLayers") }} {{ configuredTargetLayers }}
-                    </span>
+                    {{ $t("additional:modules.tools.geoFilter.importFilterLayer") }}
                 </div>
-                <div v-if="targetLayersAvailable">
-                    <select
-                        id="geofilter-select-targetlayer"
-                        v-model="selectedTargetLayer"
-                        class="form-select mt-3"
-                    >
-                        <option
-                            v-for="(layer, idx) in targetLayers"
-                            :key="idx"
-                            :value="layer"
+                <div
+                    v-else
+                    class="mt-3"
+                >
+                    <div v-if="filterLayersAvailable">
+                        <div>
+                            {{ $t("additional:modules.tools.geoFilter.chooseLayerText") }}
+                        </div>
+                        <select
+                            id="geofilter-select-filterlayer"
+                            v-model="selectedFilterLayer"
+                            class="form-select mt-3"
                         >
-                            {{ layer.name }}
-                        </option>
-                    </select>
-                    <FlatButton
+                            <option
+                                v-for="(layer, idx) in filterLayers"
+                                :key="idx"
+                                :value="layer"
+                            >
+                                {{ layer.name }}
+                            </option>
+                        </select>
+                    </div>
+                    <div
+                        v-if="!targetLayersAvailable"
                         class="mt-3"
-                        :disabled="!selectedFilterLayer && !selectedTargetLayer"
-                        :text="$t(`additional:modules.tools.geoFilter.filterButton`)"
-                        @click="applyFilter"
-                    />
+                    >
+                        {{ $t("additional:modules.tools.geoFilter.noTargetLayersAvailable") }}
+                        <span v-if="configuredTargetLayers">
+                            {{ $t("additional:modules.tools.geoFilter.configuredLayers") }} {{ configuredTargetLayers }}
+                        </span>
+                    </div>
+                    <div v-if="targetLayersAvailable">
+                        <select
+                            id="geofilter-select-targetlayer"
+                            v-model="selectedTargetLayer"
+                            class="form-select mt-3"
+                        >
+                            <option
+                                v-for="(layer, idx) in targetLayers"
+                                :key="idx"
+                                :value="layer"
+                            >
+                                {{ layer.name }}
+                            </option>
+                        </select>
+                        <FlatButton
+                            class="mt-3"
+                            :disabled="!selectedFilterLayer && !selectedTargetLayer"
+                            :text="$t(`additional:modules.tools.geoFilter.filterButton`)"
+                            @click="applyFilter"
+                        />
+                    </div>
                 </div>
-            </div>
-        </div>
+            </template>
 
-        <!-- Importer Tab Content -->
-        <div
-            v-if="activeTab === 'importer'"
-            role="tabpanel"
-        >
-            <ImporterAddon />
-        </div>
+            <!-- Importer Tab Content -->
+            <template #importer>
+                <ImporterAddon />
+            </template>
+        </TabContainer>
     </div>
 </template>
 
