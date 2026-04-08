@@ -12,19 +12,17 @@ const MAX_PAYLOAD_SIZE = 10 * 1024 * 1024; // 10MB
  */
 async function filterFeaturesByGeometry ({targetLayer, filterLayer}) {
     try {
-        const filterFeatures = filterLayer.layerSource.getFeatures(),
-            coordinates = filterFeatures.map(feature => feature.getGeometry()),
-
-            service = targetLayer.attributes.url,
-            featureType = targetLayer.attributes.featureType,
-            featureNS = targetLayer.attributes.featureNS,
-            featurePrefix = targetLayer.attributes.prefix,
-            geometryName = targetLayer.layerSource.getFeatures()[0].getGeometryName() || "geom",
-            epsg = mapCollection.getMap("2D").getView().getProjection().getCode(),
-            filters = coordinates.map(geometry => intersects(geometryName, geometry)),
-            combinedFilter = or(...filters),
-
-            wfsFormat = new WFS(),
+        const filterFeatures = filterLayer.layerSource.getFeatures();
+        const coordinates = filterFeatures.map(feature => feature.getGeometry());
+        const service = targetLayer.attributes.url;
+        const featureType = targetLayer.attributes.featureType;
+        const featureNS = targetLayer.attributes.featureNS;
+        const featurePrefix = targetLayer.attributes.featurePrefix || "app";
+        const geometryName = targetLayer.layerSource.getFeatures()[0].getGeometryName() || "geom";
+        const epsg = mapCollection.getMap("2D").getView().getProjection().getCode();
+        const filters = coordinates.map(geometry => intersects(geometryName, geometry));
+        const combinedFilter = filters.length > 1 ? or(...filters) : filters[0];
+        const wfsFormat = new WFS(),
             node = wfsFormat.writeGetFeature({
                 srsName: epsg,
                 featureNS: featureNS,
@@ -35,8 +33,8 @@ async function filterFeaturesByGeometry ({targetLayer, filterLayer}) {
             serializer = new XMLSerializer(),
             body = serializer.serializeToString(node);
 
-        let response = "",
-            responseText = "";
+        let response = "";
+        let responseText = "";
 
         if (body.length > MAX_PAYLOAD_SIZE) {
             throw new Error("Payload size exceeds the maximum limit");
