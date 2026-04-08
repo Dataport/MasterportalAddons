@@ -6,6 +6,7 @@ import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
 import TabContainer from "../../shared-components/TabContainer.vue";
 import filterFeaturesByGeometry from "../utils/filterFeaturesByGeometry";
 import ImporterAddon from "../../importer/components/ImporterAddon.vue";
+import ExporterAddon from "../../exporter/components/ExporterAddon.vue";
 
 export default {
     name: "GeoFilter",
@@ -13,7 +14,8 @@ export default {
         SpinnerItem,
         FlatButton,
         TabContainer,
-        ImporterAddon
+        ImporterAddon,
+        ExporterAddon
     },
     data () {
         return {
@@ -29,6 +31,10 @@ export default {
                 {
                     id: "importer",
                     label: "additional:modules.tools.importer.title"
+                },
+                {
+                    id: "exporter",
+                    label: "additional:modules.tools.exporter.title"
                 }
             ]
         };
@@ -168,7 +174,10 @@ export default {
         id="geoFilter"
         class="row"
     >
-        <TabContainer :tabs="tabs" :initial-tab="activeInitialTab">
+        <TabContainer
+            :tabs="tabs"
+            :initial-tab="activeInitialTab"
+        >
             <!-- GeoFilter Tab Content -->
             <template #geofilter>
                 <SpinnerItem v-if="loading" />
@@ -236,6 +245,10 @@ export default {
             <!-- Importer Tab Content -->
             <template #importer>
                 <ImporterAddon />
+            </template>
+            <!-- Exporter Tab Content -->
+            <template #exporter>
+                <ExporterAddon />
             </template>
         </TabContainer>
     </div>
