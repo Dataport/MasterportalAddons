@@ -198,7 +198,6 @@ export async function createFileLayerConfigs (filetype, file, layerId, folderId)
 
         fileParts.pop();
 
-        // eslint-disable-next-line one-var
         const fileName = fileParts.join(".");
 
         layerConfigs = [createGeoJsonLayerConfig(fileContent, fileName, layerId, folderId)];

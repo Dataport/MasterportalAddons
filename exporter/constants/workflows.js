@@ -5,7 +5,6 @@ export const WORKFLOW_NAMES = {
     externalWfs: "externalWfs"
 };
 
-// eslint-disable-next-line one-var
 export const WORKFLOWS = {
     [WORKFLOW_NAMES.default]: [STEPS.selectLayer, STEPS.downloadLayer],
     [WORKFLOW_NAMES.externalWfs]: [STEPS.selectExternalWfsLayer, STEPS.downloadLayer]
