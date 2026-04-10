@@ -428,7 +428,11 @@ async function prepareGPKG (properties) {
 }
 
 /**
+ * Download a layer based on the layer type and requested format.
  *
+ * @param {Object} layer The layer to download.
+ * @param {String} format The requested output format.
+ * @returns {void}
  */
 export async function downloadLayer (layer, format) {
     const layerDownloadMap = {
