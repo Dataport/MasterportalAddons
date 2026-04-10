@@ -81,10 +81,6 @@ async function downloadVectorBaseLayer (vectorBaseLayer, format) {
         });
     let blob, gpkg, gpkgBytes;
 
-    console.log("[DEBUG] downloadVectorBaseLayer - features:", features);
-    console.log("[DEBUG] downloadVectorBaseLayer - featureProjection:", featureProjection);
-    console.log("[DEBUG] downloadVectorBaseLayer - geojson:", geojson);
-
     switch (format) {
         case "shp":
             // download as zipped shapefile will be triggered automatically by this function
