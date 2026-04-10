@@ -1,6 +1,20 @@
 import EXPORTFORMATS from "../constants/exportformats";
 import LAYERTYPES from "../constants/layertypes";
 
+import layerCollection from "@core/layers/js/layerCollection";
+
+/**
+ * Get a layer from the layer collection by its id.
+ *
+ * @param {String} layerId The id of the layer to get.
+ * @returns {any} The layer with the given id, or null if no such layer exists.
+ */
+function getLayerFromLayerCollectionById (layerId) {
+    const layer = layerCollection.getLayerById(layerId);
+
+    return layer ? layer.layer : null;
+}
+
 /**
  * Get a downloadLayer from drawLayer.
  *
@@ -13,7 +27,7 @@ export function drawLayerToDownloadLayer (drawLayer) {
     return {
         type: LAYERTYPES.draw,
         name: drawLayer.name,
-        layer: drawLayer,
+        layer: getLayerFromLayerCollectionById(drawLayer.id),
         exportFormats: [EXPORTFORMATS.geoJson, EXPORTFORMATS.gml, EXPORTFORMATS.shp, EXPORTFORMATS.gpkg],
         srsName: drawLayer.crs
     };
@@ -63,7 +77,7 @@ export function vectorBaseDownloadLayer (vectorBase) {
         type: LAYERTYPES.vectorBase,
         name: vectorBase.name,
         url: vectorBase.url,
-        layer: vectorBase,
+        layer: getLayerFromLayerCollectionById(vectorBase.id),
         epsg: vectorBase.crs,
         exportFormats: [EXPORTFORMATS.geoJson, EXPORTFORMATS.gml, EXPORTFORMATS.shp, EXPORTFORMATS.gpkg]
     };
