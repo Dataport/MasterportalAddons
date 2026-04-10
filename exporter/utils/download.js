@@ -34,10 +34,10 @@ function performDownload (url, fileName) {
 async function downloadDrawLayer (drawLayer, format) {
     const fileEnding = getFileEndingForFormat(format),
         fileName = `${drawLayer.name}.${fileEnding}`,
-        features = drawLayer.layer.layer.getSource().getFeatures(),
+        features = drawLayer.layer.getSource().getFeatures(),
         map = mapCollection.getMap("2D"),
         mapView = map.getView(),
-        featureProjection = drawLayer.epsg || mapView.getProjection().getCode(),
+        featureProjection = drawLayer.epsg || drawLayer.srsName || mapView.getProjection().getCode(),
         geojson = new GeoJSON().writeFeaturesObject(features, {
             featureProjection
         });
@@ -72,7 +72,7 @@ async function downloadDrawLayer (drawLayer, format) {
 async function downloadVectorBaseLayer (vectorBaseLayer, format) {
     const fileEnding = getFileEndingForFormat(format),
         fileName = `${vectorBaseLayer.name}.${fileEnding}`,
-        features = vectorBaseLayer.layer.layer.getSource().getFeatures(),
+        features = vectorBaseLayer.layer.getSource().getFeatures(),
         map = mapCollection.getMap("2D"),
         mapView = map.getView(),
         featureProjection = vectorBaseLayer.epsg || mapView.getProjection().getCode(),

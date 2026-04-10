@@ -12,10 +12,10 @@ import LAYERTYPES from "../constants/layertypes";
 export function drawLayerToDownloadLayer (drawLayer) {
     return {
         type: LAYERTYPES.draw,
-        name: drawLayer.get("name"),
+        name: drawLayer.name,
         layer: drawLayer,
         exportFormats: [EXPORTFORMATS.geoJson, EXPORTFORMATS.gml, EXPORTFORMATS.shp, EXPORTFORMATS.gpkg],
-        srsName: drawLayer.get("crs")
+        srsName: drawLayer.crs
     };
 }
 
@@ -28,8 +28,8 @@ export function drawLayerToDownloadLayer (drawLayer) {
 export function geoJsonToDownloadLayer (geoJson) {
     return {
         type: LAYERTYPES.geoJson,
-        name: geoJson.get("name"),
-        url: geoJson.get("url"),
+        name: geoJson.name,
+        url: geoJson.url,
         exportFormats: [EXPORTFORMATS.geoJson, EXPORTFORMATS.gml, EXPORTFORMATS.shp, EXPORTFORMATS.gpkg]
     };
 }
@@ -44,10 +44,10 @@ export function wfsToDownloadLayer (wfs) {
     // Note, this does not handle authenticated layers yet.
     return {
         type: LAYERTYPES.wfs,
-        name: wfs.get("name"),
-        url: wfs.get("url"),
-        featureType: wfs.get("featureType"),
-        version: wfs.get("version"),
+        name: wfs.name,
+        url: wfs.url,
+        featureType: wfs.featureType,
+        version: wfs.version,
         exportFormats: [EXPORTFORMATS.geoJson, EXPORTFORMATS.gml, EXPORTFORMATS.shp, EXPORTFORMATS.gpkg]
     };
 }
@@ -61,10 +61,10 @@ export function wfsToDownloadLayer (wfs) {
 export function vectorBaseDownloadLayer (vectorBase) {
     return {
         type: LAYERTYPES.vectorBase,
-        name: vectorBase.get("name"),
-        url: vectorBase.get("url"),
+        name: vectorBase.name,
+        url: vectorBase.url,
         layer: vectorBase,
-        epsg: vectorBase.get("crs"),
+        epsg: vectorBase.crs,
         exportFormats: [EXPORTFORMATS.geoJson, EXPORTFORMATS.gml, EXPORTFORMATS.shp, EXPORTFORMATS.gpkg]
     };
 }
