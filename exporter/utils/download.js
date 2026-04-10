@@ -25,56 +25,20 @@ function performDownload (url, fileName) {
 }
 
 /**
- * Download a draw layer.
+ * Download a vector layer (draw or vector base layer).
  *
- * @param {Object} drawLayer The draw layer to download.
+ * @param {Object} layer The vector layer to download (draw or vectorBase type).
  * @param {String} format The requested output format.
  * @returns {void}
  */
-async function downloadDrawLayer (drawLayer, format) {
+async function downloadVectorLayer (layer, format) {
     const fileEnding = getFileEndingForFormat(format),
-        fileName = `${drawLayer.name}.${fileEnding}`,
-        features = drawLayer.layer.getSource().getFeatures(),
+        fileName = `${layer.name}.${fileEnding}`,
+        features = layer.layer.getSource().getFeatures(),
         map = mapCollection.getMap("2D"),
         mapView = map.getView(),
-        featureProjection = drawLayer.epsg || drawLayer.srsName || mapView.getProjection().getCode(),
-        geojson = new GeoJSON().writeFeaturesObject(features, {
-            featureProjection
-        });
-    let blob, gpkg, gpkgBytes;
-
-    switch (format) {
-
-        case "shp":
-            // download as zipped shapefile will be triggered automatically by this function
-            shpdownload(geojson);
-            return;
-        case "gpkg":
-            gpkg = await createGeoPackage(geojson);
-            gpkgBytes = await gpkg.export();
-
-            blob = new Blob([gpkgBytes], {type: "octet/stream"});
-            break;
-        default:
-            blob = geojsonToBlob(geojson, format, drawLayer.type, drawLayer.name);
-            break;
-    }
-
-    const url = URL.createObjectURL(blob);
-
-    performDownload(url, fileName);
-}
-
-/**
- *
- */
-async function downloadVectorBaseLayer (vectorBaseLayer, format) {
-    const fileEnding = getFileEndingForFormat(format),
-        fileName = `${vectorBaseLayer.name}.${fileEnding}`,
-        features = vectorBaseLayer.layer.getSource().getFeatures(),
-        map = mapCollection.getMap("2D"),
-        mapView = map.getView(),
-        featureProjection = vectorBaseLayer.epsg || mapView.getProjection().getCode(),
+        // Support both drawLayer (with srsName) and vectorBaseLayer (with epsg)
+        featureProjection = layer.epsg || layer.srsName || mapView.getProjection().getCode(),
         geojson = new GeoJSON().writeFeaturesObject(features, {
             featureProjection
         });
@@ -82,24 +46,21 @@ async function downloadVectorBaseLayer (vectorBaseLayer, format) {
 
     switch (format) {
         case "shp":
-            // download as zipped shapefile will be triggered automatically by this function
             shpdownload(geojson);
             return;
         case "gpkg":
             gpkg = await createGeoPackage(geojson);
             gpkgBytes = await gpkg.export();
-
             blob = new Blob([gpkgBytes], {type: "octet/stream"});
             break;
         default:
-            blob = geojsonToBlob(geojson, format, vectorBaseLayer.type, vectorBaseLayer.name);
+            blob = geojsonToBlob(geojson, format, layer.type, layer.name);
             break;
     }
 
     const url = URL.createObjectURL(blob);
 
     performDownload(url, fileName);
-
 }
 
 /**
@@ -467,28 +428,20 @@ async function prepareGPKG (properties) {
 }
 
 /**
- * Download a layer.
  *
- * @param {Object} layer The layer to download.
- * @param {String} format The export format.
- * @returns {void}
  */
 export async function downloadLayer (layer, format) {
-    switch (layer.type) {
-        case LAYERTYPES.geoJson:
-            await downloadGeoJsonLayer(layer, format);
-            break;
-        case LAYERTYPES.wfs:
-            await downloadWfsLayer(layer, format);
-            break;
-        case LAYERTYPES.draw:
-            await downloadDrawLayer(layer, format);
-            break;
-        case LAYERTYPES.vectorBase:
-            await downloadVectorBaseLayer(layer, format);
-            break;
-        default:
-            break;
+    const layerDownloadMap = {
+        [LAYERTYPES.geoJson]: downloadGeoJsonLayer,
+        [LAYERTYPES.wfs]: downloadWfsLayer,
+        [LAYERTYPES.draw]: downloadVectorLayer,
+        [LAYERTYPES.vectorBase]: downloadVectorLayer
+    };
+
+    const downloadFn = layerDownloadMap[layer.type];
+
+    if (downloadFn) {
+        await downloadFn(layer, format);
     }
 }
 
