@@ -25,6 +25,39 @@ function performDownload (url, fileName) {
 }
 
 /**
+ * Handle format-specific download logic.
+ * Converts geojson to the requested format and performs download.
+ *
+ * @param {Object} geojson The geojson object or data.
+ * @param {String} format The export format.
+ * @param {String} fileName The filename for download.
+ * @param {String} layerType The layer type (for blob conversion).
+ * @param {String} layerName The layer name (for blob conversion).
+ * @returns {Promise<void>}
+ */
+async function handleFormatDownload (geojson, format, fileName, layerType, layerName) {
+    if (format === "shp") {
+        shpdownload(geojson);
+        return;
+    }
+
+    if (format === "gpkg") {
+        const gpkg = await createGeoPackage(geojson);
+        const gpkgBytes = await gpkg.export();
+        const blob = new Blob([gpkgBytes], {type: "octet/stream"});
+        const url = URL.createObjectURL(blob);
+
+        performDownload(url, fileName);
+        return;
+    }
+
+    const blob = geojsonToBlob(geojson, format, layerType, layerName);
+    const url = URL.createObjectURL(blob);
+
+    performDownload(url, fileName);
+}
+
+/**
  * Download a vector layer (draw or vector base layer).
  *
  * @param {Object} layer The vector layer to download (draw or vectorBase type).
@@ -37,30 +70,10 @@ async function downloadVectorLayer (layer, format) {
         features = layer.layer.getSource().getFeatures(),
         map = mapCollection.getMap("2D"),
         mapView = map.getView(),
-        // Support both drawLayer (with srsName) and vectorBaseLayer (with epsg)
         featureProjection = layer.epsg || layer.srsName || mapView.getProjection().getCode(),
-        geojson = new GeoJSON().writeFeaturesObject(features, {
-            featureProjection
-        });
-    let blob, gpkg, gpkgBytes;
+        geojson = new GeoJSON().writeFeaturesObject(features, {featureProjection});
 
-    switch (format) {
-        case "shp":
-            shpdownload(geojson);
-            return;
-        case "gpkg":
-            gpkg = await createGeoPackage(geojson);
-            gpkgBytes = await gpkg.export();
-            blob = new Blob([gpkgBytes], {type: "octet/stream"});
-            break;
-        default:
-            blob = geojsonToBlob(geojson, format, layer.type, layer.name);
-            break;
-    }
-
-    const url = URL.createObjectURL(blob);
-
-    performDownload(url, fileName);
+    await handleFormatDownload(geojson, format, fileName, layer.type, layer.name);
 }
 
 /**
@@ -74,28 +87,8 @@ async function downloadGeoJsonLayer (geoJsonLayer, format) {
     const fileEnding = getFileEndingForFormat(format),
         fileName = `${geoJsonLayer.name}.${fileEnding}`,
         data = await fetchBlob(geoJsonLayer.url, "application/json");
-    let blob,
-        gpkg,
-        gpkgBytes;
 
-    switch (format) {
-        case "shp":
-            // download as zipped shapefile will be triggered automatically by this function
-            shpdownload(data);
-            return;
-        case "gpkg":
-            gpkg = await createGeoPackage(data);
-            gpkgBytes = await gpkg.export();
-
-            blob = new Blob([gpkgBytes], {type: "octet/stream"});
-            break;
-        default:
-            blob = geojsonToBlob(data, format, geoJsonLayer.type, geoJsonLayer.name);
-            break;
-    }
-    const blobUrl = URL.createObjectURL(blob);
-
-    performDownload(blobUrl, fileName);
+    await handleFormatDownload(data, format, fileName, geoJsonLayer.type, geoJsonLayer.name);
 }
 
 /**
@@ -105,18 +98,14 @@ async function downloadGeoJsonLayer (geoJsonLayer, format) {
  * @returns {String} The file ending.
  */
 function getFileEndingForFormat (format) {
-    switch (format) {
-        case EXPORTFORMATS.geoJson:
-            return "json";
-        case EXPORTFORMATS.gml:
-            return "gml";
-        case EXPORTFORMATS.shp:
-            return "zip";
-        case EXPORTFORMATS.gpkg:
-            return "gpkg";
-        default:
-            return "";
-    }
+    const fileEndings = {
+        [EXPORTFORMATS.geoJson]: "json",
+        [EXPORTFORMATS.gml]: "gml",
+        [EXPORTFORMATS.shp]: "zip",
+        [EXPORTFORMATS.gpkg]: "gpkg"
+    };
+
+    return fileEndings[format] || "";
 }
 
 /**
@@ -134,16 +123,7 @@ async function fetchBlob (blobUrl, mimeType) {
         }
     });
 
-    let data;
-
-    if (mimeType === "application/json") {
-        data = await response.json();
-    }
-    else {
-        data = await response.text();
-    }
-
-    return data;
+    return mimeType === "application/json" ? response.json() : response.text();
 }
 
 /**
@@ -169,29 +149,15 @@ async function fetchData (url) {
  * @returns {String} The name of the TypeName parameter;
  */
 function getTypeNameStringFromServiceVersion (version) {
-    let typeNameString;
+    const typeNameMap = {
+        "1.0.0": "typeName",
+        "1.1.0": "typeName",
+        "1.1.3": "typeName",
+        "2.0.0": "typeNames",
+        "2.0.2": "typeNames"
+    };
 
-    switch (version) {
-        case "1.0.0":
-            typeNameString = "typeName";
-            break;
-        case "1.1.0":
-            typeNameString = "typeName";
-            break;
-        case "1.1.3":
-            typeNameString = "typeName";
-            break;
-        case "2.0.0":
-            typeNameString = "typeNames";
-            break;
-        case "2.0.2":
-            typeNameString = "typeNames";
-            break;
-        default:
-            break;
-    }
-
-    return typeNameString;
+    return typeNameMap[version];
 }
 
 /**
@@ -201,27 +167,13 @@ function getTypeNameStringFromServiceVersion (version) {
  * @returns {String} The gml mime type.
  */
 function getGmlMimeFromVersion (version) {
-    let gmlMime;
+    const gmlMimeMap = {
+        "1.1.0": "text/xml; subtype=gml/3.1.1",
+        "1.1.3": "application/gml+xml; version=3.1",
+        "2.0.0": "application/gml+xml; version=3.2"
+    };
 
-    switch (version) {
-        case "1.1.0":
-            gmlMime = "text/xml; subtype=gml/3.1.1";
-            break;
-        case "1.1.3":
-            gmlMime = "application/gml+xml; version=3.1";
-            break;
-        case "2.0.0":
-            gmlMime = "application/gml+xml; version=3.2";
-            break;
-        // openlayers does not support wfs 2.0.2 yet
-        // case "2.0.2":
-        //     gmlMime = "application/gml+xml; version=3.2";
-        //     break;
-        default:
-            break;
-    }
-
-    return gmlMime;
+    return gmlMimeMap[version];
 }
 
 /**
