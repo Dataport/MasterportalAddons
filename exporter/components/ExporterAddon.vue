@@ -35,6 +35,9 @@ export default {
     mounted () {
         this.applyTranslationKey(this.name);
     },
+    unmounted () {
+        this.close();
+    },
     methods: {
         ...mapActions("Modules/Exporter", [
         ]),
