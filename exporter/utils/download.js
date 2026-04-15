@@ -1,6 +1,7 @@
 import axios from "axios";
 import {GeoJSON, WFS} from "ol/format";
 import GML32 from "ol/format/GML32";
+import {parse} from 'ol/xml.js';
 import {Projection, addEquivalentProjections, get} from "ol/proj";
 import {download as shpdownload} from "@crmackey/shp-write";
 
@@ -254,11 +255,34 @@ async function downloadWfsLayer (wfsLayer, format) {
 
     const wfsData = await fetchData(url.toString()),
         wfsFormat = new WFS({version: wfsLayer.version}),
-        projection = wfsFormat.readProjection(wfsData),
-        proj = new Projection({
-            code: projection.getCode(),
-            axis: projection.getAxisOrientation()
+        projection = wfsFormat.readProjection(wfsData);
+
+    let code = "";
+
+    if (!projection && wfsData && typeof wfsData === "string") {
+        const doc = parse(wfsData),
+            elementsWithSrs = doc.querySelectorAll("[srsName]");
+
+        Array.from(elementsWithSrs).some(el => {
+            const srsName = el.getAttribute("srsName");
+
+            if (srsName) {
+                const match = srsName.match(/epsg.*[#\/](\d+)/i);
+
+                if (match) {
+                    code = "EPSG:" + match[1];
+                    return true;
+                }
+            }
+
+            return false;
         });
+    }
+
+    const proj = new Projection({
+        code: projection ? projection.getCode() : code,
+        axis: projection ? projection.getAxisOrientation() : "neu"
+    });
 
     // respect axis orientation from gml output to avoid flipped coordinates
     addEquivalentProjections([get(dataProjection), proj]);
@@ -269,7 +293,7 @@ async function downloadWfsLayer (wfsLayer, format) {
             dataProjection
         }),
         containsMultiPolygons = geojson.features.find(
-            f => f.geometry.type.toLowerCase() === "multipolygon");
+            f => f.geometry?.type.toLowerCase() === "multipolygon");
 
     let blob, gpkg, gpkgBytes, gmlMime;
 
