@@ -31,7 +31,6 @@ const mutations = {
      * @returns {void}
      */
     resetExporterAddon: (state) => {
-        // TODO
         const basicResetValues = getBasicResetValues(),
             selectLayersResetValues = getStepResetValues(STEPS.selectLayer),
             downloadLayersResetValues = getStepResetValues(STEPS.downloadLayer),

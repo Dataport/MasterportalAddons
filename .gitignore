@@ -1,2 +1,2 @@
-importer/node_modules
-exporter/node_modules
+exporter/node_modules/*
+importer/node_modules/*

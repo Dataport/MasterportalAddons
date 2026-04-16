@@ -1,6 +1,20 @@
 import EXPORTFORMATS from "../constants/exportformats";
 import LAYERTYPES from "../constants/layertypes";
 
+import layerCollection from "@core/layers/js/layerCollection";
+
+/**
+ * Get a layer from the layer collection by its id.
+ *
+ * @param {String} layerId The id of the layer to get.
+ * @returns {any} The layer with the given id, or null if no such layer exists.
+ */
+function getLayerFromLayerCollectionById (layerId) {
+    const layer = layerCollection.getLayerById(layerId);
+
+    return layer ? layer.layer : null;
+}
+
 /**
  * Get a downloadLayer from drawLayer.
  *
@@ -12,10 +26,10 @@ import LAYERTYPES from "../constants/layertypes";
 export function drawLayerToDownloadLayer (drawLayer) {
     return {
         type: LAYERTYPES.draw,
-        name: drawLayer.get("name"),
-        layer: drawLayer,
+        name: drawLayer.name,
+        layer: getLayerFromLayerCollectionById(drawLayer.id),
         exportFormats: [EXPORTFORMATS.geoJson, EXPORTFORMATS.gml, EXPORTFORMATS.shp, EXPORTFORMATS.gpkg],
-        srsName: drawLayer.get("crs")
+        srsName: drawLayer.crs
     };
 }
 
@@ -28,8 +42,8 @@ export function drawLayerToDownloadLayer (drawLayer) {
 export function geoJsonToDownloadLayer (geoJson) {
     return {
         type: LAYERTYPES.geoJson,
-        name: geoJson.get("name"),
-        url: geoJson.get("url"),
+        name: geoJson.name,
+        url: geoJson.url,
         exportFormats: [EXPORTFORMATS.geoJson, EXPORTFORMATS.gml, EXPORTFORMATS.shp, EXPORTFORMATS.gpkg]
     };
 }
@@ -44,10 +58,10 @@ export function wfsToDownloadLayer (wfs) {
     // Note, this does not handle authenticated layers yet.
     return {
         type: LAYERTYPES.wfs,
-        name: wfs.get("name"),
-        url: wfs.get("url"),
-        featureType: wfs.get("featureType"),
-        version: wfs.get("version"),
+        name: wfs.name,
+        url: wfs.url,
+        featureType: wfs.featureType,
+        version: wfs.version,
         exportFormats: [EXPORTFORMATS.geoJson, EXPORTFORMATS.gml, EXPORTFORMATS.shp, EXPORTFORMATS.gpkg]
     };
 }
@@ -61,10 +75,10 @@ export function wfsToDownloadLayer (wfs) {
 export function vectorBaseDownloadLayer (vectorBase) {
     return {
         type: LAYERTYPES.vectorBase,
-        name: vectorBase.get("name"),
-        url: vectorBase.get("url"),
-        layer: vectorBase,
-        epsg: vectorBase.get("crs"),
+        name: vectorBase.name,
+        url: vectorBase.url,
+        layer: getLayerFromLayerCollectionById(vectorBase.id),
+        epsg: vectorBase.crs,
         exportFormats: [EXPORTFORMATS.geoJson, EXPORTFORMATS.gml, EXPORTFORMATS.shp, EXPORTFORMATS.gpkg]
     };
 }
