@@ -18,6 +18,8 @@ async function filterFeaturesByGeometry ({targetLayer, filterLayer}) {
         const featureType = targetLayer.attributes.featureType;
         const featureNS = targetLayer.attributes.featureNS;
         const featurePrefix = targetLayer.attributes.featurePrefix || "app";
+        const regex = /:$/;
+        const featurePrefixWithoutColon = featurePrefix.replace(regex, "");
         const geometryName = targetLayer.layerSource.getFeatures()[0].getGeometryName() || "geom";
         const epsg = mapCollection.getMap("2D").getView().getProjection().getCode();
         const filters = coordinates.map(geometry => intersects(geometryName, geometry));
@@ -26,7 +28,7 @@ async function filterFeaturesByGeometry ({targetLayer, filterLayer}) {
             node = wfsFormat.writeGetFeature({
                 srsName: epsg,
                 featureNS: featureNS,
-                featurePrefix: featurePrefix,
+                featurePrefix: featurePrefixWithoutColon,
                 featureTypes: [featureType],
                 filter: combinedFilter
             }),
