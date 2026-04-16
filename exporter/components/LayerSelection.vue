@@ -1,6 +1,6 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
-import layerCollection from "@core/layers/js/layerCollection";
+// import layerCollection from "@core/layers/js/layerCollection";
 import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vue";
 import RadioButton from "./RadioButton.vue";
 
@@ -27,18 +27,19 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("Modules/Exporter", ["selectedLayer", "layerSelectionList"]),
+        ...mapGetters(["visibleLayerConfigs"]),
+        ...mapGetters("Modules/Exporter", ["selectedLayer"]),
         layerSelectionRadioId (id) {
             return "exporter-layer-radio-" + id;
         },
-        layerRadioValue: {
-            get () {
-                return this.selectedLayer;
-            },
-            set (value) {
-                this.setSelectedLayer(value);
-            }
-        },
+        // layerRadioValue: {
+        //     get () {
+        //         return this.selectedLayer;
+        //     },
+        //     set (value) {
+        //         this.setSelectedLayer(value);
+        //     }
+        // },
         layerTypes () {
             return LAYERTYPES;
         },
@@ -46,28 +47,7 @@ export default {
             return function (type) {
                 return this.layerSelectionList.filter(l => l.type === type);
             };
-        }
-    },
-    mounted () {
-        if (this.layerSelectionList.length === 0) {
-            const layerSelectionList = this.getLayerSelectionList();
-
-            this.setLayerSelectionList(layerSelectionList);
-        }
-
-        const isValid = this.isFormValid();
-
-        this.setCurrentFormValid(isValid);
-    },
-    unmounted () {
-        this.setCurrentFormValid(false);
-        this.setLayerSelectionList([]);
-    },
-    methods: {
-        ...mapActions("Modules/Exporter", [
-        ]),
-        ...mapMutations("Modules/Exporter", Object.keys(mutations)),
-
+        },
         /**
          * Load the downloadable layers from the layer tree.
          * Drawlayers = layers that have been imported bei the importer addon or the AddWMS Tool.
@@ -75,34 +55,45 @@ export default {
          *
          * @returns {any[]} List of downloadable layers.
          */
-        getLayerSelectionList () {
-            let layerSelectionList = [];
+        layerSelectionList () {
+            const wfsLayers = this.visibleLayerConfigs.filter(layer => layer.typ.toUpperCase() === LAYERTYPES.wfs).map(wfsToDownloadLayer),
+                geojsonLayers = this.visibleLayerConfigs.filter(layer => layer.typ.toUpperCase() === LAYERTYPES.geoJson).map(geoJsonToDownloadLayer),
+                drawLayers = this.visibleLayerConfigs.filter(layer => layer.id === "importDrawLayer" || layer.id.startsWith("importedLayer_")).map(drawLayerToDownloadLayer),
+                vectorBaseLayers = this.visibleLayerConfigs.filter(layer => layer.typ.toUpperCase() === LAYERTYPES.vectorBase && layer.id !== "importDrawLayer").map(vectorBaseDownloadLayer);
 
-            this.showErrorMessage = false;
-
-            const wfsLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.wfs).map(wfsToDownloadLayer),
-                geojsonLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.geoJson).map(geoJsonToDownloadLayer),
-                drawLayers = layerCollection.getLayers().filter(layer => layer.get("id") === "importDrawLayer" || layer.get("id").startsWith("importedLayer_")).map(drawLayerToDownloadLayer),
-                vectorBaseLayers = layerCollection.getLayers().filter(layer => layer.get("typ").toUpperCase() === LAYERTYPES.vectorBase && layer.get("id") !== "importDrawLayer").map(vectorBaseDownloadLayer);
-
-            layerSelectionList = layerSelectionList
-                .concat(wfsLayers, geojsonLayers, drawLayers, vectorBaseLayers)
+            return [...wfsLayers, ...geojsonLayers, ...drawLayers, ...vectorBaseLayers]
                 .map((layer, idx) => {
                     layer.idx = idx;
                     return layer;
                 });
+        }
+    },
+    mounted () {
+        this.showErrorMessage = false;
 
-            return layerSelectionList;
-        },
+        const isValid = this.isFormValid();
+
+        this.setCurrentFormValid(isValid);
+    },
+    unmounted () {
+        this.setCurrentFormValid(false);
+    },
+    methods: {
+        ...mapActions("Modules/Exporter", [
+        ]),
+        ...mapMutations("Modules/Exporter", Object.keys(mutations)),
+
 
         /**
          * Handler for the radio change events.
          *
-         * @param {Object} value - The selected layer value.
+         * @param {Number} layerIdx - The index of the selected layer.
          * @returns {void}
          */
-        onRadioChange (value) {
-            this.setSelectedLayer(value);
+        onRadioChange (layerIdx) {
+            const selectedLayer = this.layerSelectionList.find(layer => layer.idx === layerIdx);
+
+            this.setSelectedLayer(selectedLayer);
             this.inputValid = this.isFormValid();
             this.setCurrentFormValid(this.isFormValid());
         },
@@ -161,8 +152,8 @@ export default {
                     >
                         <RadioButton
                             :id="`exporter-layer-radio-${layer.idx}`"
-                            :value="layer"
-                            :selected-value="selectedLayer"
+                            :value="layer.idx"
+                            :selected-value="selectedLayer?.idx"
                             :text="layer.name"
                             name="layer-selection"
                             @change="onRadioChange"

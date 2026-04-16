@@ -8,7 +8,7 @@
                 "filterButton": "Filtern",
                 "errorMessage": "Die Filteranfrage ist fehlgeschlagen.",
                 "emptyFeaturesResponse": "Es sind keine Geometrien in der Auswahl enthalten.",
-                "importFilterLayer": "Importieren Sie einen Filterlayer oder aktivieren Sie einen vorhandenen im Themenbaum.",
+                "importFilterLayer": "Importieren Sie einen Filterlayer über den Tab \"Import\" oder aktivieren Sie einen vorhandenen Layer im Themenbaum.",
                 "import": "Importer öffnen",
                 "noTargetLayersAvailable": "Es sind keine Layer zum Filtern verfügbar. Bitte aktivieren Sie einen geeigneten Layer im Themenbaum.",
                 "configuredLayers": "Geeignete Layer: {{ layers }}",

@@ -8,7 +8,6 @@ export const DEFAULT_VALUES = {
         currentFormValid: false,
         onExportFinished: undefined,
         selectedLayer: undefined,
-        layerSelectionList: [],
         supportedExportFormats: [
             EXPORTFORMATS.geoJson,
             EXPORTFORMATS.gml,

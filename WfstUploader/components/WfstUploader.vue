@@ -3,10 +3,11 @@ import {mapActions, mapGetters} from "vuex";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 import InputText from "@shared/modules/inputs/components/InputText.vue";
 import SpinnerItem from "@shared/modules/spinner/components/SpinnerItem.vue";
+import TabContainer from "../../shared-components/TabContainer.vue";
 import wfs from "@masterportal/masterportalapi/src/layer/wfs";
 import mapCollection from "@core/maps/js/mapCollection";
-import AddonOpenerButton from "../../AddonOpenerButton.vue";
 import FeaturePropertiesDisplay from "./FeaturePropertiesDisplay.vue";
+import ImporterAddon from "../../importer/components/ImporterAddon.vue";
 import VectorSource from "ol/source/Vector.js";
 import {Select} from "ol/interaction";
 import getHighlightType from "../utils/getHighlightType";
@@ -16,16 +17,15 @@ import getHighlightStyleFromType from "../utils/getHighlightStyleFromType";
 export default {
     name: "WfstUploader",
     components: {
-        AddonOpenerButton,
+        TabContainer,
         FeaturePropertiesDisplay,
         FlatButton,
         InputText,
-        SpinnerItem
+        SpinnerItem,
+        ImporterAddon
     },
     data () {
         return {
-            importerAddonId: "importer",
-            importerAddonName: "Import",
             selectInteraction: null,
             selectEvent: null,
             selectedWfstLayer: null,
@@ -35,7 +35,17 @@ export default {
             errorMessage: null,
             highlightFeatureObject: {},
             uuid: "",
-            uploadLayerId: ""
+            uploadLayerId: "",
+            tabs: [
+                {
+                    id: "uploader",
+                    label: "additional:modules.tools.wfstUploader.title"
+                },
+                {
+                    id: "importer",
+                    label: "additional:modules.tools.importer.title"
+                }
+            ]
         };
     },
     computed: {
@@ -217,73 +227,77 @@ export default {
         id="wfstUploader"
         class="row"
     >
-        <AddonOpenerButton
-            :button-text="$t('additional:modules.tools.wfstUploader.uploadButton')"
-            :button-class="'mt-3'"
-            :addon-id="importerAddonId"
-            :addon-name="importerAddonName"
-        />
-        <span v-if="!selectedFeature">{{ $t('additional:modules.tools.wfstUploader.selectFeatureHint') }}</span>
-        <div v-else>
-            <!-- Error message display -->
-            <div
-                v-if="errorMessage"
-                class="alert alert-danger mt-3"
-                role="alert"
-            >
-                {{ errorMessage }}
-            </div>
+        <TabContainer :tabs="tabs">
+            <!-- WfstUploader Tab Content -->
+            <template #uploader>
+                <span v-if="!selectedFeature">{{ $t('additional:modules.tools.wfstUploader.selectFeatureHint') }}</span>
+                <div v-else>
+                    <!-- Error message display -->
+                    <div
+                        v-if="errorMessage"
+                        class="alert alert-danger mt-3"
+                        role="alert"
+                    >
+                        {{ errorMessage }}
+                    </div>
 
-            <FeaturePropertiesDisplay
-                :feature="selectedFeature"
-                :title="$t('additional:modules.tools.wfstUploader.selectedFeature')"
-                class="mt-3"
-            />
-            <div class="mt-3 font-size-big">
-                {{ $t('additional:modules.tools.wfstUploader.selectedWfstLayer') }}
-            </div>
-            <select
-                id="wfstUpload-select-wfstlayer"
-                v-model="selectedWfstLayer"
-                class="form-select mt-3"
-            >
-                <option
-                    v-for="(layer, idx) in wfstLayersForSelection"
-                    :key="idx"
-                    :value="layer"
-                >
-                    {{ layer.name }}
-                </option>
-            </select>
-            <SpinnerItem v-if="isloading" />
-            <div class="mt-4 mb-3 font-size-big">
-                {{ $t('additional:modules.tools.wfstUploader.properties') }}
-            </div>
-            <div v-if="wfsFeatureProperties">
-                <InputText
-                    v-for="(property, idx) in wfsFeatureProperties"
-                    :id="`wfs-property-${idx}`"
-                    :key="idx"
-                    :type="property.type"
-                    :label="property.label"
-                    :placeholder="property.label"
-                    :model-value="property.value || ''"
-                    @update:model-value="updatePropertyValue(idx, $event)"
-                />
-            </div>
-            <FlatButton
-                class="mt-3"
-                :disabled="!selectedWfstLayer"
-                :text="$t('additional:modules.tools.wfstUploader.resetButton')"
-                @click="reset()"
-            />
-            <FlatButton
-                class="mt-3"
-                :disabled="!selectedWfstLayer"
-                :text="$t('additional:modules.tools.wfstUploader.uploadFeatureButton')"
-                @click="uploadFeatureForTransaction"
-            />
-        </div>
+                    <FeaturePropertiesDisplay
+                        :feature="selectedFeature"
+                        :title="$t('additional:modules.tools.wfstUploader.selectedFeature')"
+                        class="mt-3"
+                    />
+                    <div class="mt-3 font-size-big">
+                        {{ $t('additional:modules.tools.wfstUploader.selectedWfstLayer') }}
+                    </div>
+                    <select
+                        id="wfstUpload-select-wfstlayer"
+                        v-model="selectedWfstLayer"
+                        class="form-select mt-3"
+                    >
+                        <option
+                            v-for="(layer, idx) in wfstLayersForSelection"
+                            :key="idx"
+                            :value="layer"
+                        >
+                            {{ layer.name }}
+                        </option>
+                    </select>
+                    <SpinnerItem v-if="isloading" />
+                    <div class="mt-4 mb-3 font-size-big">
+                        {{ $t('additional:modules.tools.wfstUploader.properties') }}
+                    </div>
+                    <div v-if="wfsFeatureProperties">
+                        <InputText
+                            v-for="(property, idx) in wfsFeatureProperties"
+                            :id="`wfs-property-${idx}`"
+                            :key="idx"
+                            :type="property.type"
+                            :label="property.label"
+                            :placeholder="property.label"
+                            :model-value="property.value || ''"
+                            @update:model-value="updatePropertyValue(idx, $event)"
+                        />
+                    </div>
+                    <FlatButton
+                        class="mt-3"
+                        :disabled="!selectedWfstLayer"
+                        :text="$t('additional:modules.tools.wfstUploader.resetButton')"
+                        @click="reset()"
+                    />
+                    <FlatButton
+                        class="mt-3"
+                        :disabled="!selectedWfstLayer"
+                        :text="$t('additional:modules.tools.wfstUploader.uploadFeatureButton')"
+                        @click="uploadFeatureForTransaction"
+                    />
+                </div>
+            </template>
+
+            <!-- Importer Tab Content -->
+            <template #importer>
+                <ImporterAddon />
+            </template>
+        </TabContainer>
     </div>
 </template>
 
