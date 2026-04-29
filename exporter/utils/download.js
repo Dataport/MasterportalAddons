@@ -1,7 +1,7 @@
 import axios from "axios";
 import {GeoJSON, WFS} from "ol/format";
 import GML32 from "ol/format/GML32";
-import {parse} from 'ol/xml.js';
+import {parse} from "ol/xml.js";
 import {Projection, addEquivalentProjections, get} from "ol/proj";
 import {download as shpdownload} from "@crmackey/shp-write";
 
@@ -144,6 +144,43 @@ async function fetchData (url) {
 }
 
 /**
+ * Normalizes various srsName formats to EPSG:XXXX format.
+ * Supports multiple formats like:
+ * - EPSG:4326 (already normalized)
+ * - urn:ogc:def:crs:EPSG::4326 (OGC URN)
+ * - http://www.opengis.net/gml/srs/epsg.xml#4326 (URL format)
+ *
+ * @param {String} srsName The srsName in various formats.
+ * @returns {String|null} Normalized EPSG reference or null if not recognized.
+ */
+function normalizeSrsName (srsName) {
+    if (!srsName) {
+        return null;
+    }
+
+    // Already normalized
+    if (srsName.match(/^EPSG:\d+$/i)) {
+        return srsName;
+    }
+
+    // URN format: urn:ogc:def:crs:EPSG::4326 or urn:ogc:def:crs:EPSG:0:4326
+    const urnMatch = srsName.match(/EPSG::?(\d+)/i);
+
+    if (urnMatch) {
+        return `EPSG:${urnMatch[1]}`;
+    }
+
+    // URL format: http://www.opengis.net/gml/srs/epsg.xml#4326
+    const urlMatch = srsName.match(/[#/](\d+)$/);
+
+    if (urlMatch) {
+        return `EPSG:${urlMatch[1]}`;
+    }
+
+    return null;
+}
+
+/**
  * Retuns the name of the typeName parameter based on service version.
  *
  * @param {String} version The service version.
@@ -259,20 +296,19 @@ async function downloadWfsLayer (wfsLayer, format) {
 
     let code = "";
 
+    // Fallback: Extract and normalize srsName from GML elements
+    // when readProjection fails (e.g., for non-standard URL-based srsName)
     if (!projection && wfsData && typeof wfsData === "string") {
         const doc = parse(wfsData),
             elementsWithSrs = doc.querySelectorAll("[srsName]");
 
         Array.from(elementsWithSrs).some(el => {
             const srsName = el.getAttribute("srsName");
+            const normalized = normalizeSrsName(srsName);
 
-            if (srsName) {
-                const match = srsName.match(/epsg.*[#\/](\d+)/i);
-
-                if (match) {
-                    code = "EPSG:" + match[1];
-                    return true;
-                }
+            if (normalized) {
+                code = normalized;
+                return true;
             }
 
             return false;
