@@ -26,6 +26,15 @@ function performDownload (url, fileName) {
 }
 
 /**
+ * Get the current project projection code.
+ *
+ * @returns {String} The projection code.
+ */
+function getProjectProjectionCode () {
+    return mapCollection.getMap("2D")?.getView()?.getProjection()?.getCode() || "EPSG:4326";
+}
+
+/**
  * Handle format-specific download logic.
  * Converts geojson to the requested format and performs download.
  *
@@ -37,13 +46,26 @@ function performDownload (url, fileName) {
  * @returns {Promise<void>}
  */
 async function handleFormatDownload (geojson, format, fileName, layerType, layerName) {
+    const projectProjection = getProjectProjectionCode();
+
     if (format === "shp") {
-        shpdownload(geojson);
+        const features = new GeoJSON().readFeatures(geojson),
+            projectedGeojson = new GeoJSON().writeFeaturesObject(features, {
+                featureProjection: projectProjection,
+                dataProjection: projectProjection
+            });
+
+        shpdownload(projectedGeojson);
         return;
     }
 
     if (format === "gpkg") {
-        const gpkg = await createGeoPackage(geojson);
+        const features = new GeoJSON().readFeatures(geojson),
+            projectedGeojson = new GeoJSON().writeFeaturesObject(features, {
+                featureProjection: projectProjection,
+                dataProjection: projectProjection
+            }),
+            gpkg = await createGeoPackage(projectedGeojson);
         const gpkgBytes = await gpkg.export();
         const blob = new Blob([gpkgBytes], {type: "octet/stream"});
         const url = URL.createObjectURL(blob);
@@ -282,7 +304,10 @@ async function downloadWfsLayer (wfsLayer, format) {
         fileEnding = getFileEndingForFormat(format),
         fileName = `${wfsLayer.name}.${fileEnding}`,
         typeNameString = getTypeNameStringFromServiceVersion(wfsLayer.version),
-        dataProjection = "EPSG:4326";
+        projectProjection = getProjectProjectionCode(),
+        dataProjection = format === EXPORTFORMATS.shp || format === EXPORTFORMATS.gpkg
+            ? projectProjection
+            : "EPSG:4326";
 
     url.searchParams.append("service", "WFS");
     url.searchParams.append("request", "GetFeature");
@@ -295,6 +320,7 @@ async function downloadWfsLayer (wfsLayer, format) {
         projection = wfsFormat.readProjection(wfsData);
 
     let code = "";
+    console.log("Read projection from WFS response:", projection ? projection.getCode() : "none");
 
     // Fallback: Extract and normalize srsName from GML elements
     // when readProjection fails (e.g., for non-standard URL-based srsName)
@@ -308,6 +334,7 @@ async function downloadWfsLayer (wfsLayer, format) {
 
             if (normalized) {
                 code = normalized;
+                console.log("Normalized SRS name:", code);
                 return true;
             }
 
