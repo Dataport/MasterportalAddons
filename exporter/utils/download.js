@@ -1,7 +1,7 @@
 import axios from "axios";
 import {GeoJSON, WFS} from "ol/format";
 import GML32 from "ol/format/GML32";
-import {parse} from 'ol/xml.js';
+import {parse} from "ol/xml.js";
 import {Projection, addEquivalentProjections, get} from "ol/proj";
 import {download as shpdownload} from "@crmackey/shp-write";
 
@@ -26,6 +26,15 @@ function performDownload (url, fileName) {
 }
 
 /**
+ * Get the current project projection code.
+ *
+ * @returns {String} The projection code.
+ */
+function getProjectProjectionCode () {
+    return mapCollection.getMap("2D")?.getView()?.getProjection()?.getCode() || "EPSG:4326";
+}
+
+/**
  * Handle format-specific download logic.
  * Converts geojson to the requested format and performs download.
  *
@@ -37,13 +46,26 @@ function performDownload (url, fileName) {
  * @returns {Promise<void>}
  */
 async function handleFormatDownload (geojson, format, fileName, layerType, layerName) {
+    const projectProjection = getProjectProjectionCode();
+
     if (format === "shp") {
-        shpdownload(geojson);
+        const features = new GeoJSON().readFeatures(geojson),
+            projectedGeojson = new GeoJSON().writeFeaturesObject(features, {
+                featureProjection: projectProjection,
+                dataProjection: projectProjection
+            });
+
+        shpdownload(projectedGeojson);
         return;
     }
 
     if (format === "gpkg") {
-        const gpkg = await createGeoPackage(geojson);
+        const features = new GeoJSON().readFeatures(geojson),
+            projectedGeojson = new GeoJSON().writeFeaturesObject(features, {
+                featureProjection: projectProjection,
+                dataProjection: projectProjection
+            }),
+            gpkg = await createGeoPackage(projectedGeojson);
         const gpkgBytes = await gpkg.export();
         const blob = new Blob([gpkgBytes], {type: "octet/stream"});
         const url = URL.createObjectURL(blob);
@@ -141,6 +163,43 @@ async function fetchData (url) {
     });
 
     return response.data;
+}
+
+/**
+ * Normalizes various srsName formats to EPSG:XXXX format.
+ * Supports multiple formats like:
+ * - EPSG:4326 (already normalized)
+ * - urn:ogc:def:crs:EPSG::4326 (OGC URN)
+ * - http://www.opengis.net/gml/srs/epsg.xml#4326 (URL format)
+ *
+ * @param {String} srsName The srsName in various formats.
+ * @returns {String|null} Normalized EPSG reference or null if not recognized.
+ */
+function normalizeSrsName (srsName) {
+    if (!srsName) {
+        return null;
+    }
+
+    // Already normalized
+    if (srsName.match(/^EPSG:\d+$/i)) {
+        return srsName;
+    }
+
+    // URN format: urn:ogc:def:crs:EPSG::4326 or urn:ogc:def:crs:EPSG:0:4326
+    const urnMatch = srsName.match(/EPSG::?(\d+)/i);
+
+    if (urnMatch) {
+        return `EPSG:${urnMatch[1]}`;
+    }
+
+    // URL format: http://www.opengis.net/gml/srs/epsg.xml#4326
+    const urlMatch = srsName.match(/[#/](\d+)$/);
+
+    if (urlMatch) {
+        return `EPSG:${urlMatch[1]}`;
+    }
+
+    return null;
 }
 
 /**
@@ -245,7 +304,10 @@ async function downloadWfsLayer (wfsLayer, format) {
         fileEnding = getFileEndingForFormat(format),
         fileName = `${wfsLayer.name}.${fileEnding}`,
         typeNameString = getTypeNameStringFromServiceVersion(wfsLayer.version),
-        dataProjection = "EPSG:4326";
+        projectProjection = getProjectProjectionCode(),
+        dataProjection = format === EXPORTFORMATS.shp || format === EXPORTFORMATS.gpkg
+            ? projectProjection
+            : "EPSG:4326";
 
     url.searchParams.append("service", "WFS");
     url.searchParams.append("request", "GetFeature");
@@ -259,20 +321,19 @@ async function downloadWfsLayer (wfsLayer, format) {
 
     let code = "";
 
+    // Fallback: Extract and normalize srsName from GML elements
+    // when readProjection fails (e.g., for non-standard URL-based srsName)
     if (!projection && wfsData && typeof wfsData === "string") {
         const doc = parse(wfsData),
             elementsWithSrs = doc.querySelectorAll("[srsName]");
 
         Array.from(elementsWithSrs).some(el => {
             const srsName = el.getAttribute("srsName");
+            const normalized = normalizeSrsName(srsName);
 
-            if (srsName) {
-                const match = srsName.match(/epsg.*[#\/](\d+)/i);
-
-                if (match) {
-                    code = "EPSG:" + match[1];
-                    return true;
-                }
+            if (normalized) {
+                code = normalized;
+                return true;
             }
 
             return false;
