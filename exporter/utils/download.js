@@ -320,7 +320,6 @@ async function downloadWfsLayer (wfsLayer, format) {
         projection = wfsFormat.readProjection(wfsData);
 
     let code = "";
-    console.log("Read projection from WFS response:", projection ? projection.getCode() : "none");
 
     // Fallback: Extract and normalize srsName from GML elements
     // when readProjection fails (e.g., for non-standard URL-based srsName)
@@ -334,7 +333,6 @@ async function downloadWfsLayer (wfsLayer, format) {
 
             if (normalized) {
                 code = normalized;
-                console.log("Normalized SRS name:", code);
                 return true;
             }
 
