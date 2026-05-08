@@ -35,6 +35,20 @@ function getProjectProjectionCode () {
 }
 
 /**
+ * Resolve configured download projection for shp/gpkg exports.
+ *
+ * @param {String} downloadProjection The configured projection mode.
+ * @returns {String} Projection code.
+ */
+function getConfiguredDownloadProjection (downloadProjection) {
+    if (downloadProjection === "EPSG:4326") {
+        return "EPSG:4326";
+    }
+
+    return getProjectProjectionCode();
+}
+
+/**
  * Handle format-specific download logic.
  * Converts geojson to the requested format and performs download.
  *
@@ -43,16 +57,17 @@ function getProjectProjectionCode () {
  * @param {String} fileName The filename for download.
  * @param {String} layerType The layer type (for blob conversion).
  * @param {String} layerName The layer name (for blob conversion).
+ * @param {String} downloadProjection Optional download projection config.
  * @returns {Promise<void>}
  */
-async function handleFormatDownload (geojson, format, fileName, layerType, layerName) {
-    const projectProjection = getProjectProjectionCode();
+async function handleFormatDownload (geojson, format, fileName, layerType, layerName, downloadProjection) {
+    const exportProjection = getConfiguredDownloadProjection(downloadProjection);
 
     if (format === "shp") {
         const features = new GeoJSON().readFeatures(geojson),
             projectedGeojson = new GeoJSON().writeFeaturesObject(features, {
-                featureProjection: projectProjection,
-                dataProjection: projectProjection
+                featureProjection: exportProjection,
+                dataProjection: exportProjection
             });
 
         shpdownload(projectedGeojson);
@@ -62,8 +77,8 @@ async function handleFormatDownload (geojson, format, fileName, layerType, layer
     if (format === "gpkg") {
         const features = new GeoJSON().readFeatures(geojson),
             projectedGeojson = new GeoJSON().writeFeaturesObject(features, {
-                featureProjection: projectProjection,
-                dataProjection: projectProjection
+                featureProjection: exportProjection,
+                dataProjection: exportProjection
             }),
             gpkg = await createGeoPackage(projectedGeojson);
         const gpkgBytes = await gpkg.export();
@@ -85,9 +100,10 @@ async function handleFormatDownload (geojson, format, fileName, layerType, layer
  *
  * @param {Object} layer The vector layer to download (draw or vectorBase type).
  * @param {String} format The requested output format.
+ * @param {String} downloadProjection Optional download projection config.
  * @returns {void}
  */
-async function downloadVectorLayer (layer, format) {
+async function downloadVectorLayer (layer, format, downloadProjection) {
     const fileEnding = getFileEndingForFormat(format),
         fileName = `${layer.name}.${fileEnding}`,
         features = layer.layer.getSource().getFeatures(),
@@ -96,7 +112,7 @@ async function downloadVectorLayer (layer, format) {
         featureProjection = layer.epsg || layer.srsName || mapView.getProjection().getCode(),
         geojson = new GeoJSON().writeFeaturesObject(features, {featureProjection});
 
-    await handleFormatDownload(geojson, format, fileName, layer.type, layer.name);
+    await handleFormatDownload(geojson, format, fileName, layer.type, layer.name, downloadProjection);
 }
 
 /**
@@ -104,14 +120,15 @@ async function downloadVectorLayer (layer, format) {
  *
  * @param {Object} geoJsonLayer The geojson layer to download.
  * @param {String} format The requested output format.
+ * @param {String} downloadProjection Optional download projection config.
  * @returns {void}
  */
-async function downloadGeoJsonLayer (geoJsonLayer, format) {
+async function downloadGeoJsonLayer (geoJsonLayer, format, downloadProjection) {
     const fileEnding = getFileEndingForFormat(format),
         fileName = `${geoJsonLayer.name}.${fileEnding}`,
         data = await fetchBlob(geoJsonLayer.url, "application/json");
 
-    await handleFormatDownload(data, format, fileName, geoJsonLayer.type, geoJsonLayer.name);
+    await handleFormatDownload(data, format, fileName, geoJsonLayer.type, geoJsonLayer.name, downloadProjection);
 }
 
 /**
@@ -297,17 +314,21 @@ function gmlToBlob (gml, outputFormat, formatter, gmlMime) {
  *
  * @param {Object} wfsLayer The wfs layer to download.
  * @param {String} format The export format.
+ * @param {String} downloadProjection Optional download projection config.
  * @returns {void}
  */
-async function downloadWfsLayer (wfsLayer, format) {
+async function downloadWfsLayer (wfsLayer, format, downloadProjection) {
+    const exportProjection = getConfiguredDownloadProjection(downloadProjection);
     const url = new URL(wfsLayer.url),
         fileEnding = getFileEndingForFormat(format),
         fileName = `${wfsLayer.name}.${fileEnding}`,
         typeNameString = getTypeNameStringFromServiceVersion(wfsLayer.version),
-        projectProjection = getProjectProjectionCode(),
         dataProjection = format === EXPORTFORMATS.shp || format === EXPORTFORMATS.gpkg
-            ? projectProjection
+            ? exportProjection
             : "EPSG:4326";
+
+    // eslint-disable-next-line no-console
+    console.log("Using download projection:", exportProjection);
 
     url.searchParams.append("service", "WFS");
     url.searchParams.append("request", "GetFeature");
@@ -469,9 +490,10 @@ async function prepareGPKG (properties) {
  *
  * @param {Object} layer The layer to download.
  * @param {String} format The requested output format.
+ * @param {String} downloadProjection Optional download projection config.
  * @returns {void}
  */
-export async function downloadLayer (layer, format) {
+export async function downloadLayer (layer, format, downloadProjection) {
     const layerDownloadMap = {
         [LAYERTYPES.geoJson]: downloadGeoJsonLayer,
         [LAYERTYPES.wfs]: downloadWfsLayer,
@@ -482,7 +504,7 @@ export async function downloadLayer (layer, format) {
     const downloadFn = layerDownloadMap[layer.type];
 
     if (downloadFn) {
-        await downloadFn(layer, format);
+        await downloadFn(layer, format, downloadProjection);
     }
 }
 

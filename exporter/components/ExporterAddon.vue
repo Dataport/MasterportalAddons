@@ -80,7 +80,7 @@ export default {
         async onFinishClick () {
             this.isLoading = true;
             try {
-                await downloadLayer(this.selectedLayer, this.selectedExportFormat);
+                await downloadLayer(this.selectedLayer, this.selectedExportFormat, this.downloadProjection);
             }
             catch (e) {
                 let msg = i18next.t("additional:modules.tools.exporter.downloadFailedForFormat");
