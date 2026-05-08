@@ -14,7 +14,7 @@ export const DEFAULT_VALUES = {
         EXPORTFORMATS.shp,
         EXPORTFORMATS.gpkg
     ],
-    downloadProjection: undefined,
+    downloadProjection: "mapProjection",
     selectedExportFormat: undefined
 };
 
