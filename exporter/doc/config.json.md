@@ -7,4 +7,4 @@ The basic tool configurations apply. Following additional properties can be set 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
 |supportedExportFormats|no|String[]|["geojson", "gml", "shp", "gpkg"]|List of supported export formats. Only formats that appear in this list will be provided as option. Currently supported formats: "geojson", "gml", "shp", "gpkg".|false|
-|downloadProjection|no|String|"mapProjection"|Optional projection mode used only for "shp" and "gpkg" download output. Supported values: "mapProjection" and "EPSG:4326". If omitted or invalid, map projection is used.|false|
+|downloadProjection|no|String|"mapProjection"|Optional projection mode used only for "shp" and "gpkg" download output. Supported values: "mapProjection" and "EPSG:4326". If omitted or invalid, EPSG:4326 is used.|false|
