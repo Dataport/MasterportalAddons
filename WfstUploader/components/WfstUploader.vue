@@ -134,9 +134,9 @@ export default {
             if (Array.isArray(properties)) {
                 const uuidProp = this.getUrlParamValue("UUIDPROPERTY") || "uuid";
 
-                properties.forEach((propertie) => {
-                    if (propertie.key === uuidProp) {
-                        propertie.value = this.uuid || propertie.value;
+                properties.forEach((property) => {
+                    if (property.key === uuidProp) {
+                        property.value = this.uuid || property.value;
                     }
                 });
             }
