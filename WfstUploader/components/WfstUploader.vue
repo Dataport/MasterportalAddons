@@ -132,8 +132,10 @@ export default {
                 properties = await wfs.receivePossibleProperties(url, version, featureType, isSecured ?? false);
 
             if (Array.isArray(properties)) {
+                const uuidProp = this.getUrlParamValue("UUIDPROPERTY") || "uuid";
+
                 properties.forEach((propertie) => {
-                    if (propertie.key === "uuid") {
+                    if (propertie.key === uuidProp) {
                         propertie.value = this.uuid || propertie.value;
                     }
                 });
@@ -197,7 +199,7 @@ export default {
             const params = new URL(location).searchParams,
                 keyName = Array.from(params.keys()).find((key) => key.toLowerCase() === paramName.toLowerCase());
 
-            return params.get(keyName);
+            return keyName ? params.get(keyName) : null;
         },
         getUuid () {
             return this.getUrlParamValue("UUID");
