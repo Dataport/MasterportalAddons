@@ -23,3 +23,13 @@ The importer addon can be found here https://github.com/terrestris/masterportal-
 }
 
 ```
+
+**URL Parameters**
+
+Some parameters can be preset for this addon via the URL.
+
+|Name|Description|Example|
+|-|-|-|
+|UPLOADLAYERID|The id of the layer that should be preset as upload layer in the input formular. The upload layer must be visible in the portal. |`&UPLOADLAYERID=layer_id`|
+|UUIDPROPERTY|The identifier attribute name for the feature that will be uploaded. If not set, "uuid" will be assumed as property name.|`&UUIDPROPERTY=UUID`|
+|UUID|The value that will be set as preset for the uuid property in the input field.|`&UUIDVALUE=123-abc-456`|
