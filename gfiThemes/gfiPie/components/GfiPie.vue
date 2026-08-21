@@ -231,5 +231,5 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-@import "~variables";
+@import "/src/assets/css/mixins.scss";
 </style>
