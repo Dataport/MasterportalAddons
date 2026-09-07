@@ -13,7 +13,6 @@ import STEPS from "../constants/steps";
 import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
 
 export default {
-    // eslint-disable-next-line vue/multi-word-component-names, vue/match-component-file-name
     name: "Exporter",
     components: {
         LayerDownloadOptions,
@@ -36,7 +35,7 @@ export default {
         this.applyTranslationKey(this.name);
     },
     unmounted () {
-        this.close();
+        this.resetExporterAddon();
     },
     methods: {
         ...mapActions("Modules/Exporter", [

@@ -42,7 +42,7 @@ function getProjectProjectionCode () {
  */
 function getConfiguredDownloadProjection (downloadProjection) {
     if (downloadProjection === "EPSG:4326") {
-        return "EPSG:4326";
+        return downloadProjection;
     }
 
     return getProjectProjectionCode();
@@ -64,8 +64,8 @@ async function handleFormatDownload (geojson, format, fileName, layerType, layer
     const exportProjection = getConfiguredDownloadProjection(downloadProjection);
 
     if (format === "shp") {
-        const features = new GeoJSON().readFeatures(geojson),
-            projectedGeojson = new GeoJSON().writeFeaturesObject(features, {
+        const features = new GeoJSON().readFeatures(geojson);
+        const projectedGeojson = new GeoJSON().writeFeaturesObject(features, {
                 featureProjection: exportProjection,
                 dataProjection: exportProjection
             });
@@ -75,12 +75,12 @@ async function handleFormatDownload (geojson, format, fileName, layerType, layer
     }
 
     if (format === "gpkg") {
-        const features = new GeoJSON().readFeatures(geojson),
-            projectedGeojson = new GeoJSON().writeFeaturesObject(features, {
+        const features = new GeoJSON().readFeatures(geojson);
+        const projectedGeojson = new GeoJSON().writeFeaturesObject(features, {
                 featureProjection: exportProjection,
                 dataProjection: exportProjection
-            }),
-            gpkg = await createGeoPackage(projectedGeojson);
+            });
+        const gpkg = await createGeoPackage(projectedGeojson);
         const gpkgBytes = await gpkg.export();
         const blob = new Blob([gpkgBytes], {type: "octet/stream"});
         const url = URL.createObjectURL(blob);
@@ -197,7 +197,6 @@ function normalizeSrsName (srsName) {
         return null;
     }
 
-    // Already normalized
     if (srsName.match(/^EPSG:\d+$/i)) {
         return srsName;
     }
@@ -263,15 +262,15 @@ function getGmlMimeFromVersion (version) {
  * @returns {any} The blob.
  */
 function geojsonToBlob (geojson, outputFormat, featureNS, featureType) {
-    let blob, features, output;
+    let blob;
 
     switch (outputFormat) {
         case EXPORTFORMATS.geoJson:
             blob = new Blob([JSON.stringify(geojson)], {type: "application/geo+json"});
             break;
         case EXPORTFORMATS.gml:
-            features = new GeoJSON().readFeatures(geojson);
-            output = new GML32({featureNS, featureType, srsName: "EPSG:4326"}).writeFeatures(features);
+            const features = new GeoJSON().readFeatures(geojson);
+            const output = new GML32({featureNS, featureType, srsName: "EPSG:4326"}).writeFeatures(features);
             blob = new Blob([output], {type: "application/gml+xml; version=3.2"});
             break;
         default:
@@ -291,12 +290,12 @@ function geojsonToBlob (geojson, outputFormat, featureNS, featureType) {
  * @returns {any} The blob.
  */
 function gmlToBlob (gml, outputFormat, formatter, gmlMime) {
-    let blob, output, features;
+    let blob;
 
     switch (outputFormat) {
         case EXPORTFORMATS.geoJson:
-            features = formatter.readFeatures(gml);
-            output = new GeoJSON().writeFeatures(features);
+            const features = formatter.readFeatures(gml);
+            const output = new GeoJSON().writeFeatures(features);
             blob = new Blob([output], {type: "application/geo+json"});
             break;
         case EXPORTFORMATS.gml:
@@ -318,17 +317,13 @@ function gmlToBlob (gml, outputFormat, formatter, gmlMime) {
  * @returns {void}
  */
 async function downloadWfsLayer (wfsLayer, format, downloadProjection) {
-    const exportProjection = getConfiguredDownloadProjection(downloadProjection);
-    const url = new URL(wfsLayer.url),
-        fileEnding = getFileEndingForFormat(format),
-        fileName = `${wfsLayer.name}.${fileEnding}`,
-        typeNameString = getTypeNameStringFromServiceVersion(wfsLayer.version),
-        dataProjection = format === EXPORTFORMATS.shp || format === EXPORTFORMATS.gpkg
-            ? exportProjection
-            : "EPSG:4326";
-
-    // eslint-disable-next-line no-console
-    console.log("Using download projection:", exportProjection);
+    const url = new URL(wfsLayer.url);
+    const fileEnding = getFileEndingForFormat(format);
+    const fileName = `${wfsLayer.name}.${fileEnding}`;
+    const typeNameString = getTypeNameStringFromServiceVersion(wfsLayer.version);
+    const dataProjection = format === EXPORTFORMATS.shp || format === EXPORTFORMATS.gpkg
+        ? getConfiguredDownloadProjection(downloadProjection)
+        : "EPSG:4326";
 
     url.searchParams.append("service", "WFS");
     url.searchParams.append("request", "GetFeature");
@@ -336,48 +331,29 @@ async function downloadWfsLayer (wfsLayer, format, downloadProjection) {
     url.searchParams.append("srsName", dataProjection);
     url.searchParams.append(typeNameString, wfsLayer.featureType);
 
-    const wfsData = await fetchData(url.toString()),
-        wfsFormat = new WFS({version: wfsLayer.version}),
-        projection = wfsFormat.readProjection(wfsData);
-
-    let code = "";
-
-    // Fallback: Extract and normalize srsName from GML elements
-    // when readProjection fails (e.g., for non-standard URL-based srsName)
-    if (!projection && wfsData && typeof wfsData === "string") {
-        const doc = parse(wfsData),
-            elementsWithSrs = doc.querySelectorAll("[srsName]");
-
-        Array.from(elementsWithSrs).some(el => {
-            const srsName = el.getAttribute("srsName");
-            const normalized = normalizeSrsName(srsName);
-
-            if (normalized) {
-                code = normalized;
-                return true;
-            }
-
-            return false;
-        });
-    }
+    const wfsData = await fetchData(url.toString());
+    const wfsFormat = new WFS({version: wfsLayer.version});
+    const projection = wfsFormat.readProjection(wfsData) ?? get(dataProjection);
 
     const proj = new Projection({
-        code: projection ? projection.getCode() : code,
-        axis: projection ? projection.getAxisOrientation() : "neu"
+        code: projection.getCode(),
+        axis: projection.getAxisOrientation()
     });
 
     // respect axis orientation from gml output to avoid flipped coordinates
     addEquivalentProjections([get(dataProjection), proj]);
-    const features = wfsFormat.readFeatures(wfsData, {
-            proj
-        }),
-        geojson = new GeoJSON().writeFeaturesObject(features, {
-            dataProjection
-        }),
-        containsMultiPolygons = geojson.features.find(
-            f => f.geometry?.type.toLowerCase() === "multipolygon");
 
-    let blob, gpkg, gpkgBytes, gmlMime;
+    const features = wfsFormat.readFeatures(wfsData, {
+        proj
+    });
+    const geojson = new GeoJSON().writeFeaturesObject(features, {
+        dataProjection
+    });
+    const containsMultiPolygons = geojson.features.find(
+        f => f.geometry.type.toLowerCase() === "multipolygon"
+    );
+
+    let blob;
 
     switch (format) {
         case "shp":
@@ -391,13 +367,13 @@ async function downloadWfsLayer (wfsLayer, format, downloadProjection) {
             shpdownload(geojson);
             return;
         case "gpkg":
-            gpkg = await createGeoPackage(geojson);
-            gpkgBytes = await gpkg.export();
+            const gpkg = await createGeoPackage(geojson);
+            const gpkgBytes = await gpkg.export();
 
             blob = new Blob([gpkgBytes], {type: "octet/stream"});
             break;
         default:
-            gmlMime = getGmlMimeFromVersion(wfsLayer.version);
+            const gmlMime = getGmlMimeFromVersion(wfsLayer.version);
 
             blob = gmlToBlob(wfsData, format, wfsFormat, gmlMime);
             break;
@@ -425,9 +401,8 @@ async function createGeoPackage (geojson) {
         }
     });
     // Create and prepare geopackage
-    // es-lint-disable-next-line one-var
-    const gpkg = await prepareGPKG(geojson.features[0].properties),
-        tableName = "export";
+    const gpkg = await prepareGPKG(geojson.features[0].properties);
+    const tableName = "export";
 
     // add features to feature table
     await gpkg.addGeoJSONFeaturesToGeoPackage(
@@ -465,8 +440,8 @@ async function prepareGPKG (properties) {
     // es-lint-disable-next-line no-undef
     window.GeoPackage.setSqljsWasmLocateFile(file => "./resources/" + file);
     // es-lint-disable-next-line no-undef
-    const gpkg = await window.GeoPackage.GeoPackageAPI.create(),
-        tableProperties = [];
+    const gpkg = await window.GeoPackage.GeoPackageAPI.create();
+    const tableProperties = [];
 
     // create new Feature Column from properties
     for (const [key, value] of Object.entries(properties)) {

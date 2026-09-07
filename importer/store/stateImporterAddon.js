@@ -16,12 +16,13 @@ export const DEFAULT_VALUES = {
         geoPackageFolderCounter: 0,
         styleFillColor: [104, 170, 204, 1],
         styleStrokeColor: [153, 153, 153, 1],
-        styleStrokeWidth: 2,
+        styleStrokeWidth: 5,
         styleCircleRadius: 10,
         inputFile: undefined,
         supportedImportWorkflows: getWorkflowNames(),
         fileUploadIcon: "bi bi-cloud-arrow-up-fill",
-        removeFileIcon: "bi bi-x-circle-fill"
+        removeFileIcon: "bi bi-x-circle-fill",
+        resourcesPath: "./resources/"
     },
 
     /**
@@ -53,7 +54,7 @@ export const DEFAULT_VALUES = {
         icon: "bi-upload",
         id: "importerAddon",
         type: "importerAddon",
-        name: "additional:modules.tools.importerAddon.title",
+        name: "additional:modules.tools.importer.title",
         ...DEFAULT_VALUES
     };
 

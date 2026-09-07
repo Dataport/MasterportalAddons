@@ -20,7 +20,6 @@ import {processLayersForAdding} from "../utils/processLayersForAdding";
  * @vue-prop {String} side - The side in which the menu component is being rendered.
  */
 export default {
-    // eslint-disable-next-line vue/multi-word-component-names, vue/match-component-file-name
     name: "Importer",
     components: {
         FileUpload,
@@ -78,7 +77,7 @@ export default {
         this.applyTranslationKey(this.name);
     },
     unmounted () {
-        this.close();
+        this.resetImporterAddon();
     },
     methods: {
         ...mapMutations("Modules/Importer", Object.keys(mutations)),
@@ -216,7 +215,7 @@ export default {
                 />
             </div>
         </div>
-        <div class="importer-addon-wizard-navigation mt-3">
+        <div class="importer-addon-wizard-navigation mt-3 d-flex">
             <FlatButton
                 v-if="!isCurrentWorkflowUndefined"
                 type="button"
@@ -239,7 +238,7 @@ export default {
                 type="submit"
                 :text="$t('additional:modules.tools.importer.finish')"
                 :class="{btn: true, 'btn-default': !currentFormValid, 'btn-primary': currentFormValid}"
-                :disabled="!currentFormValid"
+                :disabled="!currentFormValid || selectedLayers?.length === 0"
                 @click="onFinishClick"
             />
         </div>
@@ -247,5 +246,7 @@ export default {
 </template>
 
 <style lang="scss">
-
+.importer-addon-wizard-navigation {
+    gap: .5rem;
+}
 </style>

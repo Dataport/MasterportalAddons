@@ -23,7 +23,7 @@
                 "layerSelectionSelectAllText": "All layers",
                 "layerSelectionRequiredText": "Please select at least one layer.",
                 "layerTreeFolderTitle": "Imported Layers {{count}}",
-                "setStyleMessage": "Configure the style for the layer",
+                "setStyleMessage": "Style for the layer",
                 "styleSelectFillColor": "Fill color",
                 "styleSelectStrokeColor": "Stroke color",
                 "styleSelectStrokeWidth": "Stroke width",
@@ -33,7 +33,9 @@
                 "provideShapeZipText": "Click on icon or use Drag&Drop to upload zipped Shapefile.",
                 "provideGeoPackageText": "Click on icon or use Drag&Drop to upload GeoPackage.",
                 "completeMessage": "The layer has been added to the layer tree.",
-                "completeMessage_other": "The layers have been added to the layer tree."
+                "completeMessage_other": "The layers have been added to the layer tree.",
+                "removeLayer": "Remove layer",
+                "importFailed": "Import failed. Please make sure to upload valid files only."
             }
         }
     }

@@ -109,9 +109,9 @@ export default {
          * @returns {void}
          */
         onFileInput () {
-            const hiddenInput = this.$el.querySelector(".hidden-input"),
-                fileList = hiddenInput.files,
-                file = fileList[0];
+            const hiddenInput = this.$el.querySelector(".hidden-input");
+            const fileList = hiddenInput.files;
+            const file = fileList[0];
 
             this.setInputFile(file);
             this.handleFileUpload(file);
@@ -125,8 +125,8 @@ export default {
          */
         focusOnHiddenInput () {
             this.$nextTick(() => {
-                const hiddenInputRef = "importer-addon-hidden-input",
-                    hiddenInput = this.$refs[hiddenInputRef];
+                const hiddenInputRef = "importer-addon-hidden-input";
+                const hiddenInput = this.$refs[hiddenInputRef];
 
                 if (hiddenInput) {
                     hiddenInput.focus();
@@ -162,11 +162,9 @@ export default {
          * @returns {void}
          */
         handleFileUpload (file) {
-            const fileTypeAccepted = isMimeTypeAccepted(file.type, this.serviceType),
-                fileExtensionAccepted = isFileExtensionAccepted(file.name, this.serviceType),
-                isValid = fileTypeAccepted || fileExtensionAccepted;
-
-            let layerId;
+            const fileTypeAccepted = isMimeTypeAccepted(file.type, this.serviceType);
+            const fileExtensionAccepted = isFileExtensionAccepted(file.name, this.serviceType);
+            const isValid = fileTypeAccepted || fileExtensionAccepted;
 
             this.setCurrentFormValid(this.isFormValid());
             this.focusOnHiddenInput();
@@ -179,7 +177,7 @@ export default {
                 this.inputValid = true;
                 this.incrementIdCounter();
 
-                layerId = generateId(this.idCounter);
+                const layerId = generateId(this.idCounter);
 
                 this.setSelectedLayerFromFile({
                     file,
@@ -188,8 +186,6 @@ export default {
                     folderId: this.layerTreeFolderId
                 });
             }
-
-
         },
 
         /**

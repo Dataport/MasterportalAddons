@@ -68,8 +68,8 @@ export default {
             this.showErrorMessage = false;
             this.isLoading = true;
             try {
-                const url = createCapabilitiesUrl(this.capabilitiesUrl, this.serviceType),
-                    capDocument = await fetchCapabilities(url);
+                const url = createCapabilitiesUrl(this.capabilitiesUrl, this.serviceType);
+                const capDocument = await fetchCapabilities(url);
 
                 if (this.serviceType !== detectServiceType(capDocument)) {
                     this.showErrorMessage = true;
@@ -121,18 +121,16 @@ export default {
          * @returns {void}
          */
         onCheckboxChange () {
-            const selectedLayers = this.layerSelectionList.filter(layer => layer.selected),
-
-                layerOpts = selectedLayers.map(function (item) {
+            const selectedLayers = this.layerSelectionList.filter(layer => layer.selected);
+            const layerOpts = selectedLayers.map(function (item) {
                     this.incrementIdCounter();
                     return {
                         title: item.title,
                         name: item.name,
                         id: generateId(this.idCounter)
                     };
-                }.bind(this)),
-
-                layerConfigs = createLayerConfigs(this.serviceType, this.capabilitiesBaseUrl, this.capabilitiesVersion, this.layerTreeFolderId, layerOpts);
+                }.bind(this));
+            const layerConfigs = createLayerConfigs(this.serviceType, this.capabilitiesBaseUrl, this.capabilitiesVersion, this.layerTreeFolderId, layerOpts);
 
             this.setSelectedLayers(layerConfigs);
             this.inputValid = this.isFormValid();
@@ -153,8 +151,8 @@ export default {
          * @returns {void}
          */
         onSelectAllCheckboxChange (evt) {
-            const checkboxes = this.$el.querySelectorAll(".layer-checkbox"),
-                checked = evt.target.checked;
+            const checkboxes = this.$el.querySelectorAll(".layer-checkbox");
+            const checked = evt.target.checked;
 
             // querySelectorAll returns Nodelist, which has no `filter` method.
             // So we convert it into an array.
@@ -172,8 +170,8 @@ export default {
          */
         focusOnCheckbox () {
             this.$nextTick(() => {
-                const layerSelectRef = "importer-addon-layer-select",
-                    layerSelect = this.$refs[layerSelectRef];
+                const layerSelectRef = "importer-addon-layer-select";
+                const layerSelect = this.$refs[layerSelectRef];
 
                 if (layerSelect) {
                     layerSelect.focus({focusVisible: true});

@@ -1,0 +1,1193 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "version": 1,
+  "serialNumber": "urn:uuid:b5d8019f-b2e3-4cf9-8c33-a0176596ceaf",
+  "metadata": {
+    "timestamp": "2026-08-06T08:30:08.933Z",
+    "tools": {
+      "components": [
+        {
+          "type": "application",
+          "name": "npm",
+          "version": "10.9.3"
+        },
+        {
+          "type": "application",
+          "name": "cyclonedx-npm",
+          "group": "@cyclonedx",
+          "version": "6.0.0",
+          "author": "Jan Kowalleck",
+          "description": "Create CycloneDX Software Bill of Materials (SBOM) from NPM projects.",
+          "licenses": [
+            {
+              "license": {
+                "id": "Apache-2.0"
+              }
+            }
+          ],
+          "externalReferences": [
+            {
+              "url": "git+https://github.com/CycloneDX/cyclonedx-node-npm.git",
+              "type": "vcs",
+              "comment": "as detected from PackageJson property \"repository.url\""
+            },
+            {
+              "url": "https://github.com/CycloneDX/cyclonedx-node-npm#readme",
+              "type": "website",
+              "comment": "as detected from PackageJson property \"homepage\""
+            },
+            {
+              "url": "https://github.com/CycloneDX/cyclonedx-node-npm/issues",
+              "type": "issue-tracker",
+              "comment": "as detected from PackageJson property \"bugs.url\""
+            }
+          ]
+        },
+        {
+          "type": "library",
+          "name": "cyclonedx-library",
+          "group": "@cyclonedx",
+          "version": "10.0.0",
+          "author": "Jan Kowalleck",
+          "description": "Core functionality of CycloneDX for JavaScript (Node.js or WebBrowser).",
+          "licenses": [
+            {
+              "license": {
+                "id": "Apache-2.0"
+              }
+            }
+          ],
+          "externalReferences": [
+            {
+              "url": "git+https://github.com/CycloneDX/cyclonedx-javascript-library.git",
+              "type": "vcs",
+              "comment": "as detected from PackageJson property \"repository.url\""
+            },
+            {
+              "url": "https://github.com/CycloneDX/cyclonedx-javascript-library#readme",
+              "type": "website",
+              "comment": "as detected from PackageJson property \"homepage\""
+            },
+            {
+              "url": "https://github.com/CycloneDX/cyclonedx-javascript-library/issues",
+              "type": "issue-tracker",
+              "comment": "as detected from PackageJson property \"bugs.url\""
+            }
+          ]
+        }
+      ]
+    },
+    "component": {
+      "type": "application",
+      "name": "importeraddon",
+      "version": "2.0.0",
+      "bom-ref": "importeraddon@2.0.0",
+      "author": "terrestris GmbH & Co. KG, Dataport AöR",
+      "description": "Importer addon to import OGC services (WMS, WFS) and static geodata to a Masterportal client.",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/importeraddon@2.0.0",
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": ""
+        }
+      ]
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "shpjs",
+      "version": "4.0.4",
+      "bom-ref": "importeraddon@2.0.0|shpjs@4.0.4",
+      "author": "Calvin Metcalf",
+      "description": "A binary shapefile loader, for javascript. Not many caveats",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/shpjs@4.0.4",
+      "externalReferences": [
+        {
+          "url": "git://github.com/calvinmetcalf/shapefile-js.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/calvinmetcalf/shapefile-js#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/calvinmetcalf/shapefile-js/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/shpjs/-/shpjs-4.0.4.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/shpjs"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "jszip",
+      "version": "3.10.1",
+      "bom-ref": "importeraddon@2.0.0|jszip@3.10.1",
+      "author": "Stuart Knightley",
+      "description": "Create, read and edit .zip files with JavaScript http://stuartk.com/jszip",
+      "licenses": [
+        {
+          "expression": "(MIT OR GPL-3.0-or-later)",
+          "acknowledgement": "declared"
+        }
+      ],
+      "purl": "pkg:npm/jszip@3.10.1",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/Stuk/jszip.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/Stuk/jszip#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/Stuk/jszip/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/jszip/-/jszip-3.10.1.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/jszip"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "lie",
+      "version": "3.3.0",
+      "bom-ref": "importeraddon@2.0.0|lie@3.3.0",
+      "description": "A basic but performant promise implementation",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/lie@3.3.0",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/calvinmetcalf/lie.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/calvinmetcalf/lie#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/calvinmetcalf/lie/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/lie/-/lie-3.3.0.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/lie"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "lru-cache",
+      "version": "2.7.3",
+      "bom-ref": "importeraddon@2.0.0|lru-cache@2.7.3",
+      "author": "Isaac Z. Schlueter",
+      "description": "A cache object that deletes the least-recently-used items.",
+      "licenses": [
+        {
+          "license": {
+            "id": "ISC",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/lru-cache@2.7.3",
+      "externalReferences": [
+        {
+          "url": "git://github.com/isaacs/node-lru-cache.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/isaacs/node-lru-cache#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/isaacs/node-lru-cache/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/lru-cache/-/lru-cache-2.7.3.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/lru-cache"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "parsedbf",
+      "version": "1.1.1",
+      "bom-ref": "importeraddon@2.0.0|parsedbf@1.1.1",
+      "author": "Calvin Metcalf",
+      "description": "The DBF parsing component of shapefile-js",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/parsedbf@1.1.1",
+      "externalReferences": [
+        {
+          "url": "git://github.com/calvinmetcalf/parseDBF.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/calvinmetcalf/parseDBF#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/calvinmetcalf/parseDBF/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/parsedbf/-/parsedbf-1.1.1.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/parsedbf"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "proj4",
+      "version": "2.19.5",
+      "bom-ref": "importeraddon@2.0.0|proj4@2.19.5",
+      "description": "Proj4js is a JavaScript library to transform point coordinates from one coordinate system to another, including datum transformations.",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/proj4@2.19.5",
+      "externalReferences": [
+        {
+          "url": "git://github.com/proj4js/proj4js.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://proj4js.github.io/proj4js/",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/proj4js/proj4js/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/proj4"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "pako",
+      "version": "1.0.11",
+      "bom-ref": "importeraddon@2.0.0|pako@1.0.11",
+      "description": "zlib port to javascript - fast, modularized, with browser support",
+      "licenses": [
+        {
+          "expression": "(MIT AND Zlib)",
+          "acknowledgement": "declared"
+        }
+      ],
+      "purl": "pkg:npm/pako@1.0.11",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/nodeca/pako.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/nodeca/pako",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/nodeca/pako/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/pako"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "readable-stream",
+      "version": "2.3.8",
+      "bom-ref": "importeraddon@2.0.0|readable-stream@2.3.8",
+      "description": "Streams3, a user-land copy of the stream library from Node.js",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/readable-stream@2.3.8",
+      "externalReferences": [
+        {
+          "url": "git://github.com/nodejs/readable-stream.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/nodejs/readable-stream#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/nodejs/readable-stream/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/readable-stream/-/readable-stream-2.3.8.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/readable-stream"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "setimmediate",
+      "version": "1.0.5",
+      "bom-ref": "importeraddon@2.0.0|setimmediate@1.0.5",
+      "author": "YuzuJS",
+      "description": "A shim for the setImmediate efficient script yielding API",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/setimmediate@1.0.5",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/YuzuJS/setImmediate.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/YuzuJS/setImmediate#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/YuzuJS/setImmediate/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/setimmediate/-/setimmediate-1.0.5.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/setimmediate"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "immediate",
+      "version": "3.0.6",
+      "bom-ref": "importeraddon@2.0.0|immediate@3.0.6",
+      "description": "A cross browser microtask library",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/immediate@3.0.6",
+      "externalReferences": [
+        {
+          "url": "git://github.com/calvinmetcalf/immediate.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/calvinmetcalf/immediate#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/calvinmetcalf/immediate/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/immediate/-/immediate-3.0.6.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/immediate"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "iconv-lite",
+      "version": "0.4.24",
+      "bom-ref": "importeraddon@2.0.0|iconv-lite@0.4.24",
+      "author": "Alexander Shtuchkin",
+      "description": "Convert character encodings in pure javascript.",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/iconv-lite@0.4.24",
+      "externalReferences": [
+        {
+          "url": "git://github.com/ashtuchkin/iconv-lite.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/ashtuchkin/iconv-lite",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/ashtuchkin/iconv-lite/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.4.24.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/iconv-lite"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "text-encoding-polyfill",
+      "version": "0.6.7",
+      "bom-ref": "importeraddon@2.0.0|text-encoding-polyfill@0.6.7",
+      "author": "Joshua Bell",
+      "description": "Polyfill for the Encoding Living Standard's API.",
+      "licenses": [
+        {
+          "license": {
+            "id": "Unlicense",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/text-encoding-polyfill@0.6.7",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/inexorabletash/text-encoding.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/inexorabletash/text-encoding",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/inexorabletash/text-encoding/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/text-encoding-polyfill/-/text-encoding-polyfill-0.6.7.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/text-encoding-polyfill"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "mgrs",
+      "version": "1.0.0",
+      "bom-ref": "importeraddon@2.0.0|mgrs@1.0.0",
+      "author": "proj4 team",
+      "description": "Utility for converting between WGS84 lat/lng and MGRS coordinates",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/mgrs@1.0.0",
+      "externalReferences": [
+        {
+          "url": "git://github.com/proj4js/mgrs.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/proj4js/mgrs#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/proj4js/mgrs/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/mgrs/-/mgrs-1.0.0.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/mgrs"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "wkt-parser",
+      "version": "1.5.2",
+      "bom-ref": "importeraddon@2.0.0|wkt-parser@1.5.2",
+      "description": "wkt-parser ===",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/wkt-parser@1.5.2",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/proj4js/wkt-parser.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/proj4js/wkt-parser#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/proj4js/wkt-parser/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/wkt-parser/-/wkt-parser-1.5.2.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/wkt-parser"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "core-util-is",
+      "version": "1.0.3",
+      "bom-ref": "importeraddon@2.0.0|core-util-is@1.0.3",
+      "author": "Isaac Z. Schlueter",
+      "description": "The `util.is*` functions introduced in Node v0.12.",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/core-util-is@1.0.3",
+      "externalReferences": [
+        {
+          "url": "git://github.com/isaacs/core-util-is.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/isaacs/core-util-is#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/isaacs/core-util-is/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.3.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/core-util-is"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "inherits",
+      "version": "2.0.4",
+      "bom-ref": "importeraddon@2.0.0|inherits@2.0.4",
+      "description": "Browser-friendly inheritance fully compatible with standard node.js inherits()",
+      "licenses": [
+        {
+          "license": {
+            "id": "ISC",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/inherits@2.0.4",
+      "externalReferences": [
+        {
+          "url": "git://github.com/isaacs/inherits.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/isaacs/inherits#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/isaacs/inherits/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/inherits"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "isarray",
+      "version": "1.0.0",
+      "bom-ref": "importeraddon@2.0.0|isarray@1.0.0",
+      "author": "Julian Gruber",
+      "description": "Array#isArray for older browsers",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/isarray@1.0.0",
+      "externalReferences": [
+        {
+          "url": "git://github.com/juliangruber/isarray.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/juliangruber/isarray",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/juliangruber/isarray/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/isarray/-/isarray-1.0.0.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/isarray"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "process-nextick-args",
+      "version": "2.0.1",
+      "bom-ref": "importeraddon@2.0.0|process-nextick-args@2.0.1",
+      "description": "process.nextTick but always with args",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/process-nextick-args@2.0.1",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/calvinmetcalf/process-nextick-args.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/calvinmetcalf/process-nextick-args",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/calvinmetcalf/process-nextick-args/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-2.0.1.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/process-nextick-args"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "safe-buffer",
+      "version": "5.1.2",
+      "bom-ref": "importeraddon@2.0.0|safe-buffer@5.1.2",
+      "author": "Feross Aboukhadijeh",
+      "description": "Safer Node.js Buffer API",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/safe-buffer@5.1.2",
+      "externalReferences": [
+        {
+          "url": "git://github.com/feross/safe-buffer.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/feross/safe-buffer",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/feross/safe-buffer/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/safe-buffer"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "string_decoder",
+      "version": "1.1.1",
+      "bom-ref": "importeraddon@2.0.0|string_decoder@1.1.1",
+      "description": "The string_decoder module from Node core",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/string_decoder@1.1.1",
+      "externalReferences": [
+        {
+          "url": "git://github.com/nodejs/string_decoder.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/nodejs/string_decoder",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/nodejs/string_decoder/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/string_decoder/-/string_decoder-1.1.1.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/string_decoder"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "util-deprecate",
+      "version": "1.0.2",
+      "bom-ref": "importeraddon@2.0.0|util-deprecate@1.0.2",
+      "author": "Nathan Rajlich",
+      "description": "The Node.js `util.deprecate()` function with browser support",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/util-deprecate@1.0.2",
+      "externalReferences": [
+        {
+          "url": "git://github.com/TooTallNate/util-deprecate.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/TooTallNate/util-deprecate",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/TooTallNate/util-deprecate/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/util-deprecate"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "safer-buffer",
+      "version": "2.1.2",
+      "bom-ref": "importeraddon@2.0.0|safer-buffer@2.1.2",
+      "author": "Nikita Skovoroda",
+      "description": "Modern Buffer API polyfill without footguns",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/safer-buffer@2.1.2",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/ChALkeR/safer-buffer.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/ChALkeR/safer-buffer#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/ChALkeR/safer-buffer/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/safer-buffer"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "importeraddon@2.0.0",
+      "dependsOn": [
+        "importeraddon@2.0.0|shpjs@4.0.4"
+      ]
+    },
+    {
+      "ref": "importeraddon@2.0.0|shpjs@4.0.4",
+      "dependsOn": [
+        "importeraddon@2.0.0|jszip@3.10.1",
+        "importeraddon@2.0.0|lie@3.3.0",
+        "importeraddon@2.0.0|lru-cache@2.7.3",
+        "importeraddon@2.0.0|parsedbf@1.1.1",
+        "importeraddon@2.0.0|proj4@2.19.5"
+      ]
+    },
+    {
+      "ref": "importeraddon@2.0.0|jszip@3.10.1",
+      "dependsOn": [
+        "importeraddon@2.0.0|lie@3.3.0",
+        "importeraddon@2.0.0|pako@1.0.11",
+        "importeraddon@2.0.0|readable-stream@2.3.8",
+        "importeraddon@2.0.0|setimmediate@1.0.5"
+      ]
+    },
+    {
+      "ref": "importeraddon@2.0.0|lie@3.3.0",
+      "dependsOn": [
+        "importeraddon@2.0.0|immediate@3.0.6"
+      ]
+    },
+    {
+      "ref": "importeraddon@2.0.0|lru-cache@2.7.3"
+    },
+    {
+      "ref": "importeraddon@2.0.0|parsedbf@1.1.1",
+      "dependsOn": [
+        "importeraddon@2.0.0|iconv-lite@0.4.24",
+        "importeraddon@2.0.0|text-encoding-polyfill@0.6.7"
+      ]
+    },
+    {
+      "ref": "importeraddon@2.0.0|proj4@2.19.5",
+      "dependsOn": [
+        "importeraddon@2.0.0|mgrs@1.0.0",
+        "importeraddon@2.0.0|wkt-parser@1.5.2"
+      ]
+    },
+    {
+      "ref": "importeraddon@2.0.0|pako@1.0.11"
+    },
+    {
+      "ref": "importeraddon@2.0.0|readable-stream@2.3.8",
+      "dependsOn": [
+        "importeraddon@2.0.0|core-util-is@1.0.3",
+        "importeraddon@2.0.0|inherits@2.0.4",
+        "importeraddon@2.0.0|isarray@1.0.0",
+        "importeraddon@2.0.0|process-nextick-args@2.0.1",
+        "importeraddon@2.0.0|safe-buffer@5.1.2",
+        "importeraddon@2.0.0|string_decoder@1.1.1",
+        "importeraddon@2.0.0|util-deprecate@1.0.2"
+      ]
+    },
+    {
+      "ref": "importeraddon@2.0.0|setimmediate@1.0.5"
+    },
+    {
+      "ref": "importeraddon@2.0.0|immediate@3.0.6"
+    },
+    {
+      "ref": "importeraddon@2.0.0|iconv-lite@0.4.24",
+      "dependsOn": [
+        "importeraddon@2.0.0|safer-buffer@2.1.2"
+      ]
+    },
+    {
+      "ref": "importeraddon@2.0.0|text-encoding-polyfill@0.6.7"
+    },
+    {
+      "ref": "importeraddon@2.0.0|mgrs@1.0.0"
+    },
+    {
+      "ref": "importeraddon@2.0.0|wkt-parser@1.5.2"
+    },
+    {
+      "ref": "importeraddon@2.0.0|core-util-is@1.0.3"
+    },
+    {
+      "ref": "importeraddon@2.0.0|inherits@2.0.4"
+    },
+    {
+      "ref": "importeraddon@2.0.0|isarray@1.0.0"
+    },
+    {
+      "ref": "importeraddon@2.0.0|process-nextick-args@2.0.1"
+    },
+    {
+      "ref": "importeraddon@2.0.0|safe-buffer@5.1.2"
+    },
+    {
+      "ref": "importeraddon@2.0.0|string_decoder@1.1.1",
+      "dependsOn": [
+        "importeraddon@2.0.0|safe-buffer@5.1.2"
+      ]
+    },
+    {
+      "ref": "importeraddon@2.0.0|util-deprecate@1.0.2"
+    },
+    {
+      "ref": "importeraddon@2.0.0|safer-buffer@2.1.2"
+    }
+  ]
+}

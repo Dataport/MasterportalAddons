@@ -23,7 +23,7 @@
                 "layerSelectionSelectAllText": "Alle Layer",
                 "layerSelectionRequiredText": "Bitte selektieren Sie mindestens einen Layer.",
                 "layerTreeFolderTitle": "Importierte Fachdaten {{count}}",
-                "setStyleMessage": "Legen Sie den Stil fest für den Layer",
+                "setStyleMessage": "Stil für den Layer",
                 "styleSelectFillColor": "Füllfarbe",
                 "styleSelectStrokeColor": "Linienfarbe",
                 "styleSelectStrokeWidth": "Linienstärke",
@@ -33,7 +33,9 @@
                 "provideShapeZipText": "Auf Icon klicken, oder per Drag&Drop das gezippte Shapefile hochladen.",
                 "provideGeoPackageText": "Auf Icon klicken, oder per Drag&Drop GeoPackage Datei hochladen.",
                 "completeMessage": "Der importierte Layer wurde dem Themenbaum hinzugefügt.",
-                "completeMessage_other": "Die importierten Layer wurden dem Themenbaum hinzugefügt."
+                "completeMessage_other": "Die importierten Layer wurden dem Themenbaum hinzugefügt.",
+                "removeLayer": "Layer entfernen",
+                "importFailed": "Import fehlgeschlagen. Bitte stellen Sie sicher, dass Sie eine valide Datei hochgeladen haben."
             }
         }
     }

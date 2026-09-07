@@ -54,8 +54,8 @@ export default {
          * @returns {void}
          */
         onInputChange (evt) {
-            const val = evt.target.value,
-                isValid = val.length > 0;
+            const val = evt.target.value;
+            const isValid = val.length > 0;
 
             this.inputValid = isValid;
             this.setCurrentFormValid(this.isFormValid());
@@ -77,8 +77,8 @@ export default {
          */
         focusOnCapabilitiesInput () {
             this.$nextTick(() => {
-                const capabilitiesInputRef = "importer-addon-capabilities-input",
-                    capabilitiesInput = this.$refs[capabilitiesInputRef];
+                const capabilitiesInputRef = "importer-addon-capabilities-input";
+                const capabilitiesInput = this.$refs[capabilitiesInputRef];
 
                 if (capabilitiesInput) {
                     capabilitiesInput.focus({focusVisible: true});

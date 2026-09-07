@@ -1,6 +1,5 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from "vuex";
-// import layerCollection from "@core/layers/js/layerCollection";
 import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vue";
 import RadioButton from "./RadioButton.vue";
 
@@ -32,14 +31,6 @@ export default {
         layerSelectionRadioId (id) {
             return "exporter-layer-radio-" + id;
         },
-        // layerRadioValue: {
-        //     get () {
-        //         return this.selectedLayer;
-        //     },
-        //     set (value) {
-        //         this.setSelectedLayer(value);
-        //     }
-        // },
         layerTypes () {
             return LAYERTYPES;
         },

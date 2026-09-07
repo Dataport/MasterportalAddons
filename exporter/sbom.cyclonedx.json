@@ -1,0 +1,366 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "version": 1,
+  "serialNumber": "urn:uuid:0232bb24-ba0a-4461-9372-f9b6ee0695fd",
+  "metadata": {
+    "timestamp": "2026-08-06T08:34:04.846Z",
+    "tools": {
+      "components": [
+        {
+          "type": "application",
+          "name": "npm",
+          "version": "10.9.3"
+        },
+        {
+          "type": "application",
+          "name": "cyclonedx-npm",
+          "group": "@cyclonedx",
+          "version": "6.0.0",
+          "author": "Jan Kowalleck",
+          "description": "Create CycloneDX Software Bill of Materials (SBOM) from NPM projects.",
+          "licenses": [
+            {
+              "license": {
+                "id": "Apache-2.0"
+              }
+            }
+          ],
+          "externalReferences": [
+            {
+              "url": "git+https://github.com/CycloneDX/cyclonedx-node-npm.git",
+              "type": "vcs",
+              "comment": "as detected from PackageJson property \"repository.url\""
+            },
+            {
+              "url": "https://github.com/CycloneDX/cyclonedx-node-npm#readme",
+              "type": "website",
+              "comment": "as detected from PackageJson property \"homepage\""
+            },
+            {
+              "url": "https://github.com/CycloneDX/cyclonedx-node-npm/issues",
+              "type": "issue-tracker",
+              "comment": "as detected from PackageJson property \"bugs.url\""
+            }
+          ]
+        },
+        {
+          "type": "library",
+          "name": "cyclonedx-library",
+          "group": "@cyclonedx",
+          "version": "10.0.0",
+          "author": "Jan Kowalleck",
+          "description": "Core functionality of CycloneDX for JavaScript (Node.js or WebBrowser).",
+          "licenses": [
+            {
+              "license": {
+                "id": "Apache-2.0"
+              }
+            }
+          ],
+          "externalReferences": [
+            {
+              "url": "git+https://github.com/CycloneDX/cyclonedx-javascript-library.git",
+              "type": "vcs",
+              "comment": "as detected from PackageJson property \"repository.url\""
+            },
+            {
+              "url": "https://github.com/CycloneDX/cyclonedx-javascript-library#readme",
+              "type": "website",
+              "comment": "as detected from PackageJson property \"homepage\""
+            },
+            {
+              "url": "https://github.com/CycloneDX/cyclonedx-javascript-library/issues",
+              "type": "issue-tracker",
+              "comment": "as detected from PackageJson property \"bugs.url\""
+            }
+          ]
+        }
+      ]
+    },
+    "component": {
+      "type": "application",
+      "name": "exporter",
+      "version": "2.0.0",
+      "bom-ref": "exporter@2.0.0",
+      "author": "terrestris GmbH & Co. KG, Dataport AöR",
+      "description": "A generic exporter addon for Masterportal",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/exporter@2.0.0",
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": ""
+        }
+      ]
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "shp-write",
+      "group": "@crmackey",
+      "version": "0.4.5",
+      "bom-ref": "exporter@2.0.0|@crmackey/shp-write@0.4.5",
+      "author": "Tom MacWright",
+      "description": "write shapefiles from pure javascript",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/%40crmackey/shp-write@0.4.5",
+      "externalReferences": [
+        {
+          "url": "git://github.com/CalebM1987/shp-write.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/CalebM1987/shp-write#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/CalebM1987/shp-write/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/@crmackey/shp-write/-/shp-write-0.4.5.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/@crmackey/shp-write"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "dbf",
+      "version": "0.1.4",
+      "bom-ref": "exporter@2.0.0|dbf@0.1.4",
+      "author": "Tom MacWright",
+      "description": "generate dbf files",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/dbf@0.1.4",
+      "externalReferences": [
+        {
+          "url": "git://github.com/mapbox/dbf.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/mapbox/dbf#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/mapbox/dbf/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/dbf/-/dbf-0.1.4.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/dbf"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "fflate",
+      "version": "0.7.4",
+      "bom-ref": "exporter@2.0.0|fflate@0.7.4",
+      "author": "Arjun Barrett",
+      "description": "High performance (de)compression in an 8kB package",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/fflate@0.7.4",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/101arrowz/fflate.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://101arrowz.github.io/fflate",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/101arrowz/fflate/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/fflate/-/fflate-0.7.4.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/fflate"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "file-saver",
+      "version": "1.3.8",
+      "bom-ref": "exporter@2.0.0|file-saver@1.3.8",
+      "author": "Eli Grey",
+      "description": "An HTML5 saveAs() FileSaver implementation",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/file-saver@1.3.8",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/eligrey/FileSaver.js.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/eligrey/FileSaver.js#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/eligrey/FileSaver.js/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/file-saver/-/file-saver-1.3.8.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/file-saver"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "jdataview",
+      "version": "2.5.0",
+      "bom-ref": "exporter@2.0.0|jdataview@2.5.0",
+      "author": "Vjeux",
+      "description": "A unique way to work with a binary file in the browser and the server.",
+      "licenses": [
+        {
+          "license": {
+            "id": "WTFPL",
+            "acknowledgement": "declared",
+            "url": "http://sam.zoy.org/wtfpl/"
+          }
+        }
+      ],
+      "purl": "pkg:npm/jdataview@2.5.0",
+      "externalReferences": [
+        {
+          "url": "git://github.com/jDataView/jDataView.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "http://jDataView.github.io/",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/jDataView/jDataView/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/jdataview/-/jdataview-2.5.0.tgz",
+          "type": "distribution",
+          "comment": "as detected from npm-ls property \"resolved\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/jdataview"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "exporter@2.0.0",
+      "dependsOn": [
+        "exporter@2.0.0|@crmackey/shp-write@0.4.5"
+      ]
+    },
+    {
+      "ref": "exporter@2.0.0|@crmackey/shp-write@0.4.5",
+      "dependsOn": [
+        "exporter@2.0.0|dbf@0.1.4",
+        "exporter@2.0.0|fflate@0.7.4",
+        "exporter@2.0.0|file-saver@1.3.8"
+      ]
+    },
+    {
+      "ref": "exporter@2.0.0|dbf@0.1.4",
+      "dependsOn": [
+        "exporter@2.0.0|jdataview@2.5.0"
+      ]
+    },
+    {
+      "ref": "exporter@2.0.0|fflate@0.7.4"
+    },
+    {
+      "ref": "exporter@2.0.0|file-saver@1.3.8"
+    },
+    {
+      "ref": "exporter@2.0.0|jdataview@2.5.0"
+    }
+  ]
+}

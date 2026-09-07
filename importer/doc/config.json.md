@@ -6,16 +6,15 @@ The basic tool configurations apply. Following additional properties can be set 
 
 |Name|Required|Type|Default|Description|Expert|
 |----|--------|----|-------|-----------|------|
-|fileUploadIcon|no|String|bi bi-cloud-arrow-up-fill|Icon library string for the file upload icon|false|
-|icon|no|string|bi-upload|CSS class of the Bootstrap Icon. Will be displayed in front of the tool name.|false|
-|name|no|string|additional:modules.tools.importer.title|Will be displayed as name for the addon|false|
-|removeFileIcon|no|String|bi bi-x-circle-fill|Icon library string for the remove file icon|false|
 |styleFillColor|no|Array|[104, 170, 204, 1]|The RGBA color to use as default fill color|false|
 |styleStrokeColor|no|Array|[153, 153, 153, 1]|The RGBA color to use as default stroke color|false|
 |styleStrokeWidth|no|Array|5|The width in pixels to use as default stroke width|false|
 |styleCircleRadius|no|Array|10|The radius in pixels to use as default circle radius|false|
 |supportedImportWorkflows|no|Array|["wfs", "wms", "geojson", "shapezip", "geopackage"]|The supported workflows/formats that will be provided as import options.|false|
-|type|yes|string||ID of the addon|false|
+|fileUploadIcon|no|String|bi bi-cloud-arrow-up-fill|Icon library string for the file upload icon|false|
+|removeFileIcon|no|String|bi bi-x-circle-fill|Icon library string for the remove file icon|false|
+|resourcesPath|no|String|"./resources/"|Resources path used for sql-wasm.wasm import.|false|
+
 
 **Example:**
 
@@ -26,8 +25,7 @@ The basic tool configurations apply. Following additional properties can be set 
   "icon": "bi-upload",
   "fileUploadIcon": "bi-cloud-arrow-up",
   "removeFileIcon": "bi bi-x-circle-fill",
-  "supportedImportWorkflows": 
-  [
+  "supportedImportWorkflows": [
     "wms",
     "wfs",
     "geojson",
@@ -35,6 +33,7 @@ The basic tool configurations apply. Following additional properties can be set 
     "geopackage"
   ],
   "styleFillColor": [255, 192, 203, 1],
-  "styleStrokeColor": [199, 21, 133, 1]
+  "styleStrokeColor": [199, 21, 133, 1],
+  "resourcesPath": "./resources/"
 }
 ```

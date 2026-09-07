@@ -1,4 +1,4 @@
-This file is added to "masterportal" repo to keep the "empty" addons folder. The addons folder is needed by webpack.
+This file is added to "masterportal" repo to keep the "empty" addons folder.
 In case you need to clone an "addons" repository inside this folder, do the following:
 
 1: Because cloning into a non empty folder is not allowed, DELETE THIS FILE BEFORE CLONING any repository inside this folder.

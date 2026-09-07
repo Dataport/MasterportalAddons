@@ -44,9 +44,9 @@ export function getLayersFromCapabilities (serviceType, capabilitiesDoc) {
  * @returns {Object[]} Array of objects containing title and name for each layer.
  */
 function getLayerNamesFromWMSCapabilities (capabilities) {
-    const format = new WMSCapabilities(),
-        cap = format.read(capabilities),
-        layerNames = getFlatLayers(cap.Capability.Layer);
+    const format = new WMSCapabilities();
+    const cap = format.read(capabilities);
+    const layerNames = getFlatLayers(cap.Capability.Layer);
 
     return layerNames;
 }
@@ -58,15 +58,15 @@ function getLayerNamesFromWMSCapabilities (capabilities) {
  * @returns {Object[]} Array of objects containing title and name for each layer.
  */
 function getLayerNamesFromWFSCapabilities (capabilities) {
-    const parser = new DOMParser(),
-        cap = parser.parseFromString(capabilities.toString(), "text/xml"),
-        layerNames = [];
+    const parser = new DOMParser();
+    const cap = parser.parseFromString(capabilities.toString(), "text/xml");
+    const layerNames = [];
 
     cap.querySelectorAll("FeatureType").forEach(e => {
-        const titleEl = e.querySelector("Title"),
-            nameEl = e.querySelector("Name"),
-            title = titleEl ? titleEl.textContent : undefined,
-            name = nameEl ? nameEl.textContent : undefined;
+        const titleEl = e.querySelector("Title");
+        const nameEl = e.querySelector("Name");
+        const title = titleEl ? titleEl.textContent : undefined;
+        const name = nameEl ? nameEl.textContent : undefined;
 
         layerNames.push({
             name,
@@ -83,8 +83,8 @@ function getLayerNamesFromWFSCapabilities (capabilities) {
  * @returns {String} The version string.
  */
 export function getVersionFromCapabilities (capabilities) {
-    const parser = new DOMParser(),
-        cap = parser.parseFromString(capabilities, "text/xml");
+    const parser = new DOMParser();
+    const cap = parser.parseFromString(capabilities, "text/xml");
 
     return cap.children[0].getAttribute("version");
 }
@@ -169,10 +169,10 @@ export function createCapabilitiesUrl (baseUrl, serviceType) {
  */
 export function detectServiceType (capabilities) {
     try {
-        const parser = new DOMParser(),
-            doc = parser.parseFromString(capabilities, "text/xml"),
-            rootElement = doc.documentElement,
-            rootTag = rootElement?.tagName?.toLowerCase() || null;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(capabilities, "text/xml");
+        const rootElement = doc.documentElement;
+        const rootTag = rootElement?.tagName?.toLowerCase() || null;
 
         if (!rootTag || rootTag === "parsererror") {
             return null;

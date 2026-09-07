@@ -25,24 +25,53 @@ const mutations = {
     },
 
     /**
+     * Removes the given layer from state.selectedLayers
+     *
+     * @param {Object} state of this component
+     * @param {Number} id ID of the layer to be removed
+     * @returns {void}
+     */
+    removeLayer: (state, id) => {
+        state.selectedLayers = state.selectedLayers.filter(l => l.id !== id);
+    },
+
+    /**
+     * Update style for a layer.
+     *
+     * @param {Object} state of this component
+     * @param {Number} layerId layer ID
+     * @param {Number} style style
+     * @returns {void}
+     */
+    updateStyle: (state, {layerId, style}) => {
+        const layer = state.selectedLayers.find(l => l.id === layerId);
+        if (!layer) return;
+
+        layer.importedStyle.rules[0].style = {
+            ...(layer.importedStyle.rules[0].style || {}),
+            ...style
+        };
+    },
+
+    /**
      * Reset the state variables of the importerAddon to their initial values.
      *
      * @param {Object} state of this component
      * @returns {void}
      */
     resetImporterAddon: (state) => {
-        const basicResetValues = getBasicResetValues(),
-            provideOgcServiceResetValues = getStepResetValues(STEPS.provideOgcService),
-            selectLayersResetValues = getStepResetValues(STEPS.selectLayers),
-            uploadFileResetValues = getStepResetValues(STEPS.uploadFile),
-            styleLayersResetValues = getStepResetValues(STEPS.styleLayers),
-            resetValues = {
-                ...basicResetValues,
-                ...provideOgcServiceResetValues,
-                ...selectLayersResetValues,
-                ...uploadFileResetValues,
-                ...styleLayersResetValues
-            };
+        const basicResetValues = getBasicResetValues();
+        const provideOgcServiceResetValues = getStepResetValues(STEPS.provideOgcService);
+        const selectLayersResetValues = getStepResetValues(STEPS.selectLayers);
+        const uploadFileResetValues = getStepResetValues(STEPS.uploadFile);
+        const styleLayersResetValues = getStepResetValues(STEPS.styleLayers);
+        const resetValues = {
+            ...basicResetValues,
+            ...provideOgcServiceResetValues,
+            ...selectLayersResetValues,
+            ...uploadFileResetValues,
+            ...styleLayersResetValues
+        };
 
         for (const key in resetValues) {
             state[key] = resetValues[key];
