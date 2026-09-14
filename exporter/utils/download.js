@@ -8,7 +8,7 @@ import EXPORTFORMATS from "../constants/exportformats";
 import LAYERTYPES from "../constants/layertypes";
 import GEOPACKAGEDATATYPE from "../constants/geoPackageDataTypes";
 
-const WKT_BY_PROJECTION = {
+const SHAPEFILE_WKT_BY_PROJECTION = {
     "EPSG:25832": [
         "PROJCS[\"ETRS89 / UTM zone 32N\"",
         "GEOGCS[\"ETRS89\"",
@@ -25,17 +25,6 @@ const WKT_BY_PROJECTION = {
         "UNIT[\"metre\",1]",
         "AUTHORITY[\"EPSG\",\"25832\"]]"
     ].join(",")
-};
-
-const GEOPACKAGE_SRS_BY_PROJECTION = {
-    "EPSG:25832": {
-        srsName: "ETRS89 / UTM zone 32N",
-        srsId: 25832,
-        organization: "EPSG",
-        organizationCoordSysId: 25832,
-        definition: WKT_BY_PROJECTION["EPSG:25832"],
-        description: "ETRS89 / UTM zone 32N"
-    }
 };
 
 /**
@@ -78,6 +67,30 @@ function getConfiguredDownloadProjection (downloadProjection) {
 }
 
 /**
+ * Get numeric EPSG code from projection string.
+ *
+ * @param {String} projection Projection code.
+ * @returns {Number|undefined} Numeric EPSG code.
+ */
+function getEpsgCode (projection) {
+    const match = (/^EPSG:(\d+)$/i).exec(projection);
+
+    return match ? Number(match[1]) : undefined;
+}
+
+/**
+ * Get the configured projection definition for a projection code.
+ *
+ * @param {String} projection Projection code.
+ * @returns {String|undefined} Projection definition.
+ */
+function getProjectionDefinition (projection) {
+    const namedProjection = Config?.namedProjections?.find(([code]) => code === projection);
+
+    return namedProjection?.[1];
+}
+
+/**
  * Project GeoJSON coordinates into the target projection.
  *
  * @param {Object} geojson The geojson object or data.
@@ -104,7 +117,7 @@ function projectGeojson (geojson, sourceProjection, targetProjection) {
  * @returns {Object|undefined} Shapefile writer options.
  */
 function getShapefileWriterOptions (projection) {
-    const wkt = WKT_BY_PROJECTION[projection];
+    const wkt = SHAPEFILE_WKT_BY_PROJECTION[projection];
 
     return wkt ? {wkt} : undefined;
 }
@@ -164,59 +177,30 @@ function createGeoPackageBoundingBox (geojson) {
  * @returns {Number|undefined} Spatial reference system id.
  */
 function addSpatialReferenceSystem (gpkg, projection) {
-    const srsConfig = GEOPACKAGE_SRS_BY_PROJECTION[projection];
+    const epsgCode = getEpsgCode(projection),
+        definition = getProjectionDefinition(projection);
 
-    if (!srsConfig) {
+    if (!epsgCode || !definition) {
         return undefined;
     }
-    if (gpkg.spatialReferenceSystemDao.getBySrsId(srsConfig.srsId)) {
-        return srsConfig.srsId;
+    if (gpkg.spatialReferenceSystemDao.getBySrsId(epsgCode)) {
+        return epsgCode;
     }
 
     const srs = new window.GeoPackage.SpatialReferenceSystem();
 
-    srs.srs_name = srsConfig.srsName;
-    srs.srs_id = srsConfig.srsId;
-    srs.organization = srsConfig.organization;
-    srs.organization_coordsys_id = srsConfig.organizationCoordSysId;
-    srs.definition = srsConfig.definition;
-    srs.description = srsConfig.description;
+    srs.srs_name = projection;
+    srs.srs_id = epsgCode;
+    srs.organization = "EPSG";
+    srs.organization_coordsys_id = epsgCode;
+    srs.definition = definition;
+    srs.description = projection;
     if (gpkg.spatialReferenceSystemDao.connection?.columnAndTableExists("gpkg_spatial_ref_sys", "definition_12_063")) {
-        srs.definition_12_063 = srsConfig.definition;
+        srs.definition_12_063 = definition;
     }
     gpkg.spatialReferenceSystemDao.create(srs);
 
-    return srsConfig.srsId;
-}
-
-/**
- * Create feature columns for a GeoPackage table.
- *
- * @param {Object[]} tableProperties Table property definitions.
- * @returns {Object[]} Feature columns.
- */
-function createGeoPackageFeatureColumns (tableProperties) {
-    const columns = [];
-    let columnIndex = 0;
-
-    columns.push(window.GeoPackage.FeatureColumn.createPrimaryKeyColumn(columnIndex++, "id"));
-    columns.push(window.GeoPackage.FeatureColumn.createGeometryColumn(
-        columnIndex++,
-        "geometry",
-        window.GeoPackage.GeometryType.GEOMETRY,
-        false,
-        null
-    ));
-
-    tableProperties.forEach(property => {
-        columns.push(window.GeoPackage.FeatureColumn.createColumn(
-            columnIndex++,
-            property.name,
-            window.GeoPackage.GeoPackageDataType.fromName(property.dataType)
-        ));
-    });
-
-    return columns;
+    return epsgCode;
 }
 
 /**
@@ -248,7 +232,7 @@ function createGeoPackageFeatureTable (gpkg, tableProperties, projection, geojso
     gpkg.createFeatureTable(
         "export",
         geometryColumns,
-        createGeoPackageFeatureColumns(tableProperties),
+        tableProperties,
         createGeoPackageBoundingBox(projectedGeojson),
         srsId
     );
