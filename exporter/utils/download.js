@@ -1,13 +1,42 @@
 import axios from "axios";
 import {GeoJSON, WFS} from "ol/format";
 import GML32 from "ol/format/GML32";
-import {parse} from "ol/xml.js";
 import {Projection, addEquivalentProjections, get} from "ol/proj";
 import {download as shpdownload} from "@crmackey/shp-write";
 
 import EXPORTFORMATS from "../constants/exportformats";
 import LAYERTYPES from "../constants/layertypes";
 import GEOPACKAGEDATATYPE from "../constants/geoPackageDataTypes";
+
+const WKT_BY_PROJECTION = {
+    "EPSG:25832": [
+        "PROJCS[\"ETRS89 / UTM zone 32N\"",
+        "GEOGCS[\"ETRS89\"",
+        "DATUM[\"European_Terrestrial_Reference_System_1989\"",
+        "SPHEROID[\"GRS 1980\",6378137,298.257222101]]",
+        "PRIMEM[\"Greenwich\",0]",
+        "UNIT[\"degree\",0.0174532925199433]]",
+        "PROJECTION[\"Transverse_Mercator\"]",
+        "PARAMETER[\"latitude_of_origin\",0]",
+        "PARAMETER[\"central_meridian\",9]",
+        "PARAMETER[\"scale_factor\",0.9996]",
+        "PARAMETER[\"false_easting\",500000]",
+        "PARAMETER[\"false_northing\",0]",
+        "UNIT[\"metre\",1]",
+        "AUTHORITY[\"EPSG\",\"25832\"]]"
+    ].join(",")
+};
+
+const GEOPACKAGE_SRS_BY_PROJECTION = {
+    "EPSG:25832": {
+        srsName: "ETRS89 / UTM zone 32N",
+        srsId: 25832,
+        organization: "EPSG",
+        organizationCoordSysId: 25832,
+        definition: WKT_BY_PROJECTION["EPSG:25832"],
+        description: "ETRS89 / UTM zone 32N"
+    }
+};
 
 /**
  * Performs a download.
@@ -41,11 +70,188 @@ function getProjectProjectionCode () {
  * @returns {String} Projection code.
  */
 function getConfiguredDownloadProjection (downloadProjection) {
-    if (downloadProjection === "EPSG:4326") {
+    if ((/^EPSG:\d+$/i).test(downloadProjection)) {
         return downloadProjection;
     }
 
     return getProjectProjectionCode();
+}
+
+/**
+ * Project GeoJSON coordinates into the target projection.
+ *
+ * @param {Object} geojson The geojson object or data.
+ * @param {String} sourceProjection Projection code of the incoming GeoJSON coordinates.
+ * @param {String} targetProjection Projection code for the output GeoJSON coordinates.
+ * @returns {Object} GeoJSON with coordinates in the target projection.
+ */
+function projectGeojson (geojson, sourceProjection, targetProjection) {
+    const features = new GeoJSON().readFeatures(geojson, {
+        dataProjection: sourceProjection,
+        featureProjection: targetProjection
+    });
+
+    return new GeoJSON().writeFeaturesObject(features, {
+        dataProjection: targetProjection,
+        featureProjection: targetProjection
+    });
+}
+
+/**
+ * Create shapefile writer options for projection metadata.
+ *
+ * @param {String} projection Projection code.
+ * @returns {Object|undefined} Shapefile writer options.
+ */
+function getShapefileWriterOptions (projection) {
+    const wkt = WKT_BY_PROJECTION[projection];
+
+    return wkt ? {wkt} : undefined;
+}
+
+/**
+ * Get extent from GeoJSON coordinates.
+ *
+ * @param {Object} geojson GeoJSON feature collection.
+ * @returns {Number[]} Extent as [minX, minY, maxX, maxY].
+ */
+function getGeojsonExtent (geojson) {
+    const extent = [Infinity, Infinity, -Infinity, -Infinity];
+
+    geojson.features.forEach(feature => {
+        updateExtent(extent, feature.geometry.coordinates);
+    });
+
+    return extent;
+}
+
+/**
+ * Update extent recursively from GeoJSON coordinates.
+ *
+ * @param {Number[]} extent Extent as [minX, minY, maxX, maxY].
+ * @param {Array} coordinates GeoJSON coordinate array.
+ * @returns {void}
+ */
+function updateExtent (extent, coordinates) {
+    if (typeof coordinates[0] === "number") {
+        extent[0] = Math.min(extent[0], coordinates[0]);
+        extent[1] = Math.min(extent[1], coordinates[1]);
+        extent[2] = Math.max(extent[2], coordinates[0]);
+        extent[3] = Math.max(extent[3], coordinates[1]);
+        return;
+    }
+
+    coordinates.forEach(coordinate => updateExtent(extent, coordinate));
+}
+
+/**
+ * Create a GeoPackage bounding box from GeoJSON data.
+ *
+ * @param {Object} geojson GeoJSON feature collection.
+ * @returns {Object} GeoPackage bounding box.
+ */
+function createGeoPackageBoundingBox (geojson) {
+    const [minX, minY, maxX, maxY] = getGeojsonExtent(geojson);
+
+    return new window.GeoPackage.BoundingBox(minX, maxX, minY, maxY);
+}
+
+/**
+ * Add a configured spatial reference system to a GeoPackage.
+ *
+ * @param {Object} gpkg The GeoPackage instance.
+ * @param {String} projection Projection code.
+ * @returns {Number|undefined} Spatial reference system id.
+ */
+function addSpatialReferenceSystem (gpkg, projection) {
+    const srsConfig = GEOPACKAGE_SRS_BY_PROJECTION[projection];
+
+    if (!srsConfig) {
+        return undefined;
+    }
+    if (gpkg.spatialReferenceSystemDao.getBySrsId(srsConfig.srsId)) {
+        return srsConfig.srsId;
+    }
+
+    const srs = new window.GeoPackage.SpatialReferenceSystem();
+
+    srs.srs_name = srsConfig.srsName;
+    srs.srs_id = srsConfig.srsId;
+    srs.organization = srsConfig.organization;
+    srs.organization_coordsys_id = srsConfig.organizationCoordSysId;
+    srs.definition = srsConfig.definition;
+    srs.description = srsConfig.description;
+    if (gpkg.spatialReferenceSystemDao.connection?.columnAndTableExists("gpkg_spatial_ref_sys", "definition_12_063")) {
+        srs.definition_12_063 = srsConfig.definition;
+    }
+    gpkg.spatialReferenceSystemDao.create(srs);
+
+    return srsConfig.srsId;
+}
+
+/**
+ * Create feature columns for a GeoPackage table.
+ *
+ * @param {Object[]} tableProperties Table property definitions.
+ * @returns {Object[]} Feature columns.
+ */
+function createGeoPackageFeatureColumns (tableProperties) {
+    const columns = [];
+    let columnIndex = 0;
+
+    columns.push(window.GeoPackage.FeatureColumn.createPrimaryKeyColumn(columnIndex++, "id"));
+    columns.push(window.GeoPackage.FeatureColumn.createGeometryColumn(
+        columnIndex++,
+        "geometry",
+        window.GeoPackage.GeometryType.GEOMETRY,
+        false,
+        null
+    ));
+
+    tableProperties.forEach(property => {
+        columns.push(window.GeoPackage.FeatureColumn.createColumn(
+            columnIndex++,
+            property.name,
+            window.GeoPackage.GeoPackageDataType.fromName(property.dataType)
+        ));
+    });
+
+    return columns;
+}
+
+/**
+ * Create a GeoPackage feature table with optional custom SRS.
+ *
+ * @param {Object} gpkg The GeoPackage instance.
+ * @param {Object[]} tableProperties Table property definitions.
+ * @param {String} projection Projection code.
+ * @param {Object} geojson GeoJSON feature collection.
+ * @returns {void}
+ */
+function createGeoPackageFeatureTable (gpkg, tableProperties, projection, geojson) {
+    const srsId = addSpatialReferenceSystem(gpkg, projection);
+
+    if (!srsId) {
+        gpkg.createFeatureTableFromProperties("export", tableProperties);
+        return;
+    }
+
+    const projectedGeojson = projectGeojson(geojson, "EPSG:4326", projection);
+    const geometryColumns = new window.GeoPackage.GeometryColumns();
+
+    geometryColumns.table_name = "export";
+    geometryColumns.column_name = "geometry";
+    geometryColumns.geometry_type_name = "GEOMETRY";
+    geometryColumns.z = 0;
+    geometryColumns.m = 0;
+
+    gpkg.createFeatureTable(
+        "export",
+        geometryColumns,
+        createGeoPackageFeatureColumns(tableProperties),
+        createGeoPackageBoundingBox(projectedGeojson),
+        srsId
+    );
 }
 
 /**
@@ -58,29 +264,21 @@ function getConfiguredDownloadProjection (downloadProjection) {
  * @param {String} layerType The layer type (for blob conversion).
  * @param {String} layerName The layer name (for blob conversion).
  * @param {String} downloadProjection Optional download projection config.
+ * @param {String} sourceProjection Projection code of the incoming GeoJSON coordinates.
  * @returns {Promise<void>}
  */
-async function handleFormatDownload (geojson, format, fileName, layerType, layerName, downloadProjection) {
+async function handleFormatDownload (geojson, format, fileName, layerType, layerName, downloadProjection, sourceProjection = "EPSG:4326") {
     const exportProjection = getConfiguredDownloadProjection(downloadProjection);
 
     if (format === "shp") {
-        const features = new GeoJSON().readFeatures(geojson);
-        const projectedGeojson = new GeoJSON().writeFeaturesObject(features, {
-                featureProjection: exportProjection,
-                dataProjection: exportProjection
-            });
+        const projectedGeojson = projectGeojson(geojson, sourceProjection, exportProjection);
 
-        shpdownload(projectedGeojson);
+        shpdownload(projectedGeojson, getShapefileWriterOptions(exportProjection));
         return;
     }
 
     if (format === "gpkg") {
-        const features = new GeoJSON().readFeatures(geojson);
-        const projectedGeojson = new GeoJSON().writeFeaturesObject(features, {
-                featureProjection: exportProjection,
-                dataProjection: exportProjection
-            });
-        const gpkg = await createGeoPackage(projectedGeojson);
+        const gpkg = await createGeoPackage(geojson, exportProjection);
         const gpkgBytes = await gpkg.export();
         const blob = new Blob([gpkgBytes], {type: "octet/stream"});
         const url = URL.createObjectURL(blob);
@@ -183,42 +381,6 @@ async function fetchData (url) {
 }
 
 /**
- * Normalizes various srsName formats to EPSG:XXXX format.
- * Supports multiple formats like:
- * - EPSG:4326 (already normalized)
- * - urn:ogc:def:crs:EPSG::4326 (OGC URN)
- * - http://www.opengis.net/gml/srs/epsg.xml#4326 (URL format)
- *
- * @param {String} srsName The srsName in various formats.
- * @returns {String|null} Normalized EPSG reference or null if not recognized.
- */
-function normalizeSrsName (srsName) {
-    if (!srsName) {
-        return null;
-    }
-
-    if (srsName.match(/^EPSG:\d+$/i)) {
-        return srsName;
-    }
-
-    // URN format: urn:ogc:def:crs:EPSG::4326 or urn:ogc:def:crs:EPSG:0:4326
-    const urnMatch = srsName.match(/EPSG::?(\d+)/i);
-
-    if (urnMatch) {
-        return `EPSG:${urnMatch[1]}`;
-    }
-
-    // URL format: http://www.opengis.net/gml/srs/epsg.xml#4326
-    const urlMatch = srsName.match(/[#/](\d+)$/);
-
-    if (urlMatch) {
-        return `EPSG:${urlMatch[1]}`;
-    }
-
-    return null;
-}
-
-/**
  * Retuns the name of the typeName parameter based on service version.
  *
  * @param {String} version The service version.
@@ -265,14 +427,17 @@ function geojsonToBlob (geojson, outputFormat, featureNS, featureType) {
     let blob;
 
     switch (outputFormat) {
-        case EXPORTFORMATS.geoJson:
+        case EXPORTFORMATS.geoJson: {
             blob = new Blob([JSON.stringify(geojson)], {type: "application/geo+json"});
             break;
-        case EXPORTFORMATS.gml:
+        }
+        case EXPORTFORMATS.gml: {
             const features = new GeoJSON().readFeatures(geojson);
             const output = new GML32({featureNS, featureType, srsName: "EPSG:4326"}).writeFeatures(features);
+
             blob = new Blob([output], {type: "application/gml+xml; version=3.2"});
             break;
+        }
         default:
             break;
     }
@@ -293,14 +458,17 @@ function gmlToBlob (gml, outputFormat, formatter, gmlMime) {
     let blob;
 
     switch (outputFormat) {
-        case EXPORTFORMATS.geoJson:
+        case EXPORTFORMATS.geoJson: {
             const features = formatter.readFeatures(gml);
             const output = new GeoJSON().writeFeatures(features);
+
             blob = new Blob([output], {type: "application/geo+json"});
             break;
-        case EXPORTFORMATS.gml:
+        }
+        case EXPORTFORMATS.gml: {
             blob = new Blob([gml], {type: gmlMime});
             break;
+        }
         default:
             break;
     }
@@ -321,7 +489,8 @@ async function downloadWfsLayer (wfsLayer, format, downloadProjection) {
     const fileEnding = getFileEndingForFormat(format);
     const fileName = `${wfsLayer.name}.${fileEnding}`;
     const typeNameString = getTypeNameStringFromServiceVersion(wfsLayer.version);
-    const dataProjection = format === EXPORTFORMATS.shp || format === EXPORTFORMATS.gpkg
+    const exportProjection = getConfiguredDownloadProjection(downloadProjection);
+    const dataProjection = format === EXPORTFORMATS.shp
         ? getConfiguredDownloadProjection(downloadProjection)
         : "EPSG:4326";
 
@@ -344,10 +513,12 @@ async function downloadWfsLayer (wfsLayer, format, downloadProjection) {
     addEquivalentProjections([get(dataProjection), proj]);
 
     const features = wfsFormat.readFeatures(wfsData, {
-        proj
+        dataProjection: proj,
+        featureProjection: dataProjection
     });
     const geojson = new GeoJSON().writeFeaturesObject(features, {
-        dataProjection
+        dataProjection,
+        featureProjection: dataProjection
     });
     const containsMultiPolygons = geojson.features.find(
         f => f.geometry.type.toLowerCase() === "multipolygon"
@@ -356,7 +527,7 @@ async function downloadWfsLayer (wfsLayer, format, downloadProjection) {
     let blob;
 
     switch (format) {
-        case "shp":
+        case "shp": {
             if (containsMultiPolygons) {
                 const e = new Error();
 
@@ -364,19 +535,22 @@ async function downloadWfsLayer (wfsLayer, format, downloadProjection) {
                 throw e;
             }
             // download as zipped shapefile will be triggered automatically by this function
-            shpdownload(geojson);
+            shpdownload(geojson, getShapefileWriterOptions(dataProjection));
             return;
-        case "gpkg":
-            const gpkg = await createGeoPackage(geojson);
+        }
+        case "gpkg": {
+            const gpkg = await createGeoPackage(geojson, exportProjection);
             const gpkgBytes = await gpkg.export();
 
             blob = new Blob([gpkgBytes], {type: "octet/stream"});
             break;
-        default:
+        }
+        default: {
             const gmlMime = getGmlMimeFromVersion(wfsLayer.version);
 
             blob = gmlToBlob(wfsData, format, wfsFormat, gmlMime);
             break;
+        }
     }
 
     const blobUrl = URL.createObjectURL(blob);
@@ -389,9 +563,10 @@ async function downloadWfsLayer (wfsLayer, format, downloadProjection) {
  * creates a feature table based on the input geojson properties
  * and adds the features of the input geojson to the table.
  * @param {object} geojson  - The geojson object to be exported.
+ * @param {String} projection The GeoPackage projection.
  * @returns {object} - The geopackage object
  */
-async function createGeoPackage (geojson) {
+async function createGeoPackage (geojson, projection = "EPSG:4326") {
     // Filter feature properties to match only geopackage data types
     filterFeaturePropertiesForGpkg(geojson);
     // Add feature id to properties if not exists - needed to insert feature row
@@ -401,7 +576,7 @@ async function createGeoPackage (geojson) {
         }
     });
     // Create and prepare geopackage
-    const gpkg = await prepareGPKG(geojson.features[0].properties);
+    const gpkg = await prepareGPKG(geojson.features[0].properties, projection, geojson);
     const tableName = "export";
 
     // add features to feature table
@@ -434,9 +609,11 @@ function filterFeaturePropertiesForGpkg (geojson) {
 /**
  * Prepare a GeoPackage instance from input properties
  * @param {object} properties - The properties for the table data columns
+ * @param {String} projection The GeoPackage projection.
+ * @param {Object} geojson GeoJSON feature collection.
  * @returns {object} - The geopackage
  */
-async function prepareGPKG (properties) {
+async function prepareGPKG (properties, projection, geojson) {
     // es-lint-disable-next-line no-undef
     window.GeoPackage.setSqljsWasmLocateFile(file => "./resources/" + file);
     // es-lint-disable-next-line no-undef
@@ -455,7 +632,7 @@ async function prepareGPKG (properties) {
     }
 
     // create new feature table from properties
-    await gpkg.createFeatureTableFromProperties("export", tableProperties);
+    createGeoPackageFeatureTable(gpkg, tableProperties, projection, geojson);
 
     return gpkg;
 }
