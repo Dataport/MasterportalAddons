@@ -8,25 +8,6 @@ import EXPORTFORMATS from "../constants/exportformats";
 import LAYERTYPES from "../constants/layertypes";
 import GEOPACKAGEDATATYPE from "../constants/geoPackageDataTypes";
 
-const SHAPEFILE_WKT_BY_PROJECTION = {
-    "EPSG:25832": [
-        "PROJCS[\"ETRS89 / UTM zone 32N\"",
-        "GEOGCS[\"ETRS89\"",
-        "DATUM[\"European_Terrestrial_Reference_System_1989\"",
-        "SPHEROID[\"GRS 1980\",6378137,298.257222101]]",
-        "PRIMEM[\"Greenwich\",0]",
-        "UNIT[\"degree\",0.0174532925199433]]",
-        "PROJECTION[\"Transverse_Mercator\"]",
-        "PARAMETER[\"latitude_of_origin\",0]",
-        "PARAMETER[\"central_meridian\",9]",
-        "PARAMETER[\"scale_factor\",0.9996]",
-        "PARAMETER[\"false_easting\",500000]",
-        "PARAMETER[\"false_northing\",0]",
-        "UNIT[\"metre\",1]",
-        "AUTHORITY[\"EPSG\",\"25832\"]]"
-    ].join(",")
-};
-
 /**
  * Performs a download.
  *
@@ -111,13 +92,31 @@ function projectGeojson (geojson, sourceProjection, targetProjection) {
 }
 
 /**
+ * Normalize configured WKT text.
+ *
+ * @param {String|String[]} wkt The configured WKT value.
+ * @returns {String|undefined} Normalized WKT text.
+ */
+function normalizeProjectionWkt (wkt) {
+    if (Array.isArray(wkt)) {
+        return wkt.join(",").replaceAll("'", "\"");
+    }
+    if (typeof wkt === "string") {
+        return wkt.replaceAll("'", "\"");
+    }
+
+    return undefined;
+}
+
+/**
  * Create shapefile writer options for projection metadata.
  *
  * @param {String} projection Projection code.
+ * @param {Object} projectionWkts WKT definitions by projection.
  * @returns {Object|undefined} Shapefile writer options.
  */
-function getShapefileWriterOptions (projection) {
-    const wkt = SHAPEFILE_WKT_BY_PROJECTION[projection];
+function getShapefileWriterOptions (projection, projectionWkts = {}) {
+    const wkt = normalizeProjectionWkt(projectionWkts[projection]);
 
     return wkt ? {wkt} : undefined;
 }
@@ -248,16 +247,17 @@ function createGeoPackageFeatureTable (gpkg, tableProperties, projection, geojso
  * @param {String} layerType The layer type (for blob conversion).
  * @param {String} layerName The layer name (for blob conversion).
  * @param {String} downloadProjection Optional download projection config.
+ * @param {Object} projectionWkts WKT definitions by projection.
  * @param {String} sourceProjection Projection code of the incoming GeoJSON coordinates.
  * @returns {Promise<void>}
  */
-async function handleFormatDownload (geojson, format, fileName, layerType, layerName, downloadProjection, sourceProjection = "EPSG:4326") {
+async function handleFormatDownload (geojson, format, fileName, layerType, layerName, downloadProjection, projectionWkts = {}, sourceProjection = "EPSG:4326") {
     const exportProjection = getConfiguredDownloadProjection(downloadProjection);
 
     if (format === "shp") {
         const projectedGeojson = projectGeojson(geojson, sourceProjection, exportProjection);
 
-        shpdownload(projectedGeojson, getShapefileWriterOptions(exportProjection));
+        shpdownload(projectedGeojson, getShapefileWriterOptions(exportProjection, projectionWkts));
         return;
     }
 
@@ -283,9 +283,10 @@ async function handleFormatDownload (geojson, format, fileName, layerType, layer
  * @param {Object} layer The vector layer to download (draw or vectorBase type).
  * @param {String} format The requested output format.
  * @param {String} downloadProjection Optional download projection config.
+ * @param {Object} projectionWkts WKT definitions by projection.
  * @returns {void}
  */
-async function downloadVectorLayer (layer, format, downloadProjection) {
+async function downloadVectorLayer (layer, format, downloadProjection, projectionWkts) {
     const fileEnding = getFileEndingForFormat(format),
         fileName = `${layer.name}.${fileEnding}`,
         features = layer.layer.getSource().getFeatures(),
@@ -294,7 +295,7 @@ async function downloadVectorLayer (layer, format, downloadProjection) {
         featureProjection = layer.epsg || layer.srsName || mapView.getProjection().getCode(),
         geojson = new GeoJSON().writeFeaturesObject(features, {featureProjection});
 
-    await handleFormatDownload(geojson, format, fileName, layer.type, layer.name, downloadProjection);
+    await handleFormatDownload(geojson, format, fileName, layer.type, layer.name, downloadProjection, projectionWkts);
 }
 
 /**
@@ -303,14 +304,15 @@ async function downloadVectorLayer (layer, format, downloadProjection) {
  * @param {Object} geoJsonLayer The geojson layer to download.
  * @param {String} format The requested output format.
  * @param {String} downloadProjection Optional download projection config.
+ * @param {Object} projectionWkts WKT definitions by projection.
  * @returns {void}
  */
-async function downloadGeoJsonLayer (geoJsonLayer, format, downloadProjection) {
+async function downloadGeoJsonLayer (geoJsonLayer, format, downloadProjection, projectionWkts) {
     const fileEnding = getFileEndingForFormat(format),
         fileName = `${geoJsonLayer.name}.${fileEnding}`,
         data = await fetchBlob(geoJsonLayer.url, "application/json");
 
-    await handleFormatDownload(data, format, fileName, geoJsonLayer.type, geoJsonLayer.name, downloadProjection);
+    await handleFormatDownload(data, format, fileName, geoJsonLayer.type, geoJsonLayer.name, downloadProjection, projectionWkts);
 }
 
 /**
@@ -466,9 +468,10 @@ function gmlToBlob (gml, outputFormat, formatter, gmlMime) {
  * @param {Object} wfsLayer The wfs layer to download.
  * @param {String} format The export format.
  * @param {String} downloadProjection Optional download projection config.
+ * @param {Object} projectionWkts WKT definitions by projection.
  * @returns {void}
  */
-async function downloadWfsLayer (wfsLayer, format, downloadProjection) {
+async function downloadWfsLayer (wfsLayer, format, downloadProjection, projectionWkts) {
     const url = new URL(wfsLayer.url);
     const fileEnding = getFileEndingForFormat(format);
     const fileName = `${wfsLayer.name}.${fileEnding}`;
@@ -519,7 +522,7 @@ async function downloadWfsLayer (wfsLayer, format, downloadProjection) {
                 throw e;
             }
             // download as zipped shapefile will be triggered automatically by this function
-            shpdownload(geojson, getShapefileWriterOptions(dataProjection));
+            shpdownload(geojson, getShapefileWriterOptions(dataProjection, projectionWkts));
             return;
         }
         case "gpkg": {
@@ -627,9 +630,10 @@ async function prepareGPKG (properties, projection, geojson) {
  * @param {Object} layer The layer to download.
  * @param {String} format The requested output format.
  * @param {String} downloadProjection Optional download projection config.
+ * @param {Object} projectionWkts WKT definitions by projection.
  * @returns {void}
  */
-export async function downloadLayer (layer, format, downloadProjection) {
+export async function downloadLayer (layer, format, downloadProjection, projectionWkts = {}) {
     const layerDownloadMap = {
         [LAYERTYPES.geoJson]: downloadGeoJsonLayer,
         [LAYERTYPES.wfs]: downloadWfsLayer,
@@ -640,7 +644,7 @@ export async function downloadLayer (layer, format, downloadProjection) {
     const downloadFn = layerDownloadMap[layer.type];
 
     if (downloadFn) {
-        await downloadFn(layer, format, downloadProjection);
+        await downloadFn(layer, format, downloadProjection, projectionWkts);
     }
 }
 
