@@ -141,6 +141,27 @@ function getShapefileExportProjection (projection, projectionWkts = {}) {
 }
 
 /**
+ * Resolve the projection to request the WFS data in for a given export format.
+ * For "gpkg" the export projection is requested directly to avoid a lossy
+ * round-trip via EPSG:4326 on the server side.
+ *
+ * @param {String} format The export format.
+ * @param {String} exportProjection The configured export projection code.
+ * @param {Object} projectionWkts WKT definitions by projection.
+ * @returns {String} Projection code for the WFS request.
+ */
+function getWfsRequestProjection (format, exportProjection, projectionWkts) {
+    if (format === EXPORTFORMATS.shp) {
+        return getShapefileExportProjection(exportProjection, projectionWkts);
+    }
+    if (format === EXPORTFORMATS.gpkg) {
+        return exportProjection;
+    }
+
+    return "EPSG:4326";
+}
+
+/**
  * Get extent from GeoJSON coordinates.
  *
  * @param {Object} geojson GeoJSON feature collection.
@@ -497,9 +518,7 @@ async function downloadWfsLayer (wfsLayer, format, downloadProjection, projectio
     const fileName = `${wfsLayer.name}.${fileEnding}`;
     const typeNameString = getTypeNameStringFromServiceVersion(wfsLayer.version);
     const exportProjection = getConfiguredDownloadProjection(downloadProjection);
-    const dataProjection = format === EXPORTFORMATS.shp
-        ? getShapefileExportProjection(exportProjection, projectionWkts)
-        : "EPSG:4326";
+    const dataProjection = getWfsRequestProjection(format, exportProjection, projectionWkts);
 
     url.searchParams.append("service", "WFS");
     url.searchParams.append("request", "GetFeature");
@@ -546,7 +565,14 @@ async function downloadWfsLayer (wfsLayer, format, downloadProjection, projectio
             return;
         }
         case "gpkg": {
-            const gpkg = await createGeoPackage(geojson, exportProjection);
+            // WFS was requested directly in the export projection to avoid a lossy
+            // round-trip via EPSG:4326; reproject back to EPSG:4326 at full precision
+            // since the geopackage library expects EPSG:4326 input and reprojects it
+            // to the feature table projection itself.
+            const geojson4326 = dataProjection === "EPSG:4326"
+                ? geojson
+                : projectGeojson(geojson, dataProjection, "EPSG:4326");
+            const gpkg = await createGeoPackage(geojson4326, exportProjection);
             const gpkgBytes = await gpkg.export();
 
             blob = new Blob([gpkgBytes], {type: "octet/stream"});
