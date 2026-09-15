@@ -122,6 +122,25 @@ function getShapefileWriterOptions (projection, projectionWkts = {}) {
 }
 
 /**
+ * Resolve the projection used for shapefile export.
+ * Falls back to "EPSG:4326" when no WKT metadata is configured for a non-4326
+ * projection, to avoid producing a shapefile with mismatched .prj metadata.
+ *
+ * @param {String} projection Configured export projection code.
+ * @param {Object} projectionWkts WKT definitions by projection.
+ * @returns {String} Projection code to use for the shapefile export.
+ */
+function getShapefileExportProjection (projection, projectionWkts = {}) {
+    if (projection === "EPSG:4326" || normalizeProjectionWkt(projectionWkts[projection])) {
+        return projection;
+    }
+
+    console.warn(`Exporter: no projectionWkts configured for ${projection}; falling back to EPSG:4326 for shapefile export to ensure correct .prj metadata.`);
+
+    return "EPSG:4326";
+}
+
+/**
  * Get extent from GeoJSON coordinates.
  *
  * @param {Object} geojson GeoJSON feature collection.
@@ -255,9 +274,10 @@ async function handleFormatDownload (geojson, format, fileName, layerType, layer
     const exportProjection = getConfiguredDownloadProjection(downloadProjection);
 
     if (format === "shp") {
-        const projectedGeojson = projectGeojson(geojson, sourceProjection, exportProjection);
+        const shpProjection = getShapefileExportProjection(exportProjection, projectionWkts),
+            projectedGeojson = projectGeojson(geojson, sourceProjection, shpProjection);
 
-        shpdownload(projectedGeojson, getShapefileWriterOptions(exportProjection, projectionWkts));
+        shpdownload(projectedGeojson, getShapefileWriterOptions(shpProjection, projectionWkts));
         return;
     }
 
@@ -478,7 +498,7 @@ async function downloadWfsLayer (wfsLayer, format, downloadProjection, projectio
     const typeNameString = getTypeNameStringFromServiceVersion(wfsLayer.version);
     const exportProjection = getConfiguredDownloadProjection(downloadProjection);
     const dataProjection = format === EXPORTFORMATS.shp
-        ? getConfiguredDownloadProjection(downloadProjection)
+        ? getShapefileExportProjection(exportProjection, projectionWkts)
         : "EPSG:4326";
 
     url.searchParams.append("service", "WFS");
