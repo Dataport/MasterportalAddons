@@ -41,7 +41,7 @@ function getProjectProjectionCode () {
  */
 function getConfiguredDownloadProjection (downloadProjection) {
     if ((/^EPSG:\d+$/i).test(downloadProjection)) {
-        return downloadProjection;
+        return downloadProjection.toUpperCase();
     }
 
     return getProjectProjectionCode();
@@ -117,6 +117,7 @@ function normalizeProjectionWkt (wkt) {
  */
 function getShapefileWriterOptions (projection, projectionWkts = {}) {
     const wkt = normalizeProjectionWkt(projectionWkts[projection]);
+    console.log(wkt)
 
     return wkt ? {wkt} : undefined;
 }
@@ -565,10 +566,6 @@ async function downloadWfsLayer (wfsLayer, format, downloadProjection, projectio
             return;
         }
         case "gpkg": {
-            // WFS was requested directly in the export projection to avoid a lossy
-            // round-trip via EPSG:4326; reproject back to EPSG:4326 at full precision
-            // since the geopackage library expects EPSG:4326 input and reprojects it
-            // to the feature table projection itself.
             const geojson4326 = dataProjection === "EPSG:4326"
                 ? geojson
                 : projectGeojson(geojson, dataProjection, "EPSG:4326");
