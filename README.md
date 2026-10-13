@@ -12,6 +12,8 @@ Addons für die Versionen 2.X des Masterportals befinden sich in dem [MPv2-Branc
 | bulkDownload      | Layerabhängige Datendownloadanfrage an Backend     | 3.X            |
 | wfs-SumQuery      | Attibutsanzeige und Summierung von grafisch selektierten Features | ^3.17.0            |
 | strassenBefahrung | Anbindung der infra3d-API der Firma iNovitas.      | 3.X            |
+| WfstUploader      | Hochladen und Speichern von Geometrien auf WFST.   | 3.26.0         |
+| GeoFilter         | Räumliches Filtern mit Polygonen.                  | 3.26.0         |
 
 ## Dokumentation für die Einbindung der zusätzlichen Addons
 
@@ -40,6 +42,12 @@ Nicht benötigte Addons können hier gelöscht werden.
 "strassenBefahrung": {
     "type": "tool"
 },
+"GeoFilter": {
+  "type": "tool"
+},
+"WfstUploader": {
+  "type": "tool"
+}
 ```
 
 ### 3. config.js des Portals anpassen
