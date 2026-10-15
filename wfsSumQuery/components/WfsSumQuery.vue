@@ -1,12 +1,12 @@
 <script>
 import {mapGetters, mapMutations, mapActions} from "vuex";
 import {Draw} from "ol/interaction.js";
-import GraphicalSelect from "../../../src/shared/modules/graphicalSelect/components/GraphicalSelect.vue";
-import ExportButtonCSV from "../../../src/shared/modules/buttons/components/ExportButtonCSV.vue";
-import FlatButton from "../../../src/shared/modules/buttons/components/FlatButton.vue";
-import NavTab from "../../../src/shared/modules/tabs/components/NavTab.vue";
-import thousandsSeparator from "../../../src/shared/js/utils/thousandsSeparator.js";
-import SwitchInput from "../../../src/shared/modules/checkboxes/components/SwitchInput.vue";
+import GraphicalSelect from "@shared/modules/graphicalSelect/components/GraphicalSelect.vue";
+import ExportButtonCSV from "@shared/modules/buttons/components/ExportButtonCSV.vue";
+import FlatButton from "@shared/modules/buttons/components/FlatButton.vue";
+import NavTab from "@shared/modules/tabs/components/NavTab.vue";
+import thousandsSeparator from "@shared/js/utils/thousandsSeparator.js";
+import SwitchInput from "@shared/modules/checkboxes/components/SwitchInput.vue";
 import Multiselect from "vue-multiselect";
 
 export default {

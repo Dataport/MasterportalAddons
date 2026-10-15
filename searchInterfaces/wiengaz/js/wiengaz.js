@@ -1,8 +1,8 @@
-import SearchInterface from "../../../../src/modules/searchBar/searchInterfaces/searchInterface";
-import store from "../../../../src/app-store";
-import {uniqueId} from "../../../../src/shared/js/utils/uniqueId";
-import crs from "@masterportal/masterportalapi/src/crs";
-import {getValueFromObjectByPath} from "../../../../src/shared/js/utils/getValueFromObjectByPath";
+import SearchInterface from "@modules/searchBar/searchInterfaces/searchInterface";
+import store from "@appstore/index.js";
+import {uniqueId} from "@shared/js/utils/uniqueId";
+import {getValueFromObjectByPath} from "@shared/js/utils/getValueFromObjectByPath";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 
 /**
  * The Vienna search interface as addon.
