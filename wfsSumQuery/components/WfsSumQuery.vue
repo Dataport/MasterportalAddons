@@ -681,10 +681,19 @@ export default {
     </div>
 </template>
 
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
+
 <style lang="scss" scoped>
 @import "/src/assets/css/mixins.scss";
 
 .wfs-sum-query {
+    .multiselect:not(.multiselect--disabled) {
+        :deep(.multiselect__placeholder),
+        :deep(.multiselect__input::placeholder) {
+            color: $black;
+        }
+    }
+
     .feature-table {
         border-collapse: collapse;
         width: 100%;
