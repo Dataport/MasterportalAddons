@@ -377,7 +377,3 @@ export default {
     }
 }
 </style>
-
-<style lang="scss">
-@import "~variables";
-</style>
