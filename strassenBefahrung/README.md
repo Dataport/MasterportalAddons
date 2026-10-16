@@ -18,7 +18,7 @@ Die hier vorliegende Version würde für den Betrieb mit einem Masterportal Vers
 },
 ```
 
-4. In der config.js des Portals muss als nächstes der in der addonsConf.json verwendete Key ("gfiPie") eingetragen
+4. In der config.js des Portals muss als nächstes der in der addonsConf.json verwendete Key ("strassenBefahrung") eingetragen
    werden.
 
 ### Beispiel in config.js:
