@@ -6,9 +6,9 @@ import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point.js";
 import {Pointer} from "ol/interaction.js";
 import {GeoJSON} from "ol/format.js";
-import store from "../../../src/app-store";
-import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList";
-import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle";
+import store from "@appstore/index.js";
+import styleList from "@masterportal/masterportalapi/src/vectorStyle/styleList.js";
+import createStyle from "@masterportal/masterportalapi/src/vectorStyle/createStyle.js";
 import {useScriptTag} from '@vueuse/core'
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';

@@ -1,15 +1,15 @@
 
 <script>
 import axios from "axios";
-import store from "../../../src/app-store/index.js";
 import {mapGetters, mapMutations, mapActions} from "vuex";
-import GraphicalSelect from "../../../src/shared/modules/graphicalSelect/components/GraphicalSelect.vue";
-import AccordionItem from "../../../src/shared/modules/accordion/components/AccordionItem.vue";
-import SwitchInput from "../../../src/shared/modules/checkboxes/components/SwitchInput.vue";
+import store from "@appstore/index.js";
+import GraphicalSelect from "@shared/modules/graphicalSelect/components/GraphicalSelect.vue";
+import AccordionItem from "@shared/modules/accordion/components/AccordionItem.vue";
+import SwitchInput from "@shared/modules/checkboxes/components/SwitchInput.vue";
 
-import crs from "@masterportal/masterportalapi/src/crs";
+import crs from "@masterportal/masterportalapi/src/crs.js";
 
-import layerCollection from "../../../src/core/layers/js/layerCollection";
+import layerCollection from "@core/layers/js/layerCollection.js";
 
 export default {
     name: "BulkDownload",
@@ -376,8 +376,4 @@ export default {
         margin: 0.5em 0;
     }
 }
-</style>
-
-<style lang="scss">
-@import "~variables";
 </style>

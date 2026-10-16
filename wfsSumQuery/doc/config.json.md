@@ -9,6 +9,7 @@ The module includes
 * displaying the selected attributes in table form
 * downloading the table as a CSV file
 
+Note: The selection result from layers that were created with xml filter will contain features that are filtered out when displayed on the map.
 
 ***
 
