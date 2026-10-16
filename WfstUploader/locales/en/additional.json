@@ -1,0 +1,21 @@
+{
+    "modules": {
+        "tools": {
+            "wfstUploader": {
+                "title": "WFST-Uploader",
+                "description": "Save features on WFST layers.",
+                "uploadButton": "Upload geometry",
+                "selectedFeature": "Selected Feature",
+                "selectedWfstLayer": "Selected WFST Layer",
+                "properties": "Properties for new feature",
+                "noProperties": "No properties available",
+                "selectFeatureHint": "Hold the Ctrl key and click on a feature to select it.",
+                "geometryTypeConflict": "Geometry type conflict: The selected feature has geometry type {{featureGeometryType}}, which is not compatible with existing features in the WFST layer.",
+                "uploadError": "Error uploading feature. Check console for more details.",
+                "selectLayer": "Select a WFST layer to upload the feature to:",
+                "resetButton": "Discard",
+                "uploadFeatureButton": "Upload"
+            }
+        }
+    }
+}

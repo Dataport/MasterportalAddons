@@ -15,5 +15,11 @@
   },
   "strassenBefahrung": {
     "type": "tool"
+  },
+  "GeoFilter": {
+    "type": "tool"
+  },
+  "WfstUploader": {
+    "type": "tool"
   }
 }
