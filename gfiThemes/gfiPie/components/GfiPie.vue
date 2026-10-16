@@ -1,6 +1,6 @@
 <script>
 import {mapGetters} from "vuex";
-import getters from "@modules/getFeatureInfo/store/gettersGetFeatureInfo";
+import getters from "@modules/getFeatureInfo/store/gettersGetFeatureInfo.js";
 import Chart from "chart.js/auto";
 
 export default {

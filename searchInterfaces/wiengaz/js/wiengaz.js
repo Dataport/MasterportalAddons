@@ -1,7 +1,7 @@
-import SearchInterface from "@modules/searchBar/searchInterfaces/searchInterface";
+import SearchInterface from "@modules/searchBar/searchInterfaces/searchInterface.js";
 import store from "@appstore/index.js";
-import {uniqueId} from "@shared/js/utils/uniqueId";
-import {getValueFromObjectByPath} from "@shared/js/utils/getValueFromObjectByPath";
+import {uniqueId} from "@shared/js/utils/uniqueId.js";
+import {getValueFromObjectByPath} from "@shared/js/utils/getValueFromObjectByPath.js";
 import crs from "@masterportal/masterportalapi/src/crs.js";
 
 /**
