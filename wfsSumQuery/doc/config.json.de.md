@@ -9,6 +9,7 @@ Das Modul umfasst
 * die Darstellung der ausgewählten Attribute in Tabellenform
 * das Herunterladen der Tabelle als CSV Datei
 
+Hinweis: Bei Layern, die über xml Filter erstellt werden, sind im Ergebnis der Selektion auch solche Feature enthalten, die über den xml Filter herausgefiltert wurden.
 
 ***
 

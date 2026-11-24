@@ -8,10 +8,12 @@ Addons für die Versionen 2.X des Masterportals befinden sich in dem [MPv2-Branc
 
 | Addon             | Beschreibung                                       | Kompatibilität |
 |-------------------|----------------------------------------------------|----------------|
-| wiengaz           | Addressuchdienst der Stadt Wien                    | 3.X            |
+| wiengaz           | Addressuchdienst der Stadt Wien                    | 3.27.0 (LTS)   |
 | bulkDownload      | Layerabhängige Datendownloadanfrage an Backend     | 3.X            |
-| wfs-SumQuery      | Attibutsanzeige und Summierung von grafisch selektierten Features | ^3.17.0            |
+| wfsSumQuery      | Attibutsanzeige und Summierung von grafisch selektierten Features | 3.27.0 (LTS)            |
 | strassenBefahrung | Anbindung der infra3d-API der Firma iNovitas.      | 3.X            |
+| gfiPie            | gfi Theme zur Darstellung von Attributen in Kreisdiagrammen | 3.27.0 (LTS) |
+| marineForecast    | spezifisches gfi Theme zur Darstellung von marinen Vorhersagedaten und Pegelstationsinformationen | 3.X |
 | WfstUploader      | Hochladen und Speichern von Geometrien auf WFST.   | 3.26.0         |
 | GeoFilter         | Räumliches Filtern mit Polygonen.                  | 3.26.0         |
 
@@ -56,7 +58,7 @@ In der config.js des Portals muss als nächstes der in der addonsConf.json verwe
 
 #### Beispiel in config.js:
 ```
-addons: ["gfiPie", "bulkDownload", "obliqueViewer", "trinkwasser"],
+addons: ["gfiPie", "bulkDownload", "wiengaz", "wfsSumQuery", "strassenBefahrung", "marineForecast"],
 ```
 
 ### 4. Alle nicht benötigten Addons aus dem Addons-Ordner löschen.
